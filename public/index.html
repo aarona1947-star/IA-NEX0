@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IA-NEXO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060911; --s1:#0b1120; --s2:#101827; --s3:#162035;
+  --b1:rgba(91,111,255,0.12); --b2:rgba(91,111,255,0.22);
+  --tx:#dde4ff; --mt:#5a6a8a;
+  --ac:#5b6fff; --ac2:#8f5bff;
+  --gl:rgba(91,111,255,0.28);
+  --llama:#10b981; --mistral:#f97316; --gemma:#f43f5e;
+  --qwen:#06b6d4; --chatgpt:#22c55e; --deepseek:#3b82f6; --grok:#a855f7;
+  --ok:#34d399; --err:#f87171;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--tx);height:100vh;overflow:hidden;}
+
+/* ── BG ── */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(91,111,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(91,111,255,0.04) 1px,transparent 1px);background-size:44px 44px;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;}
+.o1{width:500px;height:500px;background:rgba(91,111,255,0.07);top:-180px;left:-120px;animation:oa 14s ease-in-out infinite alternate;}
+.o2{width:400px;height:400px;background:rgba(143,91,255,0.06);bottom:-120px;right:-80px;animation:ob 17s ease-in-out infinite alternate;}
+@keyframes oa{to{transform:translate(25px,18px)scale(1.08)}}
+@keyframes ob{to{transform:translate(-20px,12px)scale(1.06)}}
+
+/* ── LOGIN ── */
+#login{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);}
+.lcard{width:420px;background:linear-gradient(145deg,var(--s1),var(--s2));border:1px solid var(--b2);border-radius:26px;padding:42px 38px;position:relative;box-shadow:0 0 70px rgba(91,111,255,0.1);animation:pop .55s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{opacity:0;transform:translateY(24px)scale(.95)}to{opacity:1;transform:none}}
+.lcard::before{content:'';position:absolute;top:14px;left:14px;width:50px;height:50px;border-top:2px solid var(--ac);border-left:2px solid var(--ac);border-radius:7px 0 0 0;}
+.lcard::after{content:'';position:absolute;bottom:14px;right:14px;width:50px;height:50px;border-bottom:2px solid var(--ac2);border-right:2px solid var(--ac2);border-radius:0 0 7px 0;}
+.logo{text-align:center;margin-bottom:26px;}
+.logo-icon{width:68px;height:68px;margin:0 auto 12px;background:linear-gradient(135deg,var(--ac),var(--ac2));border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 35px var(--gl);animation:glow 3s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 35px var(--gl)}50%{box-shadow:0 0 55px var(--gl)}}
+.logo-name{font-family:'Orbitron',monospace;font-size:30px;font-weight:900;background:linear-gradient(135deg,#fff 20%,var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:4px;}
+.logo-badge{display:inline-block;margin-top:7px;background:linear-gradient(90deg,#f59e0b,#ef4444);color:#fff;font-size:10px;font-weight:700;padding:3px 13px;border-radius:20px;letter-spacing:2px;font-family:'Orbitron',monospace;}
+.logo-sub{margin-top:9px;font-size:12px;color:var(--mt);letter-spacing:.8px;}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:20px 0;}
+.feat{background:var(--s3);border:1px solid var(--b1);border-radius:11px;padding:9px 6px;text-align:center;transition:border-color .2s,transform .2s;}
+.feat:hover{border-color:var(--ac);transform:translateY(-2px);}
+.feat .fi{font-size:18px;margin-bottom:3px;}
+.feat span{display:block;font-size:9px;color:var(--tx);font-weight:500;letter-spacing:.4px;}
+.fld{margin-bottom:12px;}
+.fld-lbl{font-size:11px;color:var(--mt);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.fld-inp{width:100%;background:var(--s3);border:1px solid var(--b1);border-radius:11px;padding:12px 15px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;}
+.fld-inp:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(91,111,255,0.13);}
+.btn-acc{width:100%;margin-top:8px;padding:14px;background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:11px;color:#fff;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:2px;position:relative;overflow:hidden;box-shadow:0 4px 22px var(--gl);transition:transform .15s,box-shadow .2s;}
+.btn-acc::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.13),transparent);transition:left .5s;}
+.btn-acc:hover::before{left:100%;}
+.btn-acc:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--gl);}
+.lhint{text-align:center;margin-top:13px;font-size:11px;color:var(--mt);line-height:1.8;}
+.lhint em{color:var(--ac2);font-style:normal;}
+
+/* ── APP ── */
+#app{display:none;height:100vh;flex-direction:column;position:relative;z-index:1;}
+
+/* ── HEADER ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 20px;background:rgba(11,17,32,0.97);backdrop-filter:blur(22px);border-bottom:1px solid var(--b1);flex-shrink:0;position:relative;}
+.hdr::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac),var(--ac2),transparent);opacity:.35;}
+.hl{display:flex;align-items:center;gap:11px;}
+.hlogo{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 14px var(--gl);}
+.htitle{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;letter-spacing:2px;}
+.hsub{font-size:11px;color:var(--mt);margin-top:1px;}
+.hr{display:flex;align-items:center;gap:7px;}
+.spill{display:flex;align-items:center;gap:5px;padding:4px 11px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.18);border-radius:20px;font-size:11px;color:var(--ok);}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--ok);animation:bl 2s infinite;}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ── MODEL SELECTOR ── */
+.msel{position:relative;}
+.mbtn{display:flex;align-items:center;gap:7px;padding:7px 13px;background:var(--s2);border:1px solid var(--b1);border-radius:9px;cursor:pointer;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:13px;font-weight:500;white-space:nowrap;transition:border-color .2s;}
+.mbtn:hover{border-color:var(--ac);}
+.mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.chev{font-size:9px;color:var(--mt);transition:transform .2s;}
+.mbtn.open .chev{transform:rotate(180deg);}
+.mdd{position:absolute;top:calc(100% + 7px);right:0;background:var(--s1);border:1px solid var(--b2);border-radius:14px;padding:5px;min-width:230px;box-shadow:0 18px 50px rgba(0,0,0,0.5);z-index:50;display:none;animation:ddop .16s cubic-bezier(.34,1.56,.64,1);}
+@keyframes ddop{from{opacity:0;transform:translateY(-7px)scale(.96)}to{opacity:1;transform:none}}
+.mdd.open{display:block;}
+.mopt{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-size:13px;transition:background .13s;}
+.mopt:hover{background:var(--s2);}
+.mopt.active{background:rgba(91,111,255,0.1);border:1px solid rgba(91,111,255,0.18);}
+.mopt .mdot{width:10px;height:10px;}
+.mn{font-weight:600;font-size:13px;}
+.ms{font-size:10px;color:var(--mt);margin-top:1px;}
+.mr{margin-left:auto;}
+.bfree{font-size:9px;padding:2px 7px;border-radius:7px;font-weight:700;background:rgba(52,211,153,0.13);color:var(--ok);border:1px solid rgba(52,211,153,0.25);}
+.bpaid{font-size:9px;padding:2px 7px;border-radius:7px;font-weight:700;background:rgba(248,113,113,0.1);color:var(--err);border:1px solid rgba(248,113,113,0.22);}
+.bok2{font-size:9px;padding:2px 7px;border-radius:7px;font-weight:700;background:rgba(91,111,255,0.13);color:#a0b0ff;border:1px solid rgba(91,111,255,0.25);}
+.mdd-sep{height:1px;background:var(--b1);margin:4px 0;}
+.mdd-lbl{font-size:10px;color:var(--mt);padding:4px 11px;letter-spacing:.5px;text-transform:uppercase;}
+
+.hbtn{padding:7px 12px;border-radius:9px;cursor:pointer;font-family:'Exo 2',sans-serif;font-size:13px;font-weight:500;border:1px solid var(--b1);background:var(--s2);color:var(--mt);transition:all .2s;}
+.hbtn:hover{color:var(--tx);border-color:var(--ac);}
+.hbtn.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.18);color:var(--err);}
+.hbtn.red:hover{background:rgba(248,113,113,0.16);}
+
+/* ── CHAT ── */
+.chat{flex:1;overflow-y:auto;padding:20px;}
+.chat::-webkit-scrollbar{width:4px;}
+.chat::-webkit-scrollbar-thumb{background:var(--s3);border-radius:4px;}
+
+.welcome{max-width:620px;margin:10px auto 24px;background:linear-gradient(145deg,var(--s1),var(--s2));border:1px solid var(--b1);border-radius:20px;padding:28px;position:relative;overflow:hidden;animation:fu .45s ease;}
+.welcome::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--ac),var(--ac2),var(--ac));background-size:200%;animation:sh 3s linear infinite;}
+@keyframes sh{0%{background-position:0%}100%{background-position:200%}}
+@keyframes fu{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.wt{font-family:'Orbitron',monospace;font-size:17px;font-weight:700;margin-bottom:13px;}
+.wb{font-size:13px;color:rgba(221,228,255,.8);line-height:1.9;}
+.wb strong{color:var(--tx);}
+.wf{display:inline-flex;align-items:center;gap:6px;margin-top:14px;background:var(--s3);border:1px solid var(--b1);border-radius:9px;padding:6px 13px;font-size:11px;color:var(--mt);}
+
+.msg{display:flex;gap:11px;margin-bottom:18px;animation:fu .28s ease;max-width:740px;margin-left:auto;margin-right:auto;}
+.msg.user{flex-direction:row-reverse;}
+.mav{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;border:1px solid var(--b1);}
+.msg.ai .mav{background:linear-gradient(135deg,var(--s2),var(--s3));}
+.msg.user .mav{background:var(--s2);}
+.mbu{max-width:calc(100% - 50px);padding:13px 16px;border-radius:16px;font-size:14px;line-height:1.75;}
+.msg.ai .mbu{background:linear-gradient(145deg,var(--s1),var(--s2));border:1px solid var(--b1);border-top-left-radius:3px;}
+.msg.user .mbu{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-top-right-radius:3px;box-shadow:0 4px 18px rgba(91,111,255,.22);}
+.mbu pre{background:rgba(0,0,0,.4);border:1px solid var(--b1);border-radius:8px;padding:12px;margin:8px 0;overflow-x:auto;font-size:12px;line-height:1.6;}
+.mbu code{font-family:'Courier New',monospace;}
+.mbu .ic{background:rgba(91,111,255,.13);padding:1px 5px;border-radius:4px;font-size:12px;font-family:'Courier New',monospace;}
+.mme{font-size:10px;color:var(--mt);margin-top:6px;display:flex;align-items:center;gap:4px;}
+.msg.err .mbu{background:rgba(248,113,113,.07);border:1px solid rgba(248,113,113,.2);color:var(--err);}
+
+.twrap{display:flex;align-items:center;gap:4px;padding:11px 15px;}
+.twrap span{width:7px;height:7px;border-radius:50%;background:var(--mt);animation:bo 1.2s infinite;}
+.twrap span:nth-child(2){animation-delay:.2s}.twrap span:nth-child(3){animation-delay:.4s}
+@keyframes bo{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}}
+
+.div{text-align:center;margin:10px auto;font-size:11px;color:var(--mt);max-width:740px;display:flex;align-items:center;gap:10px;}
+.div::before,.div::after{content:'';flex:1;height:1px;background:var(--b1);}
+
+/* ── INPUT ── */
+.iarea{padding:13px 20px 17px;background:rgba(11,17,32,.97);backdrop-filter:blur(22px);border-top:1px solid var(--b1);flex-shrink:0;}
+.iwrap{max-width:740px;margin:0 auto;display:flex;align-items:flex-end;gap:7px;}
+.ibox{flex:1;background:var(--s1);border:1px solid var(--b1);border-radius:13px;padding:12px 15px;color:var(--tx);font-family:'Exo 2',sans-serif;font-size:14px;outline:none;resize:none;min-height:48px;max-height:138px;transition:border-color .2s,box-shadow .2s;line-height:1.5;}
+.ibox:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(91,111,255,.1);}
+.ibox::placeholder{color:var(--mt);}
+.ibtn{width:48px;height:48px;border-radius:11px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:all .2s;}
+.ibtn-s{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 4px 16px var(--gl);}
+.ibtn-s:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--gl);}
+.ibtn-s:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.ibtn-m{background:var(--s1);border:1px solid var(--b1);color:var(--mt);}
+.ibtn-m:hover{border-color:var(--ac);color:var(--tx);}
+.ibtn-m.rec{background:rgba(248,113,113,.1);border-color:var(--err);color:var(--err);animation:rp 1s infinite;}
+@keyframes rp{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,.35)}50%{box-shadow:0 0 0 8px rgba(248,113,113,0)}}
+.ihint{text-align:center;margin-top:7px;font-size:11px;color:var(--mt);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:105px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--b2);padding:10px 20px;border-radius:11px;font-size:13px;z-index:999;box-shadow:0 8px 28px rgba(0,0,0,.4);animation:fu .3s ease;white-space:nowrap;}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="bg-grid"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+</div>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login">
+  <div class="lcard">
+    <div class="logo">
+      <div class="logo-icon">🧠</div>
+      <div class="logo-name">IA-NEXO</div>
+      <div class="logo-badge">✦ PREMIUM ULTRA ✦</div>
+      <div class="logo-sub">Inteligencia Artificial Multifuncional</div>
+    </div>
+    <div class="feats">
+      <div class="feat"><div class="fi">🤖</div><span>7 Modelos IA</span></div>
+      <div class="feat"><div class="fi">🇪🇸</div><span>Español Nativo</span></div>
+      <div class="feat"><div class="fi">🎙️</div><span>Voz Activada</span></div>
+      <div class="feat"><div class="fi">⚡</div><span>Resp. Rápida</span></div>
+      <div class="feat"><div class="fi">∞</div><span>Ilimitado</span></div>
+      <div class="feat"><div class="fi">🔒</div><span>Privado Total</span></div>
+    </div>
+    <div class="fld">
+      <div class="fld-lbl">✉️ Correo Electrónico</div>
+      <input class="fld-inp" id="le" type="email" value="demo@ainexus.ai">
+    </div>
+    <div class="fld">
+      <div class="fld-lbl">🔒 Contraseña</div>
+      <input class="fld-inp" id="lp" type="password" value="demo1234">
+    </div>
+    <button class="btn-acc" onclick="doLogin()">→ ACCEDER AL NEXO</button>
+    <div class="lhint">Demo: <em>demo@ainexus.ai</em> / <em>demo1234</em><br>✦ 4 modelos gratis con OpenRouter ✦</div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app">
+  <div class="hdr">
+    <div class="hl">
+      <div class="hlogo">🧠</div>
+      <div>
+        <div class="htitle">IA-NEXO</div>
+        <div class="hsub" id="hsub">Selecciona un modelo</div>
+      </div>
+    </div>
+    <div class="hr">
+      <div class="spill"><div class="sdot"></div><span>En línea</span></div>
+      <div class="msel">
+        <button class="mbtn" onclick="toggleDD(this)" id="mbtn">
+          <span class="mdot" id="mbtn-dot" style="background:var(--llama)"></span>
+          <span id="mbtn-lbl">Llama 3</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="mdd" id="mdd"></div>
+      </div>
+      <button class="hbtn" onclick="newChat()">＋ Nueva</button>
+      <button class="hbtn red" onclick="doLogout()">↩ Salir</button>
+    </div>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="iarea">
+    <div class="iwrap">
+      <button class="ibtn ibtn-m" id="micbtn"
+        onmousedown="startMic()" onmouseup="stopMic()"
+        ontouchstart="startMic(event)" ontouchend="stopMic()">🎙️</button>
+      <textarea class="ibox" id="inp"
+        placeholder="Escribe o mantén 🎙️ para hablar..."
+        rows="1" onkeydown="onKey(event)" oninput="resize(this)"></textarea>
+      <button class="ibtn ibtn-s" id="sendbtn" onclick="send()">➤</button>
+    </div>
+    <div class="ihint">🎙 Mantén el micrófono → habla → suelta para enviar</div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// MODELOS
+// ═══════════════════════════════════════
+const MODELS = {
+  llama:    { name:'Llama 3',    sub:'Meta · Gratis',      color:'var(--llama)',   emoji:'🦙', endpoint:'/api/llama',       free:true  },
+  mistral:  { name:'Mistral 7B', sub:'Mistral · Gratis',   color:'var(--mistral)', emoji:'🌊', endpoint:'/api/mistral-free', free:true  },
+  gemma:    { name:'Gemma 2',    sub:'Google · Gratis',    color:'var(--gemma)',   emoji:'💎', endpoint:'/api/gemma',        free:true  },
+  qwen:     { name:'Qwen 2.5',   sub:'Alibaba · Gratis',   color:'var(--qwen)',    emoji:'🌸', endpoint:'/api/qwen',         free:true  },
+  chatgpt:  { name:'ChatGPT',    sub:'OpenAI · De pago',   color:'var(--chatgpt)', emoji:'🟢', endpoint:'/api/chatgpt',      free:false },
+  deepseek: { name:'DeepSeek',   sub:'DeepSeek · De pago', color:'var(--deepseek)',emoji:'🔵', endpoint:'/api/deepseek',     free:false },
+  grok:     { name:'Grok',       sub:'xAI · De pago',      color:'var(--grok)',    emoji:'🟣', endpoint:'/api/grok',         free:false },
+};
+
+let current  = 'llama';
+let history  = [];
+let busy     = false;
+let recog    = null;
+let status   = {};
+
+// ═══════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════
+function doLogin() {
+  const e = document.getElementById('le').value;
+  const p = document.getElementById('lp').value;
+  if (!e || !p) { showToast('⚠️ Ingresa tus datos'); return; }
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  fetch('/api/status').then(r => r.json()).then(s => { status = s; buildDD(); renderWelcome(); }).catch(() => { buildDD(); renderWelcome(); });
+}
+
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+  history = [];
+}
+
+// ═══════════════════════════════════════
+// DROPDOWN
+// ═══════════════════════════════════════
+function buildDD() {
+  const dd = document.getElementById('mdd');
+  dd.innerHTML = '';
+
+  const freeLabel = document.createElement('div');
+  freeLabel.className = 'mdd-lbl'; freeLabel.textContent = 'Modelos Gratuitos';
+  dd.appendChild(freeLabel);
+
+  const paidLabel = document.createElement('div');
+  paidLabel.className = 'mdd-lbl'; paidLabel.textContent = 'Modelos de Pago';
+  let paidAdded = false;
+
+  for (const [id, m] of Object.entries(MODELS)) {
+    if (!m.free && !paidAdded) {
+      const sep = document.createElement('div'); sep.className = 'mdd-sep'; dd.appendChild(sep);
+      dd.appendChild(paidLabel); paidAdded = true;
+    }
+    const ready = m.free ? status[id] : status[id];
+    const d = document.createElement('div');
+    d.className = 'mopt' + (id === current ? ' active' : '');
+    d.id = 'opt-' + id; d.onclick = () => selectModel(id);
+    d.innerHTML = `
+      <span class="mdot" style="background:${m.color}"></span>
+      <div><div class="mn">${m.name}</div><div class="ms">${m.sub}</div></div>
+      <div class="mr"><span class="${m.free ? (ready ? 'bok2' : 'bpaid') : (ready ? 'bok2' : 'bpaid')}">${m.free ? (ready ? 'LISTO' : 'SIN CLAVE') : (ready ? 'LISTO' : 'SIN CLAVE')}</span></div>`;
+    dd.appendChild(d);
+  }
+}
+
+function toggleDD(btn) {
+  const dd = document.getElementById('mdd');
+  const open = dd.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.msel')) {
+    document.getElementById('mdd').classList.remove('open');
+    document.getElementById('mbtn').classList.remove('open');
+  }
+});
+
+function selectModel(id) {
+  const prev = current; current = id;
+  const m = MODELS[id];
+  document.getElementById('mbtn-dot').style.background = m.color;
+  document.getElementById('mbtn-lbl').textContent = m.name;
+  document.getElementById('hsub').textContent = 'Usando ' + m.name + ' · ' + m.sub;
+  document.querySelectorAll('.mopt').forEach(o => o.classList.remove('active'));
+  document.getElementById('opt-' + id).classList.add('active');
+  document.getElementById('mdd').classList.remove('open');
+  document.getElementById('mbtn').classList.remove('open');
+  if (prev !== id && !document.getElementById('wc')) addDiv(m.name);
+}
+
+function addDiv(name) {
+  const el = document.createElement('div');
+  el.className = 'div'; el.textContent = '— Cambiaste a ' + name + ' —';
+  const c = document.getElementById('chat'); c.appendChild(el); c.scrollTop = c.scrollHeight;
+}
+
+// ═══════════════════════════════════════
+// WELCOME / NEW CHAT
+// ═══════════════════════════════════════
+function renderWelcome() {
+  const m = MODELS[current];
+  selectModel('llama'); // default to llama
+  document.getElementById('chat').innerHTML = `
+    <div class="welcome" id="wc">
+      <div class="wt">🚀 Bienvenido a IA-NEXO</div>
+      <div class="wb">
+        Tienes acceso a <strong>7 modelos de IA</strong> — 4 completamente gratis.<br><br>
+        <strong>🦙 Modelos gratuitos:</strong> Llama 3, Mistral, Gemma 2, Qwen 2.5<br>
+        <strong>💳 Modelos de pago:</strong> ChatGPT, DeepSeek, Grok<br><br>
+        <strong>🎙️ Micrófono:</strong> Mantén presionado el botón 🎙️, habla y suelta.<br><br>
+        <strong>¿En qué puedo ayudarte hoy?</strong>
+      </div>
+      <div class="wf"><span class="mdot" style="background:var(--llama)"></span>Llama 3 activo • Modo Experto</div>
+    </div>`;
+}
+
+function newChat() { history = []; renderWelcome(); }
+
+// ═══════════════════════════════════════
+// MENSAJES
+// ═══════════════════════════════════════
+function addMsg(role, text, modelId, isErr = false) {
+  document.getElementById('wc')?.remove();
+  const c = document.getElementById('chat');
+  const isUser = role === 'user';
+  const m = modelId ? MODELS[modelId] : null;
+  const d = document.createElement('div');
+  d.className = 'msg ' + role + (isErr ? ' err' : '');
+  d.innerHTML = `
+    <div class="mav">${isUser ? '👤' : (m ? m.emoji : '⚠️')}</div>
+    <div>
+      <div class="mbu">${fmt(text)}</div>
+      ${!isUser && m ? `<div class="mme"><span class="mdot" style="background:${m.color}"></span>${m.name} · ${now()}</div>` : ''}
+    </div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+function fmt(t) {
+  t = t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  t = t.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => `<pre><code>${code.trim()}</code></pre>`);
+  t = t.replace(/`([^`]+)`/g, '<code class="ic">$1</code>');
+  t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  t = t.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  t = t.replace(/\n/g, '<br>');
+  return t;
+}
+
+function now() { return new Date().toLocaleTimeString('es-ES', { hour:'2-digit', minute:'2-digit' }); }
+
+function addTyping() {
+  document.getElementById('wc')?.remove();
+  const c = document.getElementById('chat');
+  const m = MODELS[current];
+  const id = 'ty' + Date.now();
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = id;
+  d.innerHTML = `<div class="mav">${m.emoji}</div><div class="mbu"><div class="twrap"><span></span><span></span><span></span></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight; return id;
+}
+
+function rmTyping(id) { document.getElementById(id)?.remove(); }
+
+// ═══════════════════════════════════════
+// SEND
+// ═══════════════════════════════════════
+function onKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }
+function resize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 138) + 'px'; }
+
+async function send() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text || busy) return;
+  inp.value = ''; inp.style.height = 'auto';
+  addMsg('user', text, null);
+  history.push({ role: 'user', content: text });
+  const tid = addTyping();
+  busy = true; document.getElementById('sendbtn').disabled = true;
+  try {
+    const m = MODELS[current];
+    const r = await fetch(m.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, history: history.slice(-14) })
+    });
+    const data = await r.json();
+    if (!r.ok || data.error) throw new Error(data.error || 'Error del servidor');
+    rmTyping(tid);
+    addMsg('ai', data.reply, current);
+    history.push({ role: 'assistant', content: data.reply });
+  } catch (err) {
+    rmTyping(tid);
+    addMsg('ai', '⚠️ ' + err.message, null, true);
+  }
+  busy = false; document.getElementById('sendbtn').disabled = false;
+}
+
+// ═══════════════════════════════════════
+// VOZ
+// ═══════════════════════════════════════
+function startMic(e) {
+  if (e) e.preventDefault();
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    showToast('⚠️ Reconocimiento de voz solo disponible en Chrome'); return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recog = new SR(); recog.lang = 'es-ES'; recog.interimResults = true;
+  recog.onresult = ev => {
+    const t = Array.from(ev.results).map(r => r[0].transcript).join('');
+    const inp = document.getElementById('inp'); inp.value = t; resize(inp);
+  };
+  recog.start();
+  document.getElementById('micbtn').classList.add('rec');
+}
+
+function stopMic() {
+  if (!recog) return;
+  recog.stop(); recog = null;
+  document.getElementById('micbtn').classList.remove('rec');
+  setTimeout(() => { const t = document.getElementById('inp').value.trim(); if (t) send(); }, 420);
+}
+
+function showToast(msg) {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
+}
+</script>
+</body>
+</html>
