@@ -173,6 +173,17 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
 .fullscreen img{max-width:90vw;max-height:90vh;border-radius:16px;}
 
 /* TOAST */
+
+/* ── NARRADOR ── */
+.tts-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:3px 6px;border-radius:6px;color:var(--tx3);transition:all .2s;margin-left:4px;}
+.tts-btn:hover{background:var(--bg3);color:var(--tx);}
+.tts-btn.speaking{color:var(--ac);animation:ttsP 1s ease-in-out infinite;}
+@keyframes ttsP{0%,100%{opacity:1}50%{opacity:.4}}
+.tts-toggle{display:flex;align-items:center;gap:6px;padding:5px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:11px;color:var(--tx2);font-weight:500;transition:all .2s;white-space:nowrap;}
+.tts-toggle:hover{border-color:var(--ac);color:var(--tx);}
+.tts-toggle.on{background:rgba(99,117,255,0.1);border-color:var(--ac);color:var(--ac);}
+.tts-toggle .tts-dot{width:6px;height:6px;border-radius:50%;background:var(--tx3);transition:background .2s;}
+.tts-toggle.on .tts-dot{background:var(--ac);box-shadow:0 0 6px var(--ac);}
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--border2);padding:11px 22px;border-radius:12px;font-size:13px;z-index:999;box-shadow:var(--shadow);animation:fu .3s ease;white-space:nowrap;font-weight:500;}
 </style>
 </head>
@@ -228,6 +239,7 @@ html,body{height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:
       </div>
       <button class="hbtn" onclick="newChat()">＋ Nueva</button>
       <button class="theme-btn" onclick="toggleTheme()" id="theme-btn">🌙</button>
+      <div class="tts-toggle" id="tts-toggle" onclick="toggleAutoTTS()" title="Narración automática">🔊 <span id="tts-label">Narrador</span></div>
       <button class="hbtn red" onclick="doLogout()">Salir</button>
     </div>
   </div>
@@ -378,7 +390,9 @@ function addMsg(role,text,modelId,isErr=false){
   document.getElementById('wc')?.remove();
   const c=document.getElementById('chat');const isUser=role==='user';const m=modelId?MODELS[modelId]:null;
   const d=document.createElement('div');d.className='msg '+role+(isErr?' err':'');
-  d.innerHTML=`<div class="mav">${isUser?'👤':(m?m.emoji:'⚠️')}</div><div style="flex:1;min-width:0"><div class="mbu">${fmt(text)}</div>${!isUser&&m?`<div class="mmeta"><span class="mdot" style="background:${m.color}"></span>${m.name} · ${now()}</div>`:''}</div>`;
+  d.innerHTML=`<div class="mav">${isUser?'👤':(m?m.emoji:'⚠️')}</div><div style="flex:1;min-width:0"><div class="mbu">${fmt(text)}</div>${!isUser&&m?`<div class="mmeta"><span class="mdot" style="background:${m.color}"></span>${m.name} · ${now()}<button class="tts-btn" onclick="hablar(this)" data-text="${text.replace(/"/g,'&quot;').slice(0,2000)}" title="Escuchar">🔊</button></div>`:''}</div>`;
+  // Auto narrar si está activado
+  if(!isUser && m && autoTTS) setTimeout(()=>narrar(text), 200);
   c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
 
@@ -497,6 +511,108 @@ function showToast(msg){
   document.querySelectorAll('.toast').forEach(t=>t.remove());
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
+}
+
+// ═══════════════════════════════════════
+// NARRADOR — Text to Speech
+// ═══════════════════════════════════════
+let autoTTS = false;
+let currentUtterance = null;
+
+function getVozEspanol() {
+  const voces = speechSynthesis.getVoices();
+  // Buscar voz en español
+  const prioridad = [
+    v => v.lang === 'es-MX' && !v.localService,
+    v => v.lang === 'es-ES' && !v.localService,
+    v => v.lang.startsWith('es-') && !v.localService,
+    v => v.lang === 'es-MX',
+    v => v.lang === 'es-ES',
+    v => v.lang.startsWith('es-'),
+  ];
+  for (const fn of prioridad) {
+    const voz = voces.find(fn);
+    if (voz) return voz;
+  }
+  return null;
+}
+
+function narrar(texto) {
+  if (!('speechSynthesis' in window)) { showToast('⚠️ Tu navegador no soporta narración'); return; }
+  // Limpiar texto (quitar markdown)
+  const limpio = texto
+    .replace(/```[\s\S]*?```/g, 'bloque de código')
+    .replace(/`[^`]+`/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/#+\s/g, '')
+    .replace(/
++/g, '. ')
+    .slice(0, 2000);
+
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(limpio);
+  utt.lang = 'es-MX';
+  utt.rate = 0.95;
+  utt.pitch = 1;
+  utt.volume = 1;
+  const voz = getVozEspanol();
+  if (voz) utt.voice = voz;
+  currentUtterance = utt;
+  speechSynthesis.speak(utt);
+}
+
+function hablar(btn) {
+  if (!('speechSynthesis' in window)) { showToast('⚠️ Tu navegador no soporta narración'); return; }
+  if (btn.classList.contains('speaking')) {
+    speechSynthesis.cancel();
+    document.querySelectorAll('.tts-btn.speaking').forEach(b => { b.classList.remove('speaking'); b.textContent = '🔊'; });
+    return;
+  }
+  document.querySelectorAll('.tts-btn.speaking').forEach(b => { b.classList.remove('speaking'); b.textContent = '🔊'; });
+  const texto = btn.getAttribute('data-text') || '';
+  const limpio = texto
+    .replace(/```[\s\S]*?```/g, 'bloque de código')
+    .replace(/`[^`]+`/g, '')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/#+\s/g, '')
+    .replace(/\n+/g, '. ');
+
+  speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(limpio);
+  utt.lang = 'es-MX';
+  utt.rate = 0.95;
+  utt.pitch = 1;
+  utt.volume = 1;
+  const voz = getVozEspanol();
+  if (voz) utt.voice = voz;
+  btn.classList.add('speaking');
+  btn.textContent = '⏹️';
+  utt.onend = () => { btn.classList.remove('speaking'); btn.textContent = '🔊'; };
+  utt.onerror = () => { btn.classList.remove('speaking'); btn.textContent = '🔊'; };
+  speechSynthesis.speak(utt);
+}
+
+function toggleAutoTTS() {
+  autoTTS = !autoTTS;
+  const toggle = document.getElementById('tts-toggle');
+  const label = document.getElementById('tts-label');
+  if (autoTTS) {
+    toggle.classList.add('on');
+    label.textContent = 'Narrando';
+    showToast('🔊 Narración automática activada');
+  } else {
+    toggle.classList.remove('on');
+    label.textContent = 'Narrador';
+    speechSynthesis.cancel();
+    showToast('🔇 Narración desactivada');
+  }
+}
+
+// Cargar voces cuando estén disponibles
+if ('speechSynthesis' in window) {
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
 }
 </script>
 </body>
