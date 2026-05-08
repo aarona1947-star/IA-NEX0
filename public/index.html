@@ -636,19 +636,31 @@ function limpiarTexto(t){return t.replace(/```[^`]*```/g,'bloque de código').re
 function detenerAudio(){if(audioActual){audioActual.pause();audioActual=null;}document.querySelectorAll('.tts-btn').forEach(b=>{b.textContent='🔊';});}
 
 async function hablar(btn){
-  if(btn.textContent==='⏹️'){detenerAudio();return;}
-  detenerAudio(); const texto=btn.dataset.text||''; if(!texto)return;
+  if(btn.textContent==='⏹️'){detenerAudio();speechSynthesis.cancel();return;}
+  detenerAudio(); speechSynthesis.cancel();
+  const texto=btn.dataset.text||''; if(!texto)return;
   btn.textContent='⏳';
   try{
     const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:limpiarTexto(texto)})});
-    if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error||'Sin narrador');}
+    if(!r.ok) throw new Error('fallback');
     const blob=await r.blob();
     audioActual=new Audio(URL.createObjectURL(blob));
     btn.textContent='⏹️';
     audioActual.onended=()=>{btn.textContent='🔊';audioActual=null;};
     audioActual.onerror=()=>{btn.textContent='🔊';audioActual=null;};
     audioActual.play();
-  }catch(e){btn.textContent='🔊';showToast('⚠️ '+e.message);}
+  }catch(e){
+    // Fallback — voz del navegador
+    btn.textContent='⏹️';
+    const utt=new SpeechSynthesisUtterance(limpiarTexto(texto));
+    utt.lang='es-MX'; utt.rate=0.9; utt.pitch=1;
+    const voces=speechSynthesis.getVoices();
+    const voz=voces.find(v=>v.lang==='es-MX')||voces.find(v=>v.lang==='es-ES')||voces.find(v=>v.lang.startsWith('es'))||null;
+    if(voz) utt.voice=voz;
+    utt.onend=()=>{btn.textContent='🔊';};
+    utt.onerror=()=>{btn.textContent='🔊';};
+    speechSynthesis.speak(utt);
+  }
 }
 
 async function narrar(texto){
