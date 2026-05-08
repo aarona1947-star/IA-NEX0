@@ -270,6 +270,93 @@ html,body{height:100%;font-family:'Space Grotesk',sans-serif;background:var(--bg
 .fullscreen{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .fullscreen img{max-width:90vw;max-height:90vh;border-radius:16px;}
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--b2);padding:12px 24px;border-radius:14px;font-size:13px;z-index:999;box-shadow:var(--shadow);animation:fu .3s ease;white-space:nowrap;font-weight:500;}
+
+/* ══════════════════════════════
+   RESPONSIVE MÓVIL
+══════════════════════════════ */
+@media (max-width: 640px) {
+  /* Login */
+  .lcard{width:95vw;padding:32px 22px;border-radius:24px;}
+  .brand-name{font-size:26px;letter-spacing:4px;}
+  .brand-hex{width:68px;height:68px;font-size:30px;}
+  .agents-preview{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .ap{padding:8px 10px;}
+  .ap .name{font-size:11px;}
+  .ap .desc{font-size:9px;}
+
+  /* Header */
+  .hdr{padding:0 12px;height:54px;}
+  .htitle{font-size:13px;letter-spacing:2px;}
+  .hsub{display:none;}
+  .hr{gap:5px;}
+  .hbtn{display:none;}
+  .tts-toggle span#tts-lbl{display:none;}
+  .tts-toggle{padding:0 8px;min-width:34px;justify-content:center;}
+  .theme-btn{width:30px;height:30px;font-size:13px;}
+  .agent-pill{padding:5px 10px;font-size:11px;}
+  .agent-pill .chev{display:none;}
+
+  /* Agent dropdown — full width on mobile */
+  .agent-dd{
+    position:fixed;bottom:0;left:0;right:0;top:auto;
+    width:100%;border-radius:24px 24px 0 0;
+    padding:12px 8px 28px;
+    border:1px solid var(--b2);border-bottom:none;
+    max-height:80vh;overflow-y:auto;
+  }
+  .ao{padding:14px 12px;}
+  .ao-icon{width:44px;height:44px;font-size:22px;}
+
+  /* Chat */
+  .chat{padding:14px 12px;}
+  .msg{max-width:100%;}
+  .mbu{padding:11px 14px;font-size:13px;}
+  .mav{width:32px;height:32px;font-size:15px;}
+  .msg{gap:8px;}
+
+  /* Welcome */
+  .wc-top{padding:20px 10px 16px;}
+  .wc-icon{width:60px;height:60px;font-size:26px;}
+  .wc-title{font-size:20px;}
+  .wc-sub{font-size:12px;}
+  .agents-grid{grid-template-columns:1fr;gap:10px;margin-top:16px;}
+  .agent-card{padding:16px 14px;}
+  .ac-name{font-size:14px;}
+  .ac-desc{font-size:11px;}
+  .ac-btn{padding:10px;}
+  .sugs{gap:6px;}
+  .sug{font-size:11px;padding:6px 12px;}
+
+  /* Input */
+  .iarea{padding:10px 12px 14px;}
+  .iwrap{gap:6px;}
+  .ibox{padding:11px 14px;font-size:14px;min-height:46px;border-radius:14px;}
+  .ibtn{width:46px;height:46px;font-size:17px;border-radius:12px;}
+  .ibtn-img{width:46px;height:46px;font-size:17px;border-radius:12px;}
+  .ihint{font-size:10px;}
+
+  /* Image modal */
+  .img-card{padding:22px 18px;border-radius:20px;}
+  .img-card h3{font-size:16px;}
+
+  /* Pre / code */
+  .mbu pre{font-size:11px;padding:10px;}
+}
+
+@media (max-width: 380px) {
+  .lcard{padding:26px 16px;}
+  .brand-name{font-size:22px;}
+  .agents-preview{grid-template-columns:1fr 1fr;}
+  .hdr{height:50px;}
+  .agent-pill{font-size:10px;padding:4px 8px;}
+}
+
+.mbmenu{display:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--b1);background:var(--s2);color:var(--t2);font-size:20px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;line-height:1;}
+.mbmenu:hover{border-color:var(--b2);color:var(--tx);}
+@media(max-width:640px){
+  .mbmenu{display:flex;}
+  .hbtn{display:none;}
+}
 </style>
 </head>
 <body>
@@ -323,6 +410,15 @@ html,body{height:100%;font-family:'Space Grotesk',sans-serif;background:var(--bg
       <div class="tts-toggle" id="tts-tog" onclick="toggleAutoTTS()">🔊 <span id="tts-lbl">Narrador</span></div>
       <button class="theme-btn" onclick="toggleTheme()" id="tbtn">🌙</button>
       <button class="hbtn red" onclick="doLogout()">Salir</button>
+      <!-- Menú móvil -->
+      <button class="mbmenu" onclick="toggleMobileMenu()" id="mbmenu-btn" title="Menú">⋮</button>
+    </div>
+  </div>
+  <!-- Mobile dropdown menu -->
+  <div id="mobile-menu" style="display:none;position:fixed;top:54px;right:0;left:0;background:var(--card);border-bottom:1px solid var(--b1);padding:12px 16px;z-index:49;backdrop-filter:blur(20px);">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="hbtn" onclick="newChat();closeMobileMenu()" style="flex:1">＋ Nueva</button>
+      <button class="hbtn red" onclick="doLogout();closeMobileMenu()" style="flex:1">↩ Salir</button>
     </div>
   </div>
 
@@ -503,7 +599,94 @@ function renderWelcome(){
     const tagHTML=ag.tags.slice(0,3).map(t=>`<span class="ac-tag" style="background:${ag.gl};color:${ag.color};border-color:${ag.color}40">${t}</span>`).join('');
     cards+=`
       <div class="agent-card" onclick="selectAgent('${id}');useSug('')" style="--hov-c:${ag.color}">
-        <style>.agent-card:hover[onclick*="${id}"]::before,.agent-card[onclick*="${id}"]::before{background:${ag.grad}}</style>
+        <style>.agent-card:hover[onclick*="${id}"]::before,.agent-card[onclick*="${id}"]::before{background:${ag.grad}}
+/* ══════════════════════════════
+   RESPONSIVE MÓVIL
+══════════════════════════════ */
+@media (max-width: 640px) {
+  /* Login */
+  .lcard{width:95vw;padding:32px 22px;border-radius:24px;}
+  .brand-name{font-size:26px;letter-spacing:4px;}
+  .brand-hex{width:68px;height:68px;font-size:30px;}
+  .agents-preview{grid-template-columns:repeat(2,1fr);gap:6px;}
+  .ap{padding:8px 10px;}
+  .ap .name{font-size:11px;}
+  .ap .desc{font-size:9px;}
+
+  /* Header */
+  .hdr{padding:0 12px;height:54px;}
+  .htitle{font-size:13px;letter-spacing:2px;}
+  .hsub{display:none;}
+  .hr{gap:5px;}
+  .hbtn{display:none;}
+  .tts-toggle span#tts-lbl{display:none;}
+  .tts-toggle{padding:0 8px;min-width:34px;justify-content:center;}
+  .theme-btn{width:30px;height:30px;font-size:13px;}
+  .agent-pill{padding:5px 10px;font-size:11px;}
+  .agent-pill .chev{display:none;}
+
+  /* Agent dropdown — full width on mobile */
+  .agent-dd{
+    position:fixed;bottom:0;left:0;right:0;top:auto;
+    width:100%;border-radius:24px 24px 0 0;
+    padding:12px 8px 28px;
+    border:1px solid var(--b2);border-bottom:none;
+    max-height:80vh;overflow-y:auto;
+  }
+  .ao{padding:14px 12px;}
+  .ao-icon{width:44px;height:44px;font-size:22px;}
+
+  /* Chat */
+  .chat{padding:14px 12px;}
+  .msg{max-width:100%;}
+  .mbu{padding:11px 14px;font-size:13px;}
+  .mav{width:32px;height:32px;font-size:15px;}
+  .msg{gap:8px;}
+
+  /* Welcome */
+  .wc-top{padding:20px 10px 16px;}
+  .wc-icon{width:60px;height:60px;font-size:26px;}
+  .wc-title{font-size:20px;}
+  .wc-sub{font-size:12px;}
+  .agents-grid{grid-template-columns:1fr;gap:10px;margin-top:16px;}
+  .agent-card{padding:16px 14px;}
+  .ac-name{font-size:14px;}
+  .ac-desc{font-size:11px;}
+  .ac-btn{padding:10px;}
+  .sugs{gap:6px;}
+  .sug{font-size:11px;padding:6px 12px;}
+
+  /* Input */
+  .iarea{padding:10px 12px 14px;}
+  .iwrap{gap:6px;}
+  .ibox{padding:11px 14px;font-size:14px;min-height:46px;border-radius:14px;}
+  .ibtn{width:46px;height:46px;font-size:17px;border-radius:12px;}
+  .ibtn-img{width:46px;height:46px;font-size:17px;border-radius:12px;}
+  .ihint{font-size:10px;}
+
+  /* Image modal */
+  .img-card{padding:22px 18px;border-radius:20px;}
+  .img-card h3{font-size:16px;}
+
+  /* Pre / code */
+  .mbu pre{font-size:11px;padding:10px;}
+}
+
+@media (max-width: 380px) {
+  .lcard{padding:26px 16px;}
+  .brand-name{font-size:22px;}
+  .agents-preview{grid-template-columns:1fr 1fr;}
+  .hdr{height:50px;}
+  .agent-pill{font-size:10px;padding:4px 8px;}
+}
+
+.mbmenu{display:none;width:34px;height:34px;border-radius:10px;border:1px solid var(--b1);background:var(--s2);color:var(--t2);font-size:20px;cursor:pointer;align-items:center;justify-content:center;transition:all .2s;line-height:1;}
+.mbmenu:hover{border-color:var(--b2);color:var(--tx);}
+@media(max-width:640px){
+  .mbmenu{display:flex;}
+  .hbtn{display:none;}
+}
+</style>
         <div class="ac-top">
           <div class="ac-icon" style="background:${ag.gl};border:1px solid ${ag.color}40">${ag.icon}</div>
           <div>
@@ -636,42 +819,47 @@ function limpiarTexto(t){return t.replace(/```[^`]*```/g,'bloque de código').re
 function detenerAudio(){if(audioActual){audioActual.pause();audioActual=null;}document.querySelectorAll('.tts-btn').forEach(b=>{b.textContent='🔊';});}
 
 async function hablar(btn){
-  if(btn.textContent==='⏹️'){detenerAudio();speechSynthesis.cancel();return;}
-  detenerAudio(); speechSynthesis.cancel();
+  if(btn.textContent==='⏹️'){detenerAudio();return;}
+  detenerAudio();
   const texto=btn.dataset.text||''; if(!texto)return;
   btn.textContent='⏳';
   try{
-    const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:limpiarTexto(texto)})});
-    if(!r.ok) throw new Error('fallback');
-    const blob=await r.blob();
-    audioActual=new Audio(URL.createObjectURL(blob));
+    // Google TTS — clara en español, funciona con VPN
+    const limpio=limpiarTexto(texto).slice(0,200);
+    const url='https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q='+encodeURIComponent(limpio);
+    audioActual=new Audio(url);
+    audioActual.crossOrigin='anonymous';
     btn.textContent='⏹️';
     audioActual.onended=()=>{btn.textContent='🔊';audioActual=null;};
-    audioActual.onerror=()=>{btn.textContent='🔊';audioActual=null;};
+    audioActual.onerror=async()=>{
+      // Si Google TTS falla, usar voz del navegador
+      audioActual=null;
+      btn.textContent='⏹️';
+      const utt=new SpeechSynthesisUtterance(limpiarTexto(texto));
+      utt.lang='es-MX'; utt.rate=0.9; utt.pitch=1;
+      const voces=speechSynthesis.getVoices();
+      const voz=voces.find(v=>v.lang==='es-MX')||voces.find(v=>v.lang==='es-ES')||voces.find(v=>v.lang.startsWith('es'))||null;
+      if(voz) utt.voice=voz;
+      utt.onend=()=>{btn.textContent='🔊';};
+      speechSynthesis.speak(utt);
+    };
     audioActual.play();
   }catch(e){
-    // Fallback — voz del navegador
-    btn.textContent='⏹️';
-    const utt=new SpeechSynthesisUtterance(limpiarTexto(texto));
-    utt.lang='es-MX'; utt.rate=0.9; utt.pitch=1;
-    const voces=speechSynthesis.getVoices();
-    const voz=voces.find(v=>v.lang==='es-MX')||voces.find(v=>v.lang==='es-ES')||voces.find(v=>v.lang.startsWith('es'))||null;
-    if(voz) utt.voice=voz;
-    utt.onend=()=>{btn.textContent='🔊';};
-    utt.onerror=()=>{btn.textContent='🔊';};
-    speechSynthesis.speak(utt);
+    btn.textContent='🔊';
+    showToast('⚠️ Error de narrador: '+e.message);
   }
 }
 
 async function narrar(texto){
   detenerAudio();
   try{
-    const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:limpiarTexto(texto)})});
-    if(!r.ok)return;
-    const blob=await r.blob();
-    audioActual=new Audio(URL.createObjectURL(blob));
+    const limpio=limpiarTexto(texto).slice(0,200);
+    const url='https://translate.google.com/translate_tts?ie=UTF-8&tl=es&client=tw-ob&q='+encodeURIComponent(limpio);
+    audioActual=new Audio(url);
+    audioActual.crossOrigin='anonymous';
     audioActual.play();
     audioActual.onended=()=>{audioActual=null;};
+    audioActual.onerror=()=>{audioActual=null;};
   }catch(e){console.log('TTS:',e.message);}
 }
 
@@ -728,6 +916,18 @@ function showToast(msg){
   const t=document.createElement('div');t.className='toast';t.textContent=msg;
   document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
 }
+
+function toggleMobileMenu(){
+  const m=document.getElementById('mobile-menu');
+  m.style.display=m.style.display==='none'?'block':'none';
+}
+function closeMobileMenu(){
+  document.getElementById('mobile-menu').style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#mbmenu-btn')&&!e.target.closest('#mobile-menu'))
+    closeMobileMenu();
+});
 </script>
 </body>
 </html>
