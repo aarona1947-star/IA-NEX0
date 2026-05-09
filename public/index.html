@@ -373,6 +373,28 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tx)
   .cur-pill{font-size:11px;padding:5px 10px;}
   .cur-pill .chev{display:none;}
 }
+
+/* AUTH TABS */
+.auth-tabs{display:flex;gap:0;margin:18px 0 16px;background:var(--s2);border-radius:14px;padding:4px;}
+.auth-tab{flex:1;padding:9px;border:none;background:none;border-radius:11px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;}
+.auth-tab.active{background:var(--card);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.auth-error{font-size:12px;color:#f87171;margin-bottom:10px;min-height:16px;padding:0 2px;display:none;}
+.auth-error.show{display:block;}
+.l-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;}
+/* User avatar in header */
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#f472b6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:default;border:2px solid rgba(255,255,255,0.15);flex-shrink:0;}
+.user-name{font-size:12px;color:var(--t2);font-weight:500;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@media(max-width:640px){.user-name{display:none;}}
+
+/* AUTH TABS */
+.auth-tabs{display:flex;gap:0;margin:16px 0 14px;background:var(--s2);border-radius:14px;padding:4px;}
+.auth-tab{flex:1;padding:9px;border:none;background:none;border-radius:11px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;}
+.auth-tab.active{background:var(--card);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,0.15);}
+.auth-error{font-size:12px;color:#f87171;margin-bottom:10px;padding:8px 12px;background:rgba(248,113,113,.08);border-radius:9px;border:1px solid rgba(248,113,113,.2);display:none;}
+.l-btn:disabled{opacity:.5;cursor:not-allowed;transform:none !important;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#38bdf8,#f472b6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;border:2px solid rgba(255,255,255,0.12);flex-shrink:0;}
+.user-name{font-size:12px;color:var(--t2);font-weight:600;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@media(max-width:640px){.user-name{display:none;}}
 </style>
 </head>
 <body>
@@ -381,28 +403,37 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tx)
 <!-- ════════ LOGIN ════════ -->
 <div id="login">
 <div class="lcard">
-  <button class="l-theme" onclick="toggleTheme()">🌙</button>
+  <button class="l-theme" onclick="toggleTheme()">&#127769;</button>
   <div class="logo-area">
-    <div class="logo-gem">🧠</div>
+    <div class="logo-gem">&#129504;</div>
     <div class="logo-name">IA-NEXO</div>
     <div class="logo-sub">4 Agentes de Inteligencia Artificial</div>
     <div class="logo-badge">
-      <span class="lb" style="background:var(--info-gl);color:var(--info);border:1px solid rgba(56,189,248,.2)">🔍 INFO</span>
-      <span class="lb" style="background:var(--code-gl);color:var(--code);border:1px solid rgba(74,222,128,.2)">💻 CODE</span>
-      <span class="lb" style="background:var(--cre-gl);color:var(--cre);border:1px solid rgba(244,114,182,.2)">🎨 CREATE</span>
-      <span class="lb" style="background:var(--sage-gl);color:var(--sage);border:1px solid rgba(251,191,36,.2)">🧠 SAGE</span>
+      <span class="lb" style="background:var(--info-gl);color:var(--info);border:1px solid rgba(56,189,248,.2)">&#128269; SABER</span>
+      <span class="lb" style="background:var(--code-gl);color:var(--code);border:1px solid rgba(74,222,128,.2)">&#128187; CODIGO</span>
+      <span class="lb" style="background:var(--cre-gl);color:var(--cre);border:1px solid rgba(244,114,182,.2)">&#127912; CREATIVO</span>
+      <span class="lb" style="background:var(--sage-gl);color:var(--sage);border:1px solid rgba(251,191,36,.2)">&#129504; SABIO</span>
     </div>
   </div>
-  <div class="agent-grid">
-    <div class="ag-mini"><span class="agi">🔍</span><div class="ag-mini-info"><div class="n">NEXO-SABER</div><div class="d">Información & datos</div></div><div class="dot" style="background:var(--info)"></div></div>
-    <div class="ag-mini"><span class="agi">💻</span><div class="ag-mini-info"><div class="n">NEXO-CÓDIGO</div><div class="d">Código & matemáticas</div></div><div class="dot" style="background:var(--code)"></div></div>
-    <div class="ag-mini"><span class="agi">🎨</span><div class="ag-mini-info"><div class="n">NEXO-CREATIVO</div><div class="d">Creatividad & arte</div></div><div class="dot" style="background:var(--cre)"></div></div>
-    <div class="ag-mini"><span class="agi">🧠</span><div class="ag-mini-info"><div class="n">NEXO-SABIO</div><div class="d">Análisis profundo</div></div><div class="dot" style="background:var(--sage)"></div></div>
+  <div class="auth-tabs">
+    <button class="auth-tab active" id="tab-login" onclick="showTab('login')">Iniciar Sesion</button>
+    <button class="auth-tab" id="tab-reg" onclick="showTab('reg')">Crear Cuenta</button>
   </div>
-  <div class="l-field"><div class="l-label">✉️ Correo</div><input class="l-input" id="le" type="email" value="demo@ainexus.ai" placeholder="correo@ejemplo.com"></div>
-  <div class="l-field"><div class="l-label">🔒 Contraseña</div><input class="l-input" id="lp" type="password" value="demo1234" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <button class="l-btn" onclick="doLogin()">Acceder al Nexo →</button>
-  <div class="l-hint">Demo: <em>demo@ainexus.ai</em> / <em>demo1234</em></div>
+  <div id="form-login">
+    <div class="l-field"><div class="l-label">Correo</div><input class="l-input" id="le" type="email" placeholder="correo@ejemplo.com"></div>
+    <div class="l-field"><div class="l-label">Contrasena</div><input class="l-input" id="lp" type="password" placeholder="Tu contrasena"></div>
+    <div class="auth-error" id="login-err"></div>
+    <button class="l-btn" id="login-btn" onclick="doLogin()">Iniciar Sesion</button>
+    <div class="l-hint">Sin cuenta? <em onclick="showTab('reg')" style="cursor:pointer;text-decoration:underline">Registrate gratis</em></div>
+  </div>
+  <div id="form-reg" style="display:none">
+    <div class="l-field"><div class="l-label">Tu nombre</div><input class="l-input" id="rn" type="text" placeholder="Como te llamamos?"></div>
+    <div class="l-field"><div class="l-label">Correo</div><input class="l-input" id="re" type="email" placeholder="correo@ejemplo.com"></div>
+    <div class="l-field"><div class="l-label">Contrasena</div><input class="l-input" id="rp" type="password" placeholder="Minimo 6 caracteres"></div>
+    <div class="auth-error" id="reg-err"></div>
+    <button class="l-btn" id="reg-btn" onclick="doRegister()">Crear mi cuenta</button>
+    <div class="l-hint">Ya tienes cuenta? <em onclick="showTab('login')" style="cursor:pointer;text-decoration:underline">Inicia sesion</em></div>
+  </div>
 </div>
 </div>
 
@@ -544,22 +575,98 @@ function toggleTheme(){
 }
 document.querySelectorAll('#tbtn,.l-theme').forEach(b=>b.textContent=theme==='dark'?'🌙':'☀️');
 
-/* ── LOGIN ── */
-function doLogin(){
-  const e=document.getElementById('le').value;
-  const p=document.getElementById('lp').value;
-  if(!e||!p){showToast('⚠️ Ingresa tus datos');return;}
+/* AUTH */
+let TOKEN = localStorage.getItem('nx-token') || '';
+let USER  = null;
+try { USER = JSON.parse(localStorage.getItem('nx-user') || 'null'); } catch(e){}
+
+function showTab(t){
+  document.getElementById('form-login').style.display = t==='login' ? 'block' : 'none';
+  document.getElementById('form-reg').style.display   = t==='reg'   ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active', t==='login');
+  document.getElementById('tab-reg').classList.toggle('active', t==='reg');
+  showErr('login-err',''); showErr('reg-err','');
+}
+
+function showErr(id, msg){
+  const el=document.getElementById(id);
+  if(!el) return;
+  el.textContent=msg;
+  el.style.display=msg?'block':'none';
+}
+
+function setBtn(id, loading){
+  const b=document.getElementById(id);
+  if(!b) return;
+  b.disabled=loading;
+  b.textContent=loading ? 'Cargando...' : (id==='login-btn'?'Iniciar Sesion':'Crear mi cuenta');
+}
+
+async function doLogin(){
+  const email=document.getElementById('le').value.trim();
+  const pass=document.getElementById('lp').value;
+  if(!email||!pass){showErr('login-err','Ingresa tu correo y contrasena.');return;}
+  setBtn('login-btn',true);
+  try{
+    const r=await fetch('/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data=await r.json();
+    if(!r.ok){showErr('login-err',data.error||'Error al iniciar sesion.');return;}
+    guardarSesion(data); entrarApp();
+  }catch(e){showErr('login-err','Error de conexion.');}
+  setBtn('login-btn',false);
+}
+
+async function doRegister(){
+  const nombre=document.getElementById('rn').value.trim();
+  const email=document.getElementById('re').value.trim();
+  const pass=document.getElementById('rp').value;
+  if(!nombre||!email||!pass){showErr('reg-err','Todos los campos son obligatorios.');return;}
+  setBtn('reg-btn',true);
+  try{
+    const r=await fetch('/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,password:pass})});
+    const data=await r.json();
+    if(!r.ok){showErr('reg-err',data.error||'Error al crear cuenta.');return;}
+    guardarSesion(data); entrarApp();
+  }catch(e){showErr('reg-err','Error de conexion.');}
+  setBtn('reg-btn',false);
+}
+
+function guardarSesion(data){
+  TOKEN=data.token; USER={nombre:data.nombre,email:data.email};
+  localStorage.setItem('nx-token',TOKEN);
+  localStorage.setItem('nx-user',JSON.stringify(USER));
+}
+
+function entrarApp(){
   document.getElementById('login').style.display='none';
   document.getElementById('app').style.display='flex';
-  buildPanel();
-  setAgent('info');
-  renderWelcome();
+  if(USER){
+    const av=document.getElementById('user-avatar');
+    const un=document.getElementById('user-name');
+    if(av) av.textContent=USER.nombre.charAt(0).toUpperCase();
+    if(un) un.textContent=USER.nombre;
+  }
+  buildPanel(); setAgent('info'); renderWelcome();
 }
+
 function doLogout(){
+  TOKEN=''; USER=null;
+  localStorage.removeItem('nx-token'); localStorage.removeItem('nx-user');
   document.getElementById('app').style.display='none';
   document.getElementById('login').style.display='flex';
-  hist=[];stopAudio();
+  hist=[]; stopAudio();
 }
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  if(!TOKEN) return;
+  try{
+    const r=await fetch('/auth/me',{headers:{'Authorization':'Bearer '+TOKEN}});
+    if(r.ok){ USER=await r.json(); entrarApp(); }
+    else{ localStorage.removeItem('nx-token'); localStorage.removeItem('nx-user'); TOKEN=''; }
+  }catch(e){}
+});
+
+
 
 /* ── AGENT PANEL ── */
 function buildPanel(){
@@ -744,7 +851,7 @@ async function send(){
   document.getElementById('sendbtn').disabled=true;
   try{
     const a=AGENTS[cur];
-    const r=await fetch(a.endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,history:hist.slice(-14)})});
+    const r=await fetch(a.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},body:JSON.stringify({text,history:hist.slice(-14)})});
     const data=await r.json();
     if(!r.ok||data.error)throw new Error(data.error||'Error');
     rmTyping(tid); addMsg('ai',data.reply,cur);
