@@ -32,9 +32,9 @@ function auth(req, res, next) {
 }
 
 app.post('/auth/register', async function(req, res) {
-  var body     = req.body || {};
-  var nombre   = (body.nombre   || '').trim();
-  var email    = (body.email    || '').trim().toLowerCase();
+  var body = req.body || {};
+  var nombre = (body.nombre || '').trim();
+  var email  = (body.email  || '').trim().toLowerCase();
   var password = (body.password || '');
   if (!nombre || !email || !password) return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
   if (password.length < 6) return res.status(400).json({ error: 'La contrasena debe tener al menos 6 caracteres.' });
@@ -42,14 +42,14 @@ app.post('/auth/register', async function(req, res) {
   var users = getUsers();
   if (users[email]) return res.status(400).json({ error: 'Ya existe una cuenta con ese email.' });
   var hash = await bcrypt.hash(password, 10);
-  users[email] = { id: 'u' + Date.now(), nombre: nombre, email: email, password: hash, creado: new Date().toISOString() };
+  users[email] = { id: 'u'+Date.now(), nombre: nombre, email: email, password: hash, creado: new Date().toISOString() };
   setUsers(users);
   var token = jwt.sign({ id: users[email].id, nombre: nombre, email: email }, SECRET, { expiresIn: '30d' });
   res.json({ token: token, nombre: nombre, email: email });
 });
 
 app.post('/auth/login', async function(req, res) {
-  var body     = req.body || {};
+  var body = req.body || {};
   var email    = (body.email    || '').trim().toLowerCase();
   var password = (body.password || '');
   if (!email || !password) return res.status(400).json({ error: 'Email y contrasena requeridos.' });
@@ -66,15 +66,17 @@ app.get('/auth/me', auth, function(req, res) {
   res.json({ nombre: req.user.nombre, email: req.user.email });
 });
 
-// PROMPTS CORREGIDOS - respuestas cortas y matematicas correctas
+// ════════════════════════════════════════
+// PROMPTS ESPECIALIZADOS POR NEXO
+// ════════════════════════════════════════
 var PROMPTS = {
-  creativo: 'Eres NEXO CREATIVO, asistente de arte y escritura. Responde SIEMPRE en espanol. Maximo 3-4 lineas. Se creativo, directo y conciso.',
+  sabio: 'Eres NEXO SABIO, filosofo y etico. SOLO respondes preguntas de filosofia, etica, moral, proposito de vida, consejos profundos y dilemas existenciales. Responde SIEMPRE en espanol con sabiduria y profundidad. Usa metaforas cuando ayude. Maximo 4-5 lineas. Se directo y profundo.',
 
-  codigo: 'Eres NEXO LOGICO, experto en codigo y matematicas. Responde SIEMPRE en espanol. REGLAS ESTRICTAS: (1) Para operaciones matematicas da SOLO el resultado directo. Ejemplo: si te preguntan "1+9" responde "1 + 9 = 10". Nunca cambies ni combines los numeros del usuario. (2) Para codigo da solo el fragmento esencial sin explicaciones largas. (3) Maximo 3-4 lineas de respuesta. (4) Se directo y preciso.',
+  saber: 'Eres NEXO DATOS, analista de datos. SOLO respondes preguntas sobre estadisticas, cifras, poblacion, fechas historicas, comparaciones numericas y datos facticos. Responde SIEMPRE en espanol con precision numerica. Si no tienes el dato exacto, indica una estimacion realista. Maximo 4-5 lineas. Se preciso y factual.',
 
-  saber: 'Eres NEXO DATOS, especialista en informacion. Responde SIEMPRE en espanol. Maximo 3-4 lineas. Da la informacion clave de forma directa y concisa.',
+  codigo: 'Eres NEXO LOGICO, experto en codigo y matematicas. SOLO respondes preguntas de programacion, algoritmos, matematicas y calculo. REGLAS: Para operaciones matematicas da SOLO el resultado directo (1+9=10, nunca cambies los numeros). Para codigo da solo el fragmento esencial. Responde SIEMPRE en espanol. Maximo 4-5 lineas.',
 
-  sabio: 'Eres NEXO SABIO, especialista en analisis y filosofia. Responde SIEMPRE en espanol. Maximo 3-4 lineas. Se profundo pero conciso.'
+  creativo: 'Eres NEXO CREATIVO, artista y escritor. SOLO respondes peticiones creativas: poemas, cuentos, ideas artisticas, escritura creativa, metaforas, canciones. Responde SIEMPRE en espanol con imaginacion y emocion. Se expresivo y original. Maximo 4-5 lineas salvo que se pida algo mas largo.'
 };
 
 function llamarGemini(history, text, prompt, cb) {
@@ -98,63 +100,40 @@ function llamarGemini(history, text, prompt, cb) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: prompt }] },
         contents: hist,
-        generationConfig: { maxOutputTokens: 300, temperature: 0.3 }
+        generationConfig: { maxOutputTokens: 400, temperature: 0.4 }
       })
     })
     .then(function(r) { return r.text(); })
     .then(function(raw) {
-      var json; try { json = JSON.parse(raw); } catch (e) { return tryNext(); }
+      var json; try { json = JSON.parse(raw); } catch(e) { return tryNext(); }
       if (json.error) { console.log('skip', modelo); return tryNext(); }
       var parts = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts;
       var reply = parts && parts[0] && parts[0].text;
       if (!reply) return tryNext();
       cb(null, reply.trim());
     })
-    .catch(function(e) { console.log('err', modelo, e.message); tryNext(); });
+    .catch(function(e) { tryNext(); });
   }
   tryNext();
 }
 
-app.post('/api/creativo', auth, function(req, res) {
-  llamarGemini(req.body.history, req.body.text, PROMPTS.creativo, function(err, reply) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ reply: reply });
-  });
-});
-app.post('/api/codigo', auth, function(req, res) {
-  llamarGemini(req.body.history, req.body.text, PROMPTS.codigo, function(err, reply) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ reply: reply });
-  });
-});
-app.post('/api/saber', auth, function(req, res) {
-  llamarGemini(req.body.history, req.body.text, PROMPTS.saber, function(err, reply) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ reply: reply });
-  });
-});
-app.post('/api/sabio', auth, function(req, res) {
-  llamarGemini(req.body.history, req.body.text, PROMPTS.sabio, function(err, reply) {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ reply: reply });
-  });
-});
+app.post('/api/sabio',    auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.sabio,   function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
+app.post('/api/saber',    auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.saber,   function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
+app.post('/api/codigo',   auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.codigo,  function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
+app.post('/api/creativo', auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.creativo,function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
 
-app.post('/api/imagen', auth, function(req, res) {
-  var prompt = (req.body.prompt || '').slice(0, 400);
+app.post('/api/imagen', auth, function(req,res) {
+  var prompt = (req.body.prompt || '').slice(0,400);
   if (!prompt) return res.status(400).json({ error: 'Falta el prompt.' });
-  var p = encodeURIComponent(prompt);
-  var seed = Math.floor(Math.random() * 999999);
-  res.json({ imageUrl: 'https://image.pollinations.ai/prompt/' + p + '?width=768&height=768&seed=' + seed + '&nologo=true&nofeed=true' });
+  var seed = Math.floor(Math.random()*999999);
+  res.json({ imageUrl: 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=768&height=768&seed='+seed+'&nologo=true&nofeed=true' });
 });
 
-app.get('*', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+app.get('*', function(req,res) { res.sendFile(path.join(__dirname,'public','index.html')); });
 
 app.listen(PORT, function() {
   var g = process.env.GEMINI_KEY && process.env.GEMINI_KEY.indexOf('PEGA_') !== 0;
-  console.log('\n  IA-NEXO v5.1 en puerto ' + PORT);
+  console.log('\n  IA-NEXO v5.3 en puerto ' + PORT);
   console.log('  Gemini: ' + (g ? 'OK' : 'Falta GEMINI_KEY'));
-  console.log('  Auth: JWT + bcrypt\n');
+  console.log('  4 Nexos: SABIO | DATOS | LOGICO | CREATIVO\n');
 });
