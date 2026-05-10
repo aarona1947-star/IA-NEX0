@@ -11,7 +11,7 @@ var PORT   = process.env.PORT || 3000;
 var SECRET = process.env.JWT_SECRET || 'nexo-secret-2025';
 var DB     = path.join(__dirname, 'users.json');
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' })); // larger limit for files
 app.use(express.static(path.join(__dirname, 'public')));
 
 function getUsers() {
@@ -37,7 +37,7 @@ app.post('/auth/register', async function(req, res) {
   var email  = (body.email  || '').trim().toLowerCase();
   var password = (body.password || '');
   if (!nombre || !email || !password) return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
-  if (password.length < 6) return res.status(400).json({ error: 'La contrasena debe tener al menos 6 caracteres.' });
+  if (password.length < 6) return res.status(400).json({ error: 'Minimo 6 caracteres.' });
   if (!email.includes('@')) return res.status(400).json({ error: 'Email invalido.' });
   var users = getUsers();
   if (users[email]) return res.status(400).json({ error: 'Ya existe una cuenta con ese email.' });
@@ -66,31 +66,65 @@ app.get('/auth/me', auth, function(req, res) {
   res.json({ nombre: req.user.nombre, email: req.user.email });
 });
 
-// ════════════════════════════════════════
-// PROMPTS ESPECIALIZADOS POR NEXO
-// ════════════════════════════════════════
+// ═══════════════════════════════════════════
+// PROMPTS
+// ═══════════════════════════════════════════
 var PROMPTS = {
-  sabio: 'Eres NEXO SABIO, filosofo y etico. SOLO respondes preguntas de filosofia, etica, moral, proposito de vida, consejos profundos y dilemas existenciales. Responde SIEMPRE en espanol con sabiduria y profundidad. Usa metaforas cuando ayude. Maximo 4-5 lineas. Se directo y profundo.',
-
-  saber: 'Eres NEXO DATOS, analista de datos. SOLO respondes preguntas sobre estadisticas, cifras, poblacion, fechas historicas, comparaciones numericas y datos facticos. Responde SIEMPRE en espanol con precision numerica. Si no tienes el dato exacto, indica una estimacion realista. Maximo 4-5 lineas. Se preciso y factual.',
-
-  codigo: 'Eres NEXO LOGICO, experto en codigo y matematicas. SOLO respondes preguntas de programacion, algoritmos, matematicas y calculo. REGLAS: Para operaciones matematicas da SOLO el resultado directo (1+9=10, nunca cambies los numeros). Para codigo da solo el fragmento esencial. Responde SIEMPRE en espanol. Maximo 4-5 lineas.',
-
-  creativo: 'Eres NEXO CREATIVO, artista y escritor. SOLO respondes peticiones creativas: poemas, cuentos, ideas artisticas, escritura creativa, metaforas, canciones. Responde SIEMPRE en espanol con imaginacion y emocion. Se expresivo y original. Maximo 4-5 lineas salvo que se pida algo mas largo.'
+  sabio:    'Eres NEXO SABIO, filosofo y etico. Responde SIEMPRE en espanol. Si el usuario adjunta un archivo, analiza su contenido desde una perspectiva filosófica o reflexiva. Maximo 4-5 lineas.',
+  saber:    'Eres NEXO DATOS, analista de datos. Responde SIEMPRE en espanol. Si el usuario adjunta un archivo (imagen, PDF, CSV, texto), extrae y analiza los datos, cifras y hechos relevantes. Maximo 5 lineas.',
+  codigo:   'Eres NEXO LOGICO, experto en codigo y matematicas. Responde SIEMPRE en espanol. Si el usuario adjunta codigo, un PDF tecnico o imagen con texto, analiza su contenido con precision tecnica. Para operaciones: 1+9=10, sin errores. Maximo 5 lineas.',
+  creativo: 'Eres NEXO CREATIVO, artista y escritor. Responde SIEMPRE en espanol. Si el usuario adjunta una imagen, descríbela con creatividad y sugiere ideas artísticas. Maximo 5 lineas.'
 };
 
-function llamarGemini(history, text, prompt, cb) {
+// ═══════════════════════════════════════════
+// GEMINI — con soporte de archivos adjuntos
+// ═══════════════════════════════════════════
+function llamarGemini(history, text, prompt, fileData, cb) {
   var key = (process.env.GEMINI_KEY || '').trim();
   if (!key || key.indexOf('PEGA_') === 0) return cb(new Error('GEMINI_KEY no configurada.'));
 
+  // Construir historial (solo texto, sin archivos anteriores)
   var hist = (history || []).slice(-6).map(function(m) {
     return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
   });
-  hist.push({ role: 'user', parts: [{ text: text }] });
 
-  var modelos = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-1.5-flash'];
+  // Construir el mensaje actual con o sin archivo
+  var currentParts = [];
+
+  // Si hay archivo adjunto, incluirlo
+  if (fileData && fileData.data && fileData.mimeType) {
+    var mimeType = fileData.mimeType;
+    var isText = mimeType.indexOf('text/') === 0 ||
+                 mimeType === 'application/json' ||
+                 mimeType === 'application/javascript';
+
+    if (isText && fileData.textContent) {
+      // Archivos de texto: incluir como texto
+      currentParts.push({
+        text: 'Archivo adjunto (' + fileData.fileName + '):\n\n' + fileData.textContent + '\n\n' + text
+      });
+    } else {
+      // Imágenes y PDFs: inline data
+      currentParts.push({ text: text || 'Analiza este archivo.' });
+      currentParts.push({
+        inlineData: {
+          mimeType: mimeType,
+          data: fileData.data
+        }
+      });
+    }
+  } else {
+    currentParts.push({ text: text });
+  }
+
+  hist.push({ role: 'user', parts: currentParts });
+
+  // Usar modelos con capacidad multimodal para archivos
+  var modelos = fileData
+    ? ['gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash']
+    : ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-1.5-flash'];
+
   var index = 0;
-
   function tryNext() {
     if (index >= modelos.length) return cb(new Error('Gemini no disponible. Intenta de nuevo.'));
     var modelo = modelos[index++];
@@ -100,40 +134,57 @@ function llamarGemini(history, text, prompt, cb) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: prompt }] },
         contents: hist,
-        generationConfig: { maxOutputTokens: 400, temperature: 0.4 }
+        generationConfig: { maxOutputTokens: 600, temperature: 0.4 }
       })
     })
     .then(function(r) { return r.text(); })
     .then(function(raw) {
       var json; try { json = JSON.parse(raw); } catch(e) { return tryNext(); }
-      if (json.error) { console.log('skip', modelo); return tryNext(); }
+      if (json.error) { console.log('skip', modelo, json.error.message); return tryNext(); }
       var parts = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts;
       var reply = parts && parts[0] && parts[0].text;
       if (!reply) return tryNext();
+      console.log('OK', modelo, fileData ? '(con archivo)' : '');
       cb(null, reply.trim());
     })
-    .catch(function(e) { tryNext(); });
+    .catch(function(e) { console.log('err', modelo); tryNext(); });
   }
   tryNext();
 }
 
-app.post('/api/sabio',    auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.sabio,   function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
-app.post('/api/saber',    auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.saber,   function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
-app.post('/api/codigo',   auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.codigo,  function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
-app.post('/api/creativo', auth, function(req,res){ llamarGemini(req.body.history,req.body.text,PROMPTS.creativo,function(e,r){if(e)return res.status(500).json({error:e.message});res.json({reply:r});});});
+// Función helper para crear rutas de agentes
+function makeAgentRoute(prompt) {
+  return function(req, res) {
+    var text     = req.body.text    || '';
+    var history  = req.body.history || [];
+    var fileData = req.body.file    || null; // { data, mimeType, fileName, textContent }
 
-app.post('/api/imagen', auth, function(req,res) {
-  var prompt = (req.body.prompt || '').slice(0,400);
+    llamarGemini(history, text, prompt, fileData, function(err, reply) {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ reply: reply });
+    });
+  };
+}
+
+app.post('/api/sabio',    auth, makeAgentRoute(PROMPTS.sabio));
+app.post('/api/saber',    auth, makeAgentRoute(PROMPTS.saber));
+app.post('/api/codigo',   auth, makeAgentRoute(PROMPTS.codigo));
+app.post('/api/creativo', auth, makeAgentRoute(PROMPTS.creativo));
+
+app.post('/api/imagen', auth, function(req, res) {
+  var prompt = (req.body.prompt || '').slice(0, 400);
   if (!prompt) return res.status(400).json({ error: 'Falta el prompt.' });
-  var seed = Math.floor(Math.random()*999999);
-  res.json({ imageUrl: 'https://image.pollinations.ai/prompt/'+encodeURIComponent(prompt)+'?width=768&height=768&seed='+seed+'&nologo=true&nofeed=true' });
+  var seed = Math.floor(Math.random() * 999999);
+  res.json({ imageUrl: 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=768&height=768&seed=' + seed + '&nologo=true&nofeed=true' });
 });
 
-app.get('*', function(req,res) { res.sendFile(path.join(__dirname,'public','index.html')); });
+app.get('*', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 app.listen(PORT, function() {
   var g = process.env.GEMINI_KEY && process.env.GEMINI_KEY.indexOf('PEGA_') !== 0;
-  console.log('\n  IA-NEXO v5.3 en puerto ' + PORT);
+  console.log('\n  IA-NEXO v5.4 en puerto ' + PORT);
   console.log('  Gemini: ' + (g ? 'OK' : 'Falta GEMINI_KEY'));
-  console.log('  4 Nexos: SABIO | DATOS | LOGICO | CREATIVO\n');
+  console.log('  Archivos adjuntos: imagenes, PDFs, texto\n');
 });

@@ -284,6 +284,25 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .fs img{max-width:100%;max-height:100%;border-radius:10px;}
 .mob-ov{position:fixed;inset:0;z-index:14;background:rgba(0,0,0,.55);display:none;}
 .mob-ov.on{display:block;}
+
+/* ── FILE ATTACHMENT ── */
+.file-btn{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:transparent;border:1px solid var(--b1);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
+.file-btn:hover{border-color:var(--cyan2);color:var(--cyan);}
+.file-preview{display:none;align-items:center;gap:8px;padding:6px 12px 4px;background:var(--top);border-top:1px solid var(--b1);max-width:680px;margin:0 auto;}
+.file-preview.show{display:flex;}
+.fp-icon{font-size:18px;flex-shrink:0;}
+.fp-name{font-size:11px;color:var(--tx);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fp-type{font-size:9px;color:var(--t2);padding:1px 6px;border-radius:5px;background:var(--s2);border:1px solid var(--b1);flex-shrink:0;}
+.fp-clear{width:20px;height:20px;border-radius:5px;border:none;background:rgba(248,113,113,.1);color:#f87171;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+.fp-clear:hover{background:rgba(248,113,113,.2);}
+/* Preview thumbnail for images */
+.fp-thumb{width:32px;height:32px;border-radius:6px;object-fit:cover;border:1px solid var(--b1);flex-shrink:0;}
+/* Attached file in message */
+.msg-file{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--s2);border:1px solid var(--b1);border-radius:8px;margin-bottom:7px;font-size:11px;}
+.msg-file-ico{font-size:16px;}
+.msg-file-name{color:var(--tx);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.msg-file-size{color:var(--t2);font-size:9px;flex-shrink:0;}
+
 .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--b2);padding:8px 16px;border-radius:10px;font-size:11px;z-index:999;animation:fu .28s ease;white-space:nowrap;font-weight:500;pointer-events:none;color:var(--cyan);}
 
 @media(max-width:700px){
@@ -449,10 +468,20 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
         <div class="trick-chip" onclick="useTrick('Calcula: ')">&#129518; Calculadora</div>
         <div class="trick-chip" onclick="useTrick('Resumen de 3 puntos de: ')">&#128203; Resumir</div>
       </div>
-      <!-- INPUT -->
-      <div class="inputbar">
+      <!-- FILE PREVIEW -->
+      <div class="inputbar" style="padding-top:0">
+        <div class="file-preview" id="file-preview">
+          <span id="fp-thumb-wrap"></span>
+          <span class="fp-icon" id="fp-icon">&#128206;</span>
+          <span class="fp-name" id="fp-name">archivo.pdf</span>
+          <span class="fp-type" id="fp-type">PDF</span>
+          <button class="fp-clear" onclick="clearFile()" title="Quitar archivo">&#10005;</button>
+        </div>
+        <div style="padding:7px 14px 11px;">
         <div class="inputwrap">
           <button class="imgbtn" onclick="openImgModal()">&#127912;</button>
+          <button class="file-btn" onclick="document.getElementById('file-input').click()" title="Adjuntar archivo">&#128206;</button>
+          <input type="file" id="file-input" style="display:none" accept="image/*,.pdf,.txt,.csv,.json,.js,.py,.html,.css,.md,.xml" onchange="onFileSelect(this)">
           <div class="inputbox">
             <textarea class="inputfield" id="inp" placeholder="Escribe tu mensaje... (el sistema detectar&#225; el agente)" rows="1" onkeydown="onKey(event)" oninput="onInp(this)"></textarea>
             <div class="inputicons">
@@ -905,6 +934,194 @@ async function genImg(){
   var ud=document.createElement('div');ud.className='msg user';ud.innerHTML='<div class="mav">&#128100;</div><div><div class="mbu" style="background:'+a.g+'">\u{1F3A8} '+prompt+'</div></div>';c.appendChild(ud);
   var id2=document.createElement('div');id2.className='msg ai';id2.innerHTML='<div class="mav">\u{1F3A8}</div><div><div class="mbu"><div style="font-size:9px;color:var(--t2);margin-bottom:6px">\u2713 Imagen generada &mdash; clic para ampliar</div><img class="msgimg" src="'+url+'" alt="'+prompt+'" onclick="document.getElementById(\'fsimg\').src=this.src;document.getElementById(\'fs\').style.display=\'flex\'" loading="lazy"><div style="margin-top:7px"><a href="'+url+'" download="ia-nexo.jpg" style="font-size:9px;color:var(--pur);text-decoration:none">[ \u{1F4E5} Descargar ]</a></div></div><div class="mmeta">\u{1F3A8} Pollinations AI &bull; '+gt()+'</div></div>';c.appendChild(id2);c.scrollTop=c.scrollHeight;
 }
+
+
+/* ════════════════════════════════════════
+   FILE ATTACHMENT
+════════════════════════════════════════ */
+var attachedFile = null; // { data, mimeType, fileName, fileSize, textContent, isImage, preview }
+
+var FILE_ICONS = {
+  'image': '🖼️',
+  'pdf':   '📄',
+  'text':  '📝',
+  'code':  '💻',
+  'data':  '📊',
+  'other': '📎'
+};
+
+function getFileIcon(mimeType, name) {
+  if (mimeType.startsWith('image/')) return FILE_ICONS.image;
+  if (mimeType === 'application/pdf') return FILE_ICONS.pdf;
+  if (mimeType.startsWith('text/')) return FILE_ICONS.text;
+  if (name.match(/\.(js|py|html|css|json|ts|jsx|vue|php|rb|go|rs)$/i)) return FILE_ICONS.code;
+  if (name.match(/\.(csv|xlsx|xls)$/i)) return FILE_ICONS.data;
+  return FILE_ICONS.other;
+}
+
+function formatSize(bytes) {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1024/1024).toFixed(1) + ' MB';
+}
+
+function onFileSelect(input) {
+  var file = input.files[0];
+  if (!file) return;
+  
+  // Size limit: 10MB
+  if (file.size > 10 * 1024 * 1024) {
+    showToast('⚠️ Archivo demasiado grande. Máximo 10MB.');
+    input.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  var isText = file.type.startsWith('text/') || 
+               ['application/json','application/javascript'].indexOf(file.type) >= 0 ||
+               file.name.match(/\.(txt|csv|json|js|py|html|css|md|xml|ts|jsx)$/i);
+  var isImage = file.type.startsWith('image/');
+  var isPDF = file.type === 'application/pdf';
+
+  reader.onload = function(e) {
+    var result = e.target.result;
+    var base64 = result.split(',')[1];
+    
+    attachedFile = {
+      data:        base64,
+      mimeType:    file.type || 'application/octet-stream',
+      fileName:    file.name,
+      fileSize:    file.size,
+      isImage:     isImage,
+      isPDF:       isPDF,
+      isText:      isText,
+      textContent: isText ? atob(base64) : null,
+      preview:     isImage ? result : null
+    };
+
+    // Show preview bar
+    var prev = document.getElementById('file-preview');
+    var fpIcon = document.getElementById('fp-icon');
+    var fpName = document.getElementById('fp-name');
+    var fpType = document.getElementById('fp-type');
+    var fpThumb = document.getElementById('fp-thumb-wrap');
+
+    fpName.textContent = file.name + ' (' + formatSize(file.size) + ')';
+    fpType.textContent = isImage ? 'Imagen' : isPDF ? 'PDF' : isText ? 'Texto' : 'Archivo';
+    
+    if (isImage) {
+      fpIcon.style.display = 'none';
+      fpThumb.innerHTML = '<img class="fp-thumb" src="'+result+'">';
+    } else {
+      fpIcon.style.display = 'block';
+      fpIcon.textContent = getFileIcon(file.type, file.name);
+      fpThumb.innerHTML = '';
+    }
+
+    prev.classList.add('show');
+    showToast('📎 ' + file.name + ' adjuntado');
+    document.getElementById('inp').focus();
+  };
+
+  reader.readAsDataURL(file);
+  input.value = ''; // reset so same file can be selected again
+}
+
+function clearFile() {
+  attachedFile = null;
+  document.getElementById('file-preview').classList.remove('show');
+  document.getElementById('fp-thumb-wrap').innerHTML = '';
+  showToast('Archivo eliminado');
+}
+
+// Override send to include file
+var _originalSend = send;
+send = async function() {
+  var inp = document.getElementById('inp');
+  var text = inp.value.trim();
+  
+  // If file attached but no text, add default prompt
+  if (attachedFile && !text) {
+    if (attachedFile.isImage)  text = 'Analiza esta imagen y descríbela detalladamente.';
+    else if (attachedFile.isPDF) text = 'Resume y analiza el contenido de este PDF.';
+    else text = 'Analiza el contenido de este archivo.';
+    inp.value = text;
+  }
+  
+  if (!text && !attachedFile || busy) return;
+  
+  var fileToSend = attachedFile;
+  clearFile(); // clear preview before sending
+  inp.value = ''; inp.style.height = 'auto';
+  
+  var wc = document.getElementById('wc'); if (wc) wc.remove();
+
+  // Auto-route
+  var textLow = text.toLowerCase();
+  var isGreeting = ['hola','hi','hello','buenos','hey'].some(function(g){ return textLow.startsWith(g) && text.length < 10; });
+  if (isGreeting && !fileToSend) { addMsg('user', text, null); showRouterMsg('greeting'); return; }
+  
+  var routed = autoRoute(text);
+  if (!routed && !manualOverride && !fileToSend) {
+    addMsg('user', text, null);
+    showRouterMsg('ambiguous');
+    return;
+  }
+
+  // Show user message with file preview
+  addUserMsgWithFile(text, fileToSend);
+  hist.push({ role: 'user', content: text + (fileToSend ? ' [archivo: '+fileToSend.fileName+']' : '') });
+  
+  var tid = addTyping();
+  busy = true; document.getElementById('sendbtn').disabled = true;
+
+  try {
+    var a = AG[cur];
+    var body = { text: text, history: hist.slice(-6) };
+    if (fileToSend) body.file = fileToSend;
+    
+    var r = await fetch(a.ep, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
+      body: JSON.stringify(body)
+    });
+    var d = await r.json();
+    if (!r.ok || d.error) throw new Error(d.error || 'Error');
+    rmTyping(tid);
+    addMsg('ai', d.reply, cur);
+    hist.push({ role: 'assistant', content: d.reply });
+  } catch(e) {
+    rmTyping(tid);
+    addMsg('ai', '⚠️ ' + e.message, null, true);
+  }
+  busy = false; document.getElementById('sendbtn').disabled = false;
+};
+
+function addUserMsgWithFile(text, fileData) {
+  var wc = document.getElementById('wc'); if (wc) wc.remove();
+  var c = document.getElementById('msgs');
+  var a = AG[cur];
+  var d = document.createElement('div');
+  d.className = 'msg user';
+  
+  var fileHTML = '';
+  if (fileData) {
+    if (fileData.isImage) {
+      fileHTML = '<div class="msg-file"><span class="msg-file-ico">🖼️</span><span class="msg-file-name">'+fileData.fileName+'</span><span class="msg-file-size">'+formatSize(fileData.fileSize)+'</span></div>'+
+                 '<img src="data:'+fileData.mimeType+';base64,'+fileData.data+'" style="max-width:200px;border-radius:8px;margin-bottom:6px;display:block;margin-left:auto;">';
+    } else {
+      fileHTML = '<div class="msg-file"><span class="msg-file-ico">'+getFileIcon(fileData.mimeType, fileData.fileName)+'</span><span class="msg-file-name">'+fileData.fileName+'</span><span class="msg-file-size">'+formatSize(fileData.fileSize)+'</span></div>';
+    }
+  }
+  
+  d.innerHTML = '<div class="mav">👤</div><div style="flex:1;min-width:0"><div class="mbu" style="background:'+a.g+'">'+fileHTML+(text?fmt(text):'')+'</div></div>';
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+  
+  // Pulse send button
+  var sb = document.getElementById('sendbtn');
+  if (sb) { sb.classList.add('pulse'); setTimeout(function(){ sb.classList.remove('pulse'); }, 500); }
+}
+
 
 /* TOAST */
 function showToast(msg){document.querySelectorAll('.toast').forEach(function(t){t.remove();});var t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2800);}
