@@ -274,6 +274,127 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .mob-ov.on{display:block;}
 .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--b2);padding:8px 18px;border-radius:11px;font-size:11px;z-index:999;animation:fu .28s ease;white-space:nowrap;font-weight:500;pointer-events:none;color:var(--cyan);}
 
+
+/* ─── COPY CODE BUTTON ─── */
+.pre-wrap{position:relative;}
+.copy-btn{
+  position:absolute;top:8px;right:8px;
+  padding:3px 8px;border-radius:6px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.7);font-size:9px;font-weight:700;
+  cursor:pointer;font-family:'Space Grotesk',sans-serif;
+  transition:all .2s;letter-spacing:.5px;
+}
+.copy-btn:hover{background:rgba(0,229,255,.2);color:var(--cyan);border-color:rgba(0,229,255,.3);}
+.copy-btn.copied{background:rgba(57,217,138,.2);color:#39d98a;border-color:rgba(57,217,138,.3);}
+
+/* ─── MESSAGE ACTIONS ─── */
+.msg-actions{
+  display:flex;align-items:center;gap:4px;
+  margin-top:5px;opacity:0;transition:opacity .2s;
+}
+.msg:hover .msg-actions{opacity:1;}
+.mact{
+  width:24px;height:24px;border-radius:6px;border:1px solid var(--b1);
+  background:var(--s2);color:var(--t2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;transition:all .2s;
+}
+.mact:hover{border-color:var(--b2);color:var(--tx);}
+.mact.liked{background:rgba(57,217,138,.1);border-color:rgba(57,217,138,.3);color:#39d98a;}
+.mact.disliked{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:#f87171;}
+.mact.copied-msg{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+
+/* ─── USER PROFILE / MEMORY ─── */
+.profile-panel{
+  position:fixed;right:-360px;top:52px;bottom:0;width:340px;
+  background:var(--card);border-left:1px solid var(--b2);
+  z-index:50;transition:right .3s ease;
+  overflow-y:auto;box-shadow:-10px 0 40px rgba(0,0,0,.3);
+  display:flex;flex-direction:column;
+}
+.profile-panel.open{right:0;}
+.pp-hdr{padding:18px 16px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.pp-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;}
+.pp-close{width:26px;height:26px;border-radius:7px;border:1px solid var(--b1);background:var(--s2);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.pp-body{padding:16px;flex:1;}
+.pp-avatar-row{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding:14px;background:var(--s2);border-radius:12px;border:1px solid var(--b1);}
+.pp-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#a855f7);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;flex-shrink:0;cursor:pointer;transition:all .2s;}
+.pp-avatar:hover{transform:scale(1.05);}
+.pp-av-info{flex:1;}
+.pp-av-name{font-size:14px;font-weight:700;margin-bottom:2px;}
+.pp-av-sub{font-size:11px;color:var(--t2);}
+.pp-section{margin-bottom:16px;}
+.pp-sec-title{font-size:10px;color:var(--t2);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.pp-field{margin-bottom:10px;}
+.pp-field label{display:block;font-size:10px;color:var(--t2);font-weight:600;margin-bottom:4px;}
+.pp-inp{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:9px;padding:9px 12px;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:12px;outline:none;transition:all .2s;}
+.pp-inp:focus{border-color:var(--cyan2);}
+.pp-inp::placeholder{color:var(--t3);}
+.pp-sel{width:100%;background:var(--s2);border:1px solid var(--b1);border-radius:9px;padding:9px 12px;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:12px;outline:none;cursor:pointer;}
+.pp-save-btn{width:100%;padding:11px;background:linear-gradient(135deg,#0284c7,#00e5ff);border:none;border-radius:10px;color:#000;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:4px;letter-spacing:.5px;}
+.pp-save-btn:hover{opacity:.9;transform:translateY(-1px);}
+/* Memory chips */
+.memory-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.mem-chip{padding:4px 10px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:14px;font-size:10px;color:var(--cyan);display:flex;align-items:center;gap:4px;}
+.mem-chip .mx{cursor:pointer;opacity:.6;font-size:11px;}
+.mem-chip .mx:hover{opacity:1;}
+/* Stats */
+.pp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+.pp-stat{padding:10px;background:var(--s2);border-radius:10px;border:1px solid var(--b1);text-align:center;}
+.pp-stat-val{font-size:18px;font-weight:700;font-family:'Syne',sans-serif;}
+.pp-stat-lbl{font-size:9px;color:var(--t2);margin-top:2px;}
+
+/* ─── CONVERSATION HISTORY ─── */
+.hist-section{padding:0 6px;margin-bottom:8px;}
+.hist-item{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 10px;border-radius:9px;cursor:pointer;
+  transition:all .17s;border:1px solid transparent;
+  margin-bottom:2px;
+}
+.hist-item:hover{background:var(--s2);}
+.hist-item.active{background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.15);}
+.hi-icon{font-size:13px;flex-shrink:0;}
+.hi-info{flex:1;min-width:0;}
+.hi-title{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hi-date{font-size:8px;color:var(--t3);margin-top:1px;}
+.hi-del{width:18px;height:18px;border-radius:5px;border:none;background:none;color:var(--t3);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+.hi-del:hover{color:#f87171;background:rgba(248,113,113,.1);}
+.sb-hist-title{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:8px 12px 4px;}
+.sb-new-btn{display:flex;align-items:center;gap:6px;padding:7px 10px;margin:2px 6px;border-radius:9px;cursor:pointer;font-size:10px;font-weight:600;color:var(--cyan);border:1px dashed rgba(0,229,255,.25);background:rgba(0,229,255,.03);transition:all .2s;}
+.sb-new-btn:hover{background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.4);}
+
+/* ─── KEYBOARD SHORTCUTS ─── */
+.kbd-panel{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(16px);
+  display:flex;align-items:center;justify-content:center;padding:16px;
+}
+.kbd-card{
+  width:100%;max-width:460px;background:var(--card);
+  border:1px solid var(--b2);border-radius:20px;padding:24px 22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+}
+.kbd-card::before{content:'';display:block;width:30px;height:3px;background:var(--b2);border-radius:3px;margin:0 auto 18px;}
+.kbd-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.kbd-list{display:flex;flex-direction:column;gap:8px;}
+.kbd-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--s2);border-radius:9px;border:1px solid var(--b1);}
+.kbd-desc{font-size:11px;color:var(--t2);}
+.kbd-keys{display:flex;align-items:center;gap:4px;}
+.kbd-key{padding:2px 7px;background:var(--s3);border:1px solid var(--b2);border-radius:5px;font-size:10px;font-weight:700;color:var(--tx);font-family:'JetBrains Mono',monospace;}
+.kbd-close-btn{width:100%;padding:11px;background:transparent;border:1px solid var(--b1);border-radius:11px;color:var(--t2);font-family:'Space Grotesk',sans-serif;font-size:12px;cursor:pointer;margin-top:14px;transition:all .2s;}
+.kbd-close-btn:hover{border-color:var(--b2);color:var(--tx);}
+
+/* ─── SOUND TOGGLE ─── */
+.sound-wave{display:flex;gap:2px;align-items:flex-end;height:14px;}
+.sw-bar{width:2px;border-radius:2px;background:currentColor;animation:swb 1s ease-in-out infinite;}
+.sw-bar:nth-child(1){height:4px;animation-delay:0s;}
+.sw-bar:nth-child(2){height:8px;animation-delay:.15s;}
+.sw-bar:nth-child(3){height:12px;animation-delay:.3s;}
+.sw-bar:nth-child(4){height:6px;animation-delay:.45s;}
+@keyframes swb{0%,100%{transform:scaleY(.5)}50%{transform:scaleY(1)}}
+
 /* ─── RESPONSIVE ─── */
 @media(max-width:700px){
   .sidebar{position:fixed;left:0;top:52px;bottom:0;transform:translateX(-100%);z-index:15;}
@@ -391,6 +512,8 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
       <button class="tb-btn" id="abuelo-btn" onclick="toggleAbuelo()">&#128065; Grande</button>
       <button class="tb-btn" id="thbtn" onclick="cycleTheme()">&#9728; Claro</button>
       <button class="tb-btn" id="ttsbtn" onclick="toggleTTS()">&#128266; Narrador</button>
+      <button class="tb-ico" onclick="toggleProfile()" title="Mi perfil y memoria">&#128100;</button>
+      <button class="tb-ico" onclick="showKbd()" title="Atajos de teclado (Ctrl+/)">&#9000;</button>
       <button class="tb-ico" onclick="exportPDF()" title="Exportar PDF">&#128196;</button>
       <button class="tb-btn" onclick="newChat()">&#43; Nueva</button>
       <button class="tb-btn tb-exit" onclick="doLogout()">Salir</button>
@@ -409,6 +532,10 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
           <div class="smc-desc" id="smc-desc">La IA detecta el tema y elige el agente ideal.</div>
         </div>
       </div>
+      <!-- CONVERSATION HISTORY -->
+      <div class="sb-hist-title">Conversaciones</div>
+      <div class="sb-new-btn" onclick="newChat()">&#43; Nueva conversaci&#243;n</div>
+      <div class="hist-section" id="hist-section"></div>
       <div class="sb-sec">Agentes disponibles</div>
 
       <div class="ag on" id="agi-sabio" onclick="selectAgent('sabio')" style="--agc:#f59e0b">
@@ -957,7 +1084,81 @@ function exportPDF(){
     var txt=mbu.innerHTML.replace(/<div class="mmeta">[\s\S]*$/,'').trim();
     html+='<div class="msg '+(isUser?'u':'ai')+'"><div class="lbl">'+(isUser?'T\u00fa':'IA-NEXO')+'</div><div class="txt">'+txt+'</div></div>';
   });
-  html+='</body></html>';
+  html+='
+<!-- PROFILE PANEL -->
+<div class="profile-panel" id="profile-panel">
+  <div class="pp-hdr">
+    <div class="pp-title">&#128100; Mi Perfil &#38; Memoria</div>
+    <button class="pp-close" onclick="toggleProfile()">&#10005;</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-avatar-row">
+      <div class="pp-avatar" id="pp-av">A</div>
+      <div class="pp-av-info">
+        <div class="pp-av-name" id="pp-av-name">Usuario</div>
+        <div class="pp-av-sub">La IA te recuerda en cada sesi&#243;n</div>
+      </div>
+    </div>
+    <!-- Stats -->
+    <div class="pp-stats">
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-msgs">0</div><div class="pp-stat-lbl">Mensajes</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-chats">0</div><div class="pp-stat-lbl">Chats</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-fav">0</div><div class="pp-stat-lbl">Favoritos</div></div>
+    </div>
+    <!-- Personal data -->
+    <div class="pp-section">
+      <div class="pp-sec-title">&#127891; Sobre ti</div>
+      <div class="pp-field"><label>Tu nombre</label><input class="pp-inp" id="pp-nombre" placeholder="&#191;C&#243;mo te llamas?"></div>
+      <div class="pp-field"><label>Profesi&#243;n o rol</label><input class="pp-inp" id="pp-prof" placeholder="Ej: m&#233;dico, estudiante, emprendedor..."></div>
+      <div class="pp-field"><label>Pa&#237;s</label><input class="pp-inp" id="pp-pais" placeholder="Ej: Venezuela, M&#233;xico..."></div>
+      <div class="pp-field"><label>Estilo de respuesta preferido</label>
+        <select class="pp-sel" id="pp-estilo">
+          <option value="">Normal (por defecto)</option>
+          <option value="corto">Respuestas cortas y directas</option>
+          <option value="detallado">Respuestas detalladas y completas</option>
+          <option value="simple">Lenguaje simple y f&#225;cil</option>
+          <option value="tecnico">Lenguaje t&#233;cnico y profesional</option>
+        </select>
+      </div>
+    </div>
+    <!-- Memory chips -->
+    <div class="pp-section">
+      <div class="pp-sec-title">&#129504; Cosas que recuerdo de ti</div>
+      <div class="memory-chips" id="mem-chips">
+        <div style="font-size:10px;color:var(--t3);padding:4px;">La IA ir&#225; aprendiendo sobre ti...</div>
+      </div>
+    </div>
+    <button class="pp-save-btn" onclick="saveProfile()">&#128190; Guardar y aplicar</button>
+  </div>
+</div>
+
+<!-- KEYBOARD SHORTCUTS -->
+<div class="kbd-panel" id="kbd-panel" style="display:none" onclick="if(event.target===this)closeKbd()">
+  <div class="kbd-card">
+    <div class="kbd-title">&#9000; Atajos de teclado</div>
+    <div class="kbd-list">
+      <div class="kbd-row"><span class="kbd-desc">Enviar mensaje</span><div class="kbd-keys"><span class="kbd-key">Enter</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Nueva l&#237;nea en mensaje</span><div class="kbd-keys"><span class="kbd-key">Shift</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">Enter</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Nueva conversaci&#243;n</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">N</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Buscar en chat</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">F</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Agente siguiente</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">&#8594;</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Exportar PDF</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">P</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Modo Grande</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">G</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Cerrar este panel</span><div class="kbd-keys"><span class="kbd-key">Esc</span></div></div>
+    </div>
+    <button class="kbd-close-btn" onclick="closeKbd()">Cerrar</button>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div id="search-bar" style="display:none;position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:100;width:90%;max-width:500px;background:var(--card);border:1px solid var(--b2);border-radius:12px;padding:10px 14px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none;align-items:center;gap:8px;">
+  <span style="font-size:14px;color:var(--t2)">&#128269;</span>
+  <input id="search-inp" placeholder="Buscar en la conversaci&#243;n..." style="flex:1;background:none;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--tx);" oninput="searchMsgs(this.value)">
+  <span id="search-count" style="font-size:10px;color:var(--t2);white-space:nowrap;"></span>
+  <button onclick="closeSearch()" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:0;">&#10005;</button>
+</div>
+
+</body></html>';
   win.document.write(html); win.document.close();
   setTimeout(function(){ win.print(); },500);
   showToast('\u2705 PDF listo \u2014 selecciona Guardar como PDF');
@@ -994,5 +1195,79 @@ async function genImg(){
 ══════════════════════════════════════════ */
 function showToast(msg){ document.querySelectorAll('.toast').forEach(function(t){t.remove();}); var t=document.createElement('div'); t.className='toast'; t.innerHTML=msg; document.body.appendChild(t); setTimeout(function(){t.remove();},2800); }
 </script>
+
+<!-- PROFILE PANEL -->
+<div class="profile-panel" id="profile-panel">
+  <div class="pp-hdr">
+    <div class="pp-title">&#128100; Mi Perfil &#38; Memoria</div>
+    <button class="pp-close" onclick="toggleProfile()">&#10005;</button>
+  </div>
+  <div class="pp-body">
+    <div class="pp-avatar-row">
+      <div class="pp-avatar" id="pp-av">A</div>
+      <div class="pp-av-info">
+        <div class="pp-av-name" id="pp-av-name">Usuario</div>
+        <div class="pp-av-sub">La IA te recuerda en cada sesi&#243;n</div>
+      </div>
+    </div>
+    <!-- Stats -->
+    <div class="pp-stats">
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-msgs">0</div><div class="pp-stat-lbl">Mensajes</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-chats">0</div><div class="pp-stat-lbl">Chats</div></div>
+      <div class="pp-stat"><div class="pp-stat-val" id="stat-fav">0</div><div class="pp-stat-lbl">Favoritos</div></div>
+    </div>
+    <!-- Personal data -->
+    <div class="pp-section">
+      <div class="pp-sec-title">&#127891; Sobre ti</div>
+      <div class="pp-field"><label>Tu nombre</label><input class="pp-inp" id="pp-nombre" placeholder="&#191;C&#243;mo te llamas?"></div>
+      <div class="pp-field"><label>Profesi&#243;n o rol</label><input class="pp-inp" id="pp-prof" placeholder="Ej: m&#233;dico, estudiante, emprendedor..."></div>
+      <div class="pp-field"><label>Pa&#237;s</label><input class="pp-inp" id="pp-pais" placeholder="Ej: Venezuela, M&#233;xico..."></div>
+      <div class="pp-field"><label>Estilo de respuesta preferido</label>
+        <select class="pp-sel" id="pp-estilo">
+          <option value="">Normal (por defecto)</option>
+          <option value="corto">Respuestas cortas y directas</option>
+          <option value="detallado">Respuestas detalladas y completas</option>
+          <option value="simple">Lenguaje simple y f&#225;cil</option>
+          <option value="tecnico">Lenguaje t&#233;cnico y profesional</option>
+        </select>
+      </div>
+    </div>
+    <!-- Memory chips -->
+    <div class="pp-section">
+      <div class="pp-sec-title">&#129504; Cosas que recuerdo de ti</div>
+      <div class="memory-chips" id="mem-chips">
+        <div style="font-size:10px;color:var(--t3);padding:4px;">La IA ir&#225; aprendiendo sobre ti...</div>
+      </div>
+    </div>
+    <button class="pp-save-btn" onclick="saveProfile()">&#128190; Guardar y aplicar</button>
+  </div>
+</div>
+
+<!-- KEYBOARD SHORTCUTS -->
+<div class="kbd-panel" id="kbd-panel" style="display:none" onclick="if(event.target===this)closeKbd()">
+  <div class="kbd-card">
+    <div class="kbd-title">&#9000; Atajos de teclado</div>
+    <div class="kbd-list">
+      <div class="kbd-row"><span class="kbd-desc">Enviar mensaje</span><div class="kbd-keys"><span class="kbd-key">Enter</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Nueva l&#237;nea en mensaje</span><div class="kbd-keys"><span class="kbd-key">Shift</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">Enter</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Nueva conversaci&#243;n</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">N</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Buscar en chat</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">F</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Agente siguiente</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">&#8594;</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Exportar PDF</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">P</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Modo Grande</span><div class="kbd-keys"><span class="kbd-key">Ctrl</span><span style="font-size:9px;color:var(--t2)">+</span><span class="kbd-key">G</span></div></div>
+      <div class="kbd-row"><span class="kbd-desc">Cerrar este panel</span><div class="kbd-keys"><span class="kbd-key">Esc</span></div></div>
+    </div>
+    <button class="kbd-close-btn" onclick="closeKbd()">Cerrar</button>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div id="search-bar" style="display:none;position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:100;width:90%;max-width:500px;background:var(--card);border:1px solid var(--b2);border-radius:12px;padding:10px 14px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:none;align-items:center;gap:8px;">
+  <span style="font-size:14px;color:var(--t2)">&#128269;</span>
+  <input id="search-inp" placeholder="Buscar en la conversaci&#243;n..." style="flex:1;background:none;border:none;outline:none;font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--tx);" oninput="searchMsgs(this.value)">
+  <span id="search-count" style="font-size:10px;color:var(--t2);white-space:nowrap;"></span>
+  <button onclick="closeSearch()" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:0;">&#10005;</button>
+</div>
+
 </body>
 </html>
