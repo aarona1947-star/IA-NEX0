@@ -94,7 +94,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .abody{flex:1;display:flex;overflow:hidden;}
 
 /* SIDEBAR */
-.sidebar{width:218px;flex-shrink:0;background:var(--sb);backdrop-filter:blur(28px);border-right:1px solid var(--b1);display:flex;flex-direction:column;transition:transform .28s,background .3s;z-index:15;}
+.sidebar{width:248px;flex-shrink:0;background:var(--sb);backdrop-filter:blur(28px);border-right:1px solid var(--b1);display:flex;flex-direction:column;transition:transform .28s,background .3s;z-index:15;}
 .sb-top{padding:10px 10px 8px;border-bottom:1px solid var(--b1);}
 .sb-mode-card{padding:8px 10px;border-radius:10px;border:1px solid;transition:all .3s;margin-bottom:0;}
 .sb-mode-card.auto{background:rgba(0,229,255,.05);border-color:rgba(0,229,255,.2);}
@@ -241,7 +241,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .inputfield{width:100%;background:var(--ibg);border:1px solid var(--b2);border-radius:22px;padding:11px 54px 11px 17px;color:var(--tx);font-family:'Space Grotesk',sans-serif;font-size:13px;outline:none;resize:none;min-height:44px;max-height:120px;transition:all .2s;line-height:1.55;}
 .inputfield:focus{border-color:var(--cur-c,var(--cyan2));box-shadow:0 0 0 2px rgba(0,229,255,.06);}
 .inputfield::placeholder{color:var(--t3);font-size:12px;}
-.iicons{position:absolute;right:8px;bottom:7px;display:flex;align-items:center;gap:3px;}
+.iicons{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:3px;}
 .iico{width:25px;height:25px;border-radius:7px;border:none;background:none;color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
 .iico:hover{color:var(--tx);}
 .isend{border-radius:9px;color:#000!important;font-size:15px!important;transition:all .2s;}
@@ -319,7 +319,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--card);border:1px solid var(--b2);padding:8px 18px;border-radius:11px;font-size:11px;z-index:999;animation:fu .28s ease;white-space:nowrap;font-weight:500;pointer-events:none;color:var(--cyan);}
 
 @media(max-width:700px){
-  .sidebar{position:fixed;left:0;top:52px;bottom:0;transform:translateX(-100%);z-index:15;}
+  .sidebar{position:fixed;left:0;top:52px;bottom:0;transform:translateX(-100%);z-index:15;width:248px;}
   .sidebar.open{transform:translateX(0);}
   .mob-ham{display:flex;}
   .tb-chat,.tb-sep,.ub-nm,.tb-btn{display:none;}
@@ -459,9 +459,9 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="tricks">
-        <div class="trick" onclick="useT('\u00bfQu\u00e9 es el estoicismo?')">&#9889; Filosof\u00eda</div>
+        <div class="trick" onclick="useT('\u00bfQu\u00e9 es el estoicismo?')">&#9889; Filosof&#237;a</div>
         <div class="trick" onclick="useT('\u00bfCu\u00e1ntos pa\u00edses hay en el mundo?')">&#128202; Dato</div>
-        <div class="trick" onclick="useT('Escribe una funci\u00f3n en Python para ')">&#128187; C\u00f3digo</div>
+        <div class="trick" onclick="useT('Escribe una funci\u00f3n en Python para ')">&#128187; C&#243;digo</div>
         <div class="trick" onclick="useT('Escr\u00edbeme un poema sobre ')">&#127912; Poema</div>
         <div class="trick" onclick="useT('Dame una idea de negocio innovadora')">&#128161; Idea</div>
         <div class="trick" onclick="useT('Corrige este texto: ')">&#9999;&#65039; Corregir</div>
@@ -712,9 +712,28 @@ window.addEventListener('DOMContentLoaded',async function(){
   if(!TOKEN)return;
   try{
     var r=await fetch('/auth/me',{headers:{'Authorization':'Bearer '+TOKEN}});
-    if(r.ok){USER=await r.json();enterApp();}
-    else{localStorage.removeItem('nx-tok');localStorage.removeItem('nx-user');TOKEN='';}
-  }catch(e){}
+    if(r.ok){
+      USER=await r.json();
+      // Refresh cached user
+      localStorage.setItem('nx-user',JSON.stringify(USER));
+      enterApp();
+    } else {
+      // Token expirado o servidor reiniciado
+      // Intentar con datos cacheados en localStorage
+      if(USER&&USER.nombre){
+        // El token sigue siendo válido JWT pero el servidor perdió users.json
+        // Entrar con datos locales (el JWT sigue funcionando para las APIs)
+        enterApp();
+      } else {
+        localStorage.removeItem('nx-tok');
+        localStorage.removeItem('nx-user');
+        TOKEN='';
+      }
+    }
+  }catch(e){
+    // Error de red - usar datos locales si existen
+    if(USER&&USER.nombre){enterApp();}
+  }
 });
 
 /* ══ SIDEBAR ══ */
