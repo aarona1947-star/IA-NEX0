@@ -286,6 +286,59 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .mob-ov.on{display:block;}
 
 /* ── FILE ATTACHMENT ── */
+
+/* ── MODE TOGGLE ── */
+.mode-toggle{display:flex;align-items:center;background:var(--s2);border:1px solid var(--b2);border-radius:20px;padding:3px;gap:2px;position:relative;}
+.mode-opt{padding:4px 12px;border-radius:16px;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;border:none;background:none;font-family:'Space Grotesk',sans-serif;color:var(--t2);display:flex;align-items:center;gap:4px;white-space:nowrap;letter-spacing:.3px;}
+.mode-opt.active{background:var(--card);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,.25);}
+.mode-opt.active.auto{color:var(--cyan);border:1px solid rgba(0,229,255,.2);}
+.mode-opt.active.manual{color:var(--yel);border:1px solid rgba(245,158,11,.2);}
+
+/* Mode info panel */
+.mode-info{
+  position:fixed;top:58px;left:50%;transform:translateX(-50%);
+  z-index:80;width:94vw;max-width:600px;
+  background:var(--card);border:1px solid var(--b2);border-radius:16px;
+  padding:18px 20px;box-shadow:0 16px 50px rgba(0,0,0,.5);
+  display:none;animation:slidedown .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slidedown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.mode-info.show{display:block;}
+.mi-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+.mi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.mi-card{padding:13px;border-radius:12px;border:1px solid var(--b1);background:var(--s2);}
+.mi-card.selected{border-color:var(--mc,var(--b2));box-shadow:0 0 12px rgba(0,0,0,.15);}
+.mi-card-title{font-size:12px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.mi-card-desc{font-size:10px;color:var(--t2);line-height:1.6;margin-bottom:10px;}
+.mi-card-steps{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.mi-card-steps li{font-size:10px;color:var(--t2);display:flex;align-items:flex-start;gap:5px;}
+.mi-card-steps li::before{content:'→';color:var(--cyan);flex-shrink:0;margin-top:1px;}
+.mi-select-btn{width:100%;padding:8px;border-radius:8px;border:1px solid;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:700;cursor:pointer;margin-top:10px;transition:all .2s;background:transparent;}
+.mi-close{position:absolute;top:12px;right:14px;width:24px;height:24px;border-radius:6px;border:1px solid var(--b1);background:var(--s2);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.mi-close:hover{border-color:var(--b2);}
+
+/* Sidebar mode indicator */
+.sb-mode-badge{
+  display:flex;align-items:center;gap:6px;
+  margin:0 7px 8px;padding:7px 10px;
+  border-radius:9px;font-size:10px;font-weight:600;
+  border:1px solid;transition:all .3s;
+}
+.sb-mode-badge.auto{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.2);color:var(--cyan);}
+.sb-mode-badge.manual{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2);color:var(--yel);}
+.sb-mode-badge .badge-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:pulse-dot 2s infinite;}
+.sb-mode-badge .badge-text{flex:1;line-height:1.3;}
+.sb-mode-badge .badge-title{font-weight:700;display:block;}
+.sb-mode-badge .badge-sub{font-size:8px;opacity:.75;display:block;margin-top:1px;}
+
+/* Input placeholder change by mode */
+.mode-indicator{
+  display:flex;align-items:center;gap:5px;
+  padding:3px 8px;border-radius:12px;
+  font-size:9px;font-weight:600;letter-spacing:.5px;
+  transition:all .3s;
+}
+
 .file-btn{width:32px;height:32px;border-radius:9px;flex-shrink:0;background:transparent;border:1px solid var(--b1);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;}
 .file-btn:hover{border-color:var(--cyan2);color:var(--cyan);}
 .file-preview{display:none;align-items:center;gap:8px;padding:6px 12px 4px;background:var(--top);border-top:1px solid var(--b1);max-width:680px;margin:0 auto;}
@@ -401,10 +454,16 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
       <div class="tb-chat">Chat</div>
     </div>
     <div class="tb-m">
-      <div class="route-badge" id="route-badge">
-        <div class="route-dot" id="route-dot" style="background:#f59e0b"></div>
-        <div class="route-lbl" id="route-lbl" style="color:#f59e0b">&#129302; Ruta Auto</div>
+      <!-- MODE TOGGLE -->
+      <div class="mode-toggle" id="mode-toggle">
+        <button class="mode-opt auto active" id="mode-auto" onclick="setMode('auto')" title="El sistema detecta el Nexo ideal">
+          &#129302; Autom&#225;tico
+        </button>
+        <button class="mode-opt manual" id="mode-manual" onclick="setMode('manual')" title="T&#250; eliges el Nexo manualmente">
+          &#9881;&#65039; Manual
+        </button>
       </div>
+      <button class="tb-btn" id="mode-info-btn" onclick="toggleModeInfo()" style="margin-left:5px;font-size:10px;" title="&#191;C&#243;mo funciona cada modo?">&#10067; Modos</button>
     </div>
     <div class="tb-r">
       <div class="ub-chip"><div class="ub-av" id="ubav">U</div><div class="ub-nm" id="ubnm">Usuario</div></div>
@@ -422,7 +481,14 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
     <div class="mob-ov" id="mobov" onclick="closeSb()"></div>
     <div class="sidebar" id="sidebar">
       <div class="sb-title">Agentes Nexo</div>
-      <div class="sb-auto">&#129302; Ruta autom&#225;tica activa</div>
+      <!-- MODE BADGE IN SIDEBAR -->
+      <div class="sb-mode-badge auto" id="sb-mode-badge">
+        <div class="badge-dot" style="background:var(--cyan)"></div>
+        <div class="badge-text">
+          <span class="badge-title" id="sb-mode-title">&#129302; Modo Autom&#225;tico</span>
+          <span class="badge-sub" id="sb-mode-sub">Detecci&#243;n por palabras clave</span>
+        </div>
+      </div>
       <!-- ORDER: 1-SABIO 2-DATOS 3-LOGICO 4-CREATIVO -->
       <div class="ag" id="agi-sabio" onclick="manualSel('sabio')" style="--ag-c:#f59e0b">
         <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.18);color:#f59e0b">&#9889;</div>
@@ -494,6 +560,53 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
     </div>
   </div>
 </div>
+
+<!-- MODE INFO PANEL -->
+<div class="mode-info" id="mode-info">
+  <button class="mi-close" onclick="toggleModeInfo()">&#10005;</button>
+  <div class="mi-title">&#129302; Modos de selecci&#243;n de agente</div>
+  <div class="mi-grid">
+    <!-- AUTO MODE -->
+    <div class="mi-card" id="mi-auto-card" style="--mc:rgba(0,229,255,.3)">
+      <div class="mi-card-title"><span>&#129302;</span> Modo Autom&#225;tico</div>
+      <div class="mi-card-desc">El sistema analiza tu mensaje y elige el Nexo ideal seg&#250;n las palabras que uses. T&#250; solo escribes y la IA decide qui&#233;n responde.</div>
+      <ul class="mi-card-steps">
+        <li>Escribes tu pregunta normalmente</li>
+        <li>El sistema detecta palabras clave</li>
+        <li>Se activa el Nexo correspondiente</li>
+        <li>Si no detecta nada, te pregunta</li>
+      </ul>
+      <div style="margin-top:10px;font-size:9px;color:var(--t2);">
+        <strong style="color:var(--cyan);display:block;margin-bottom:4px">Ejemplos de detecci&#243;n:</strong>
+        <div>&#9889; "filosof&#237;a" → SABIO</div>
+        <div>&#128202; "habitantes" → DATOS</div>
+        <div>&#128187; "c&#243;digo" → L&#211;GICO</div>
+        <div>&#127912; "poema" → CREATIVO</div>
+      </div>
+      <button class="mi-select-btn" style="border-color:var(--cyan);color:var(--cyan);" onclick="setMode('auto');toggleModeInfo()">&#9654; Usar modo Autom&#225;tico</button>
+    </div>
+    <!-- MANUAL MODE -->
+    <div class="mi-card" id="mi-manual-card" style="--mc:rgba(245,158,11,.3)">
+      <div class="mi-card-title"><span>&#9881;&#65039;</span> Modo Manual</div>
+      <div class="mi-card-desc">T&#250; decides qu&#233; Nexo responde. Seleccionas el agente en el panel lateral y &#233;l responder&#225; todo hasta que cambies.</div>
+      <ul class="mi-card-steps">
+        <li>Elige el Nexo en el sidebar izquierdo</li>
+        <li>El agente queda fijado con borde dorado</li>
+        <li>Toda pregunta va a ese Nexo</li>
+        <li>Cambia el Nexo cuando quieras</li>
+      </ul>
+      <div style="margin-top:10px;font-size:9px;color:var(--t2);">
+        <strong style="color:var(--yel);display:block;margin-bottom:4px">&#191;Cu&#225;ndo usarlo?</strong>
+        <div>Cuando quieres una sesi&#243;n dedicada</div>
+        <div>Para preguntas seguidas del mismo tema</div>
+        <div>Si la detecci&#243;n autom&#225;tica no acierta</div>
+        <div>Para m&#225;s control sobre las respuestas</div>
+      </div>
+      <button class="mi-select-btn" style="border-color:var(--yel);color:var(--yel);" onclick="setMode('manual');toggleModeInfo()">&#9654; Usar modo Manual</button>
+    </div>
+  </div>
+</div>
+
 
 <!-- HELP PANEL -->
 <div class="help-panel" id="help-panel">
@@ -935,6 +1048,82 @@ async function genImg(){
   var id2=document.createElement('div');id2.className='msg ai';id2.innerHTML='<div class="mav">\u{1F3A8}</div><div><div class="mbu"><div style="font-size:9px;color:var(--t2);margin-bottom:6px">\u2713 Imagen generada &mdash; clic para ampliar</div><img class="msgimg" src="'+url+'" alt="'+prompt+'" onclick="document.getElementById(\'fsimg\').src=this.src;document.getElementById(\'fs\').style.display=\'flex\'" loading="lazy"><div style="margin-top:7px"><a href="'+url+'" download="ia-nexo.jpg" style="font-size:9px;color:var(--pur);text-decoration:none">[ \u{1F4E5} Descargar ]</a></div></div><div class="mmeta">\u{1F3A8} Pollinations AI &bull; '+gt()+'</div></div>';c.appendChild(id2);c.scrollTop=c.scrollHeight;
 }
 
+
+
+/* ════════════════════════════════════════
+   MODE SYSTEM (AUTO / MANUAL)
+════════════════════════════════════════ */
+var routeMode = localStorage.getItem('nx-mode') || 'auto'; // 'auto' | 'manual'
+var modeInfoOpen = false;
+
+function applyMode(m) {
+  routeMode = m;
+  localStorage.setItem('nx-mode', m);
+  manualOverride = (m === 'manual');
+
+  // Update topbar toggle
+  var btnAuto   = document.getElementById('mode-auto');
+  var btnManual = document.getElementById('mode-manual');
+  if (btnAuto)   { btnAuto.classList.toggle('active', m === 'auto'); }
+  if (btnManual) { btnManual.classList.toggle('active', m === 'manual'); }
+
+  // Update sidebar badge
+  var badge = document.getElementById('sb-mode-badge');
+  var title = document.getElementById('sb-mode-title');
+  var sub   = document.getElementById('sb-mode-sub');
+  if (badge) {
+    badge.className = 'sb-mode-badge ' + m;
+    badge.querySelector('.badge-dot').style.background = m === 'auto' ? 'var(--cyan)' : 'var(--yel)';
+  }
+  if (title) title.textContent = m === 'auto' ? '🤖 Modo Automático' : '⚙️ Modo Manual';
+  if (sub)   sub.textContent   = m === 'auto' ? 'Detección por palabras clave' : 'Elige el Nexo en el sidebar';
+
+  // Update mode info cards
+  var autoCard   = document.getElementById('mi-auto-card');
+  var manualCard = document.getElementById('mi-manual-card');
+  if (autoCard)   autoCard.classList.toggle('selected', m === 'auto');
+  if (manualCard) manualCard.classList.toggle('selected', m === 'manual');
+
+  // Update agent items appearance
+  document.querySelectorAll('.ag').forEach(function(el) {
+    el.style.cursor = m === 'manual' ? 'pointer' : 'pointer';
+  });
+
+  // Toast
+  if (m === 'auto') showToast('🤖 Modo Automático — la IA detecta el Nexo');
+  else showToast('⚙️ Modo Manual — elige el Nexo en el sidebar');
+}
+
+function setMode(m) { applyMode(m); }
+
+function toggleModeInfo() {
+  modeInfoOpen = !modeInfoOpen;
+  var panel = document.getElementById('mode-info');
+  if (panel) panel.classList.toggle('show', modeInfoOpen);
+}
+
+// Close mode info when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#mode-info') && !e.target.closest('#mode-info-btn') && !e.target.closest('.mode-toggle')) {
+    var panel = document.getElementById('mode-info');
+    if (panel) { panel.classList.remove('show'); modeInfoOpen = false; }
+  }
+});
+
+// Override manualSel to respect mode
+var _origManualSel = manualSel;
+manualSel = function(id) {
+  _origManualSel(id);
+  if (routeMode === 'auto') {
+    // In auto mode, clicking sidebar temporarily switches but shows info
+    showToast('⚙️ Cambia a Modo Manual para fijar el agente');
+  }
+};
+
+// Apply on load
+window.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() { applyMode(routeMode); }, 100);
+});
 
 /* ════════════════════════════════════════
    FILE ATTACHMENT
