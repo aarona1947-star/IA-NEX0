@@ -425,7 +425,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 </div>
 
 <!-- APP -->
-<div id="app" style="display:flex;flex-direction:column;">
+<div id="app" style="display:none;flex-direction:column;">
   <div class="topbar">
     <div class="tb-l">
       <button class="mob-ham" onclick="openSb()">&#9776;</button>
@@ -743,9 +743,13 @@ function saveSession(d){TOKEN=d.token;USER={nombre:d.nombre,email:d.email};local
 
 function enterApp(){
   var loginEl=document.getElementById('login');
-var appEl=document.getElementById('app');
-if(loginEl)loginEl.style.display='none';
-if(appEl){appEl.classList.remove('app-hidden');appEl.style.removeProperty('display');appEl.style.display='flex';}
+  var appEl=document.getElementById('app');
+  if(loginEl) loginEl.style.display='none';
+  if(appEl){
+    appEl.style.setProperty('display','flex','important');
+    appEl.style.flexDirection='column';
+    appEl.style.height='100vh';
+  }
   if(USER){var av=document.getElementById('ubav');var nm=document.getElementById('ubnm');if(av)av.textContent=(USER.nombre||'U').charAt(0).toUpperCase();if(nm)nm.textContent=USER.nombre||'Usuario';}
   mode=localStorage.getItem('nx-mode')||'auto';
   updateAgentUI('sabio');setMode(mode);renderHistSidebar();renderWelcome();
@@ -760,18 +764,17 @@ function doLogout(){
 }
 
 window.addEventListener('DOMContentLoaded',async function(){
-  // Asegurar que el login es visible mientras verificamos
-  var loginEl=document.getElementById('login');
-  var appEl=document.getElementById('app');
-
-  if(!TOKEN){
-    // Sin token: mostrar login directamente
-    if(loginEl)loginEl.style.display='flex';
-    return;
-  }
-
+  if(!TOKEN) return;
   try{
     var r=await fetch('/auth/me',{headers:{'Authorization':'Bearer '+TOKEN}});
+    if(r.ok){ USER=await r.json(); localStorage.setItem('nx-user',JSON.stringify(USER)); enterApp(); }
+    else { localStorage.removeItem('nx-tok'); localStorage.removeItem('nx-user'); TOKEN=''; USER=null; }
+  }catch(e){}
+});
+    if(r.ok){ USER=await r.json(); localStorage.setItem('nx-user',JSON.stringify(USER)); enterApp(); }
+    else { localStorage.removeItem('nx-tok'); localStorage.removeItem('nx-user'); TOKEN=''; USER=null; }
+  }catch(e){}
+});
     if(r.ok){
       USER=await r.json();
       localStorage.setItem('nx-user',JSON.stringify(USER));
