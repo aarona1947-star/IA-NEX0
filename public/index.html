@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>IA-NEXO</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='9' fill='%230f1e35'/><path d='M18 18 Q12 11 6 5' fill='none' stroke='%23f59e0b' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q11 23 5 30' fill='none' stroke='%2339d98a' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q25 11 30 5' fill='none' stroke='%2300e5ff' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q25 24 30 30' fill='none' stroke='%23a855f7' stroke-width='1.5' stroke-linecap='round'/><circle cx='18' cy='18' r='3' fill='white'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 [data-theme="dark"]{--bg:#080a0f;--s1:#0d1117;--s2:#131920;--s3:#1a2230;--b1:rgba(0,229,255,.08);--b2:rgba(0,229,255,.18);--tx:#e2e8f0;--t2:#64748b;--t3:#2d3a4a;--card:rgba(13,17,23,.97);--top:rgba(8,10,15,.93);--sb:rgba(8,10,15,.82);--ibg:#131920;}
@@ -317,8 +318,28 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 <div id="login">
 <div class="lcard">
   <div class="l-hdr">
-    <div class="l-logo-row">
-      <svg width="34" height="34" viewBox="0 0 36 36"><defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c9e8"/><stop offset="100%" stop-color="#9b59f5"/></linearGradient></defs><rect width="36" height="36" rx="9" fill="url(#lg1)"/><path d="M10 26 L10 10 L26 26 L26 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="10" cy="10" r="2" fill="white" opacity=".75"/><circle cx="26" cy="10" r="2" fill="white" opacity=".75"/><circle cx="10" cy="26" r="2" fill="white" opacity=".75"/><circle cx="26" cy="26" r="2" fill="white" opacity=".75"/></svg>
+    <div class="l-logo-row"><svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="nb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0f1e35"/><stop offset="100%" stop-color="#06080f"/></radialGradient>
+  <filter id="ng"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="36" height="36" rx="9" fill="url(#nb)"/>
+<path d="M18 18 Q12 11 6 5" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q11 23 5 30" fill="none" stroke="#39d98a" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q25 11 30 5" fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q25 24 30 30" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="13" cy="12" r="1.8" fill="#f59e0b" filter="url(#ng)"/>
+<circle cx="7" cy="6" r="2.5" fill="#f59e0b" filter="url(#ng)"/>
+<circle cx="12" cy="24" r="1.8" fill="#39d98a" filter="url(#ng)"/>
+<circle cx="6" cy="29" r="2.5" fill="#39d98a" filter="url(#ng)"/>
+<circle cx="24" cy="12" r="1.8" fill="#00e5ff" filter="url(#ng)"/>
+<circle cx="29" cy="6" r="2.5" fill="#00e5ff" filter="url(#ng)"/>
+<circle cx="24" cy="24" r="1.8" fill="#a855f7" filter="url(#ng)"/>
+<circle cx="29" cy="29" r="2.5" fill="#a855f7" filter="url(#ng)"/>
+<circle cx="18" cy="18" r="5" fill="rgba(0,15,28,.9)" stroke="rgba(255,255,255,.25)" stroke-width=".7"/>
+<circle cx="18" cy="18" r="2.8" fill="white" filter="url(#ng)"/>
+<circle cx="18" cy="18" r="1.5" fill="white"/>
+</svg>
       <div class="l-brand">IA<em>-NEXO</em></div>
     </div>
     <button class="l-th" onclick="toggleTheme()">&#9728;</button>
@@ -358,8 +379,28 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
   <div class="topbar">
     <div class="tb-l">
       <button class="mob-ham" onclick="openSb()">&#9776;</button>
-      <div class="tb-logo">
-        <svg width="32" height="32" viewBox="0 0 36 36"><defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c9e8"/><stop offset="100%" stop-color="#9b59f5"/></linearGradient></defs><rect width="36" height="36" rx="9" fill="url(#lg2)"/><path d="M10 26 L10 10 L26 26 L26 10" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="10" cy="10" r="2" fill="white" opacity=".75"/><circle cx="26" cy="10" r="2" fill="white" opacity=".75"/><circle cx="10" cy="26" r="2" fill="white" opacity=".75"/><circle cx="26" cy="26" r="2" fill="white" opacity=".75"/></svg>
+      <div class="tb-logo"><svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="nb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0f1e35"/><stop offset="100%" stop-color="#06080f"/></radialGradient>
+  <filter id="ng"><feGaussianBlur stdDeviation="1" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="36" height="36" rx="9" fill="url(#nb)"/>
+<path d="M18 18 Q12 11 6 5" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q11 23 5 30" fill="none" stroke="#39d98a" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q25 11 30 5" fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-linecap="round"/>
+<path d="M18 18 Q25 24 30 30" fill="none" stroke="#a855f7" stroke-width="1.5" stroke-linecap="round"/>
+<circle cx="13" cy="12" r="1.8" fill="#f59e0b" filter="url(#ng)"/>
+<circle cx="7" cy="6" r="2.5" fill="#f59e0b" filter="url(#ng)"/>
+<circle cx="12" cy="24" r="1.8" fill="#39d98a" filter="url(#ng)"/>
+<circle cx="6" cy="29" r="2.5" fill="#39d98a" filter="url(#ng)"/>
+<circle cx="24" cy="12" r="1.8" fill="#00e5ff" filter="url(#ng)"/>
+<circle cx="29" cy="6" r="2.5" fill="#00e5ff" filter="url(#ng)"/>
+<circle cx="24" cy="24" r="1.8" fill="#a855f7" filter="url(#ng)"/>
+<circle cx="29" cy="29" r="2.5" fill="#a855f7" filter="url(#ng)"/>
+<circle cx="18" cy="18" r="5" fill="rgba(0,15,28,.9)" stroke="rgba(255,255,255,.25)" stroke-width=".7"/>
+<circle cx="18" cy="18" r="2.8" fill="white" filter="url(#ng)"/>
+<circle cx="18" cy="18" r="1.5" fill="white"/>
+</svg>
       </div>
       <div class="tb-name">IA<em>-NEXO</em></div>
       <div class="tb-sep"></div>
@@ -674,7 +715,7 @@ function renderWelcome(){
   var order=['sabio','saber','codigo','creativo'];
   var agHTML=order.map(function(id){var a=AG[id];return '<div class="wc-ag" onclick="selectAgent(\''+id+'\')" style="--ag-g:'+a.g+'"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:'+a.g+';opacity:0;transition:opacity .2s"></div><div class="wc-ag-ico">'+a.i+'</div><div class="wc-ag-nm" style="color:'+a.c+'">'+a.n+'</div><div class="wc-ag-kw">'+a.kws.slice(0,3).join(', ')+'...</div></div>';}).join('');
   var chips=[['\u26a1','\u00bfQu\u00e9 es el estoicismo?'],['\u{1F4CA}','\u00bfCu\u00e1ntos pa\u00edses hay en el mundo?'],['\u{1F4BB}','Funci\u00f3n en Python para sumar dos n\u00fameros'],['\u{1F3A8}','Escr\u00edbeme un poema sobre el mar'],['\u{1F4A1}','Dame una idea de negocio digital'],['\u{1F916}','Qu\u00e9 es la inteligencia artificial']].map(function(c){return '<div class="chip" onclick="useSug(\''+c[1].replace(/'/g,"\\'")+'\'">'+c[0]+' '+c[1]+'</div>';}).join('');
-  var logoSVG='<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="animation:bop 3s ease-in-out infinite"><defs><linearGradient id="lg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c9e8"/><stop offset="100%" stop-color="#9b59f5"/></linearGradient></defs><rect width="72" height="72" rx="18" fill="url(#lg3)"/><path d="M18 54 L18 18 L54 54 L54 18" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="18" cy="18" r="4" fill="white" opacity=".78"/><circle cx="54" cy="18" r="4" fill="white" opacity=".78"/><circle cx="18" cy="54" r="4" fill="white" opacity=".78"/><circle cx="54" cy="54" r="4" fill="white" opacity=".78"/></svg>';
+  var logoSVG='<svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="animation:bop 3s ease-in-out infinite"><defs>  <radialGradient id="wlb" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#0f1e35"/><stop offset="100%" stop-color="#06080f"/></radialGradient>  <radialGradient id="wcore" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="white"/><stop offset="50%" stop-color="#a0f0ff" stop-opacity=".85"/><stop offset="100%" stop-color="#00c9e8" stop-opacity="0"/></radialGradient>  <filter id="wg"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>  <filter id="wgm"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="72" height="72" rx="18" fill="url(#wlb)"/><circle cx="36" cy="36" r="31" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/><path d="M36 36 Q26 22 13 10" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" opacity=".9"/><circle cx="28" cy="27" r="3" fill="#f59e0b" filter="url(#wg)" opacity=".9"/><circle cx="14" cy="12" r="4.5" fill="#f59e0b" filter="url(#wgm)"/><path d="M36 36 Q22 45 10 58" fill="none" stroke="#39d98a" stroke-width="2" stroke-linecap="round" opacity=".9"/><circle cx="24" cy="45" r="3" fill="#39d98a" filter="url(#wg)" opacity=".9"/><circle cx="12" cy="57" r="4.5" fill="#39d98a" filter="url(#wgm)"/><path d="M36 36 Q50 22 59 10" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" opacity=".9"/><circle cx="47" cy="27" r="3" fill="#00e5ff" filter="url(#wg)" opacity=".9"/><circle cx="58" cy="12" r="4.5" fill="#00e5ff" filter="url(#wgm)"/><path d="M36 36 Q50 48 59 58" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" opacity=".9"/><circle cx="47" cy="46" r="3" fill="#a855f7" filter="url(#wg)" opacity=".9"/><circle cx="58" cy="57" r="4.5" fill="#a855f7" filter="url(#wgm)"/><circle cx="36" cy="36" r="10" fill="rgba(0,15,28,.9)" stroke="rgba(255,255,255,.2)" stroke-width=".8"/><circle cx="36" cy="36" r="6" fill="url(#wcore)" opacity=".8"/><circle cx="36" cy="36" r="4" fill="white" filter="url(#wgm)" opacity=".95"/><circle cx="36" cy="36" r="2.5" fill="white"/></svg>';
   document.getElementById('msgs').innerHTML='<div class="welcome" id="wc"><div class="wc-hero"><div class="wc-main-ico">'+logoSVG+'</div><div class="wc-title">IA-NEXO</div><div class="wc-sub">Pregunta matem\u00e1ticas, filosof\u00eda, c\u00f3digo, arte, historia, recetas \u2014 todo. Los 4 agentes usan el mismo motor potente.</div></div><div class="mode-explain"><div class="me-card '+(mode==='auto'?'selected':'')+'" style="--me-c:var(--cyan);border-color:'+(mode==='auto'?'var(--cyan)':'var(--b1)')+'" onclick="setMode(\'auto\')"><div class="me-top"><span class="me-ico">\u{1F916}</span><div class="me-title" style="color:var(--cyan)">Modo Autom\u00e1tico</div></div><div class="me-desc">Escribe libremente. La IA detecta el tema y elige el agente.</div><ul class="me-steps"><li>"filosof\u00eda" \u2192 NEXO SABIO</li><li>"c\u00f3digo" \u2192 NEXO L\u00d3GICO</li><li>"poema" \u2192 NEXO CREATIVO</li></ul><button class="me-btn" style="background:var(--g-codigo)" onclick="event.stopPropagation();setMode(\'auto\')">Usar Modo Autom\u00e1tico</button></div><div class="me-card '+(mode==='manual'?'selected':'')+'" style="--me-c:var(--yel);border-color:'+(mode==='manual'?'var(--yel)':'var(--b1)')+'" onclick="setMode(\'manual\')"><div class="me-top"><span class="me-ico">\u2699\uFE0F</span><div class="me-title" style="color:var(--yel)">Modo Manual</div></div><div class="me-desc">T\u00fa eliges el agente. Clic en el sidebar, queda fijado con \u{1F512}.</div><ul class="me-steps"><li>Clic en el agente deseado</li><li>Ideal para sesiones largas</li><li>Total control</li></ul><button class="me-btn" style="background:var(--g-sabio)" onclick="event.stopPropagation();setMode(\'manual\')">Usar Modo Manual</button></div></div><div class="wc-sec">Los 4 agentes</div><div class="wc-agents">'+agHTML+'</div><div class="wc-sec">Prueba ahora</div><div class="chips">'+chips+'</div></div>';
 }
 function useSug(t){if(!t)return;document.getElementById('inp').value=t;send();}
@@ -875,7 +916,8 @@ function clearFile(){attachedFile=null;document.getElementById('fpbar').classLis
 function exportPDF(){
   if(document.getElementById('wc')){showToast('No hay conversaci\u00f3n');return;}
   var win=window.open('','_blank');
-  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>IA-NEXO</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:30px;color:#111;}h1{color:#0284c7;border-bottom:2px solid #00e5ff;padding-bottom:10px;font-size:20px;}.meta{color:#666;font-size:11px;margin-bottom:26px;}.msg{margin-bottom:13px;padding:11px 14px;border-radius:9px;page-break-inside:avoid;}.u{background:#e0f4ff;border-left:4px solid #0284c7;text-align:right;}.ai{background:#f5f5f5;border-left:4px solid #7c3aed;}.lbl{font-size:9px;font-weight:bold;color:#666;margin-bottom:4px;text-transform:uppercase;}.txt{font-size:12px;line-height:1.65;}pre{background:#1a1a2e;color:#c3e88d;border-radius:5px;padding:8px;font-size:10px;overflow:auto;}</style></head><body><h1>IA-NEXO</h1><div class="meta">'+new Date().toLocaleString('es-ES')+(USER?' &bull; '+USER.nombre:'')+'</div>';
+  var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>IA-NEXO</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' rx='9' fill='%230f1e35'/><path d='M18 18 Q12 11 6 5' fill='none' stroke='%23f59e0b' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q11 23 5 30' fill='none' stroke='%2339d98a' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q25 11 30 5' fill='none' stroke='%2300e5ff' stroke-width='1.5' stroke-linecap='round'/><path d='M18 18 Q25 24 30 30' fill='none' stroke='%23a855f7' stroke-width='1.5' stroke-linecap='round'/><circle cx='18' cy='18' r='3' fill='white'/></svg>"><style>body{font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:30px;color:#111;}h1{color:#0284c7;border-bottom:2px solid #00e5ff;padding-bottom:10px;font-size:20px;}.meta{color:#666;font-size:11px;margin-bottom:26px;}.msg{margin-bottom:13px;padding:11px 14px;border-radius:9px;page-break-inside:avoid;}.u{background:#e0f4ff;border-left:4px solid #0284c7;text-align:right;}.ai{background:#f5f5f5;border-left:4px solid #7c3aed;}.lbl{font-size:9px;font-weight:bold;color:#666;margin-bottom:4px;text-transform:uppercase;}.txt{font-size:12px;line-height:1.65;}pre{background:#1a1a2e;color:#c3e88d;border-radius:5px;padding:8px;font-size:10px;overflow:auto;}</style></head><body><h1>IA-NEXO</h1><div class="meta">'+new Date().toLocaleString('es-ES')+(USER?' &bull; '+USER.nombre:'')+'</div>';
   document.querySelectorAll('#msgs .msg').forEach(function(node){var isUser=node.classList.contains('user');var mbu=node.querySelector('.mbu');if(!mbu)return;var txt=mbu.innerHTML.replace(/<div class="mmeta">[\s\S]*$/,'').replace(/<div class="msg-actions">[\s\S]*$/,'').trim();html+='<div class="msg '+(isUser?'u':'ai')+'"><div class="lbl">'+(isUser?'T\u00fa':'IA-NEXO')+'</div><div class="txt">'+txt+'</div></div>';});
   html+='</body></html>';
   win.document.write(html);win.document.close();
