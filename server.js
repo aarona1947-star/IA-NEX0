@@ -9,7 +9,12 @@ var jwt     = require('jsonwebtoken');
 var app    = express();
 var PORT   = process.env.PORT || 3000;
 var SECRET = process.env.JWT_SECRET || 'nexo-secret-2025';
-var DB     = path.join(__dirname, 'users.json');
+var DB = process.env.DB_PATH
+  ? path.join(process.env.DB_PATH, 'users.json')
+  : path.join('/app', 'users.json');
+// Fallback a directorio local si /app no existe
+try { require('fs').accessSync('/app', require('fs').constants.W_OK); }
+catch(e) { DB = path.join(__dirname, 'users.json'); }
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -44,7 +49,7 @@ app.post('/auth/login',async function(req,res){
   var email=(b.email||'').trim().toLowerCase(),pw=b.password||'';
   if(!email||!pw)return res.status(400).json({error:'Email y contrasena requeridos.'});
   var users=getUsers(),user=users[email];
-  if(!user)return res.status(401).json({error:'No existe cuenta con ese email.'});
+  if(!user)return res.status(401).json({error:'No existe cuenta con ese email. Si ya tenías cuenta, el servidor se reinició y debes crear una nueva cuenta con el mismo correo.'});
   var ok=await bcrypt.compare(pw,user.password);
   if(!ok)return res.status(401).json({error:'Contrasena incorrecta.'});
   var token=jwt.sign({id:user.id,nombre:user.nombre,email},SECRET,{expiresIn:'30d'});
