@@ -183,6 +183,12 @@ app.post('/api/imagen', auth, function(req, res) {
   res.json({ imageUrl: 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=768&height=768&seed=' + seed + '&nologo=true&nofeed=true' });
 });
 
+// Landing page de ventas
+app.get('/landing', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+// La APP siempre en /  (ruta principal)
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
