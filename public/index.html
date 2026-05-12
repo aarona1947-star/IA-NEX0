@@ -24,7 +24,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 @keyframes ga{to{transform:translate(50px,30px)}}@keyframes gb{to{transform:translate(-30px,50px)}}
 
 /* LOGIN */
-#login{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;}
+#login{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg);}
 .lcard{width:100%;max-width:390px;background:var(--card);border:1px solid var(--b2);border-radius:22px;padding:30px 26px;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,.65);backdrop-filter:blur(40px);animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
 @keyframes pop{from{opacity:0;transform:translateY(20px)scale(.95)}to{opacity:1;transform:none}}
 .lcard::before{content:'';position:absolute;top:0;left:20px;right:20px;height:1px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);}
@@ -56,7 +56,7 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 .l-link span{color:var(--cyan);cursor:pointer;font-weight:600;}
 
 /* APP */
-#app{display:none;height:100dvh;height:100vh;flex-direction:column;position:relative;z-index:1;}
+#app{display:none!important;height:100dvh;height:100vh;flex-direction:column;position:relative;z-index:1;}
 
 /* TOPBAR */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:58px;flex-shrink:0;background:var(--top);backdrop-filter:blur(28px);border-bottom:1px solid var(--b1);position:relative;z-index:20;transition:background .3s;}
@@ -367,6 +367,24 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
   .wc-title{font-size:26px!important;}
   .wc-sub{font-size:14px!important;}
 }
+
+/* ─── SPLASH ─── */
+.app-hidden{display:none!important;}
+#splash{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);transition:opacity .6s,visibility .6s;}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none;}
+.sp-logo{animation:sppop .7s cubic-bezier(.34,1.56,.64,1) both;opacity:0;margin-bottom:26px;}
+@keyframes sppop{from{opacity:0;transform:scale(.4) rotate(-15deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+.sp-title{font-family:'Syne',sans-serif;font-size:34px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#00b4d8,#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:spup .6s .3s both;margin-bottom:6px;}
+.sp-sub{font-size:13px;color:var(--t2);animation:spup .6s .5s both;margin-bottom:38px;}
+@keyframes spup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.sp-bar-bg{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;animation:spup .4s .6s both;}
+.sp-bar{height:100%;background:linear-gradient(90deg,#00b4d8,#a855f7);border-radius:3px;animation:spload 1.8s .4s ease forwards;width:0;}
+@keyframes spload{0%{width:0}60%{width:75%}85%{width:92%}100%{width:100%}}
+.sp-dots{display:flex;gap:8px;margin-top:18px;animation:spup .4s .7s both;}
+.sp-dot{width:7px;height:7px;border-radius:50%;background:linear-gradient(135deg,#00b4d8,#a855f7);animation:spdot 1.2s .8s ease-in-out infinite;}
+.sp-dot:nth-child(2){animation-delay:1s;}.sp-dot:nth-child(3){animation-delay:1.2s;}
+@keyframes spdot{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-9px);opacity:1}}
+
 @media print{
   body{background:#fff!important;color:#000!important;overflow:visible;}
   .bg,.topbar,.sidebar,.tricks,.fpbar,.inputbar,.modalbg,.fs,.toast,.profile-panel,.kbd-panel{display:none!important;}
@@ -380,35 +398,64 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
 </style>
 </head>
 <body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="sp-logo"><svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+<defs><linearGradient id="slg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00b4d8"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+<rect width="72" height="72" rx="18" fill="url(#slg)"/>
+<g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M36 17 Q27 15 21 21 Q15 26 15 34 Q15 40 19 44 Q17 50 21 53 Q25 56 29 54 L36 54" stroke-width="2.5" opacity=".95"/>
+  <path d="M36 17 Q45 15 51 21 Q57 26 57 34 Q57 40 53 44 Q55 50 51 53 Q47 56 43 54 L36 54" stroke-width="2.5" opacity=".95"/>
+  <line x1="36" y1="17" x2="36" y2="54" stroke-width="1.5" opacity=".45"/>
+  <line x1="25" y1="29" x2="47" y2="29" stroke-width="1.2" opacity=".45"/>
+  <line x1="23" y1="38" x2="49" y2="38" stroke-width="1.2" opacity=".45"/>
+  <circle cx="36" cy="36" r="4" fill="white" stroke="none" opacity=".95"/>
+  <circle cx="26" cy="29" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="46" cy="29" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="26" cy="43" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="46" cy="43" r="2" fill="white" stroke="none" opacity=".85"/>
+  <line x1="26" y1="29" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="46" y1="29" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="26" y1="43" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="46" y1="43" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+</g>
+</svg></div>
+  <div class="sp-title">IA-NEXO</div>
+  <div class="sp-sub">Inteligencia artificial para todos</div>
+  <div class="sp-bar-bg"><div class="sp-bar"></div></div>
+  <div class="sp-dots">
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+    <div class="sp-dot"></div>
+  </div>
+</div>
+
 <div class="bg"><div class="bg-grid"></div><div class="bg-g1"></div><div class="bg-g2"></div></div>
 
 <!-- LOGIN -->
 <div id="login">
 <div class="lcard">
   <div class="l-hdr">
-    <div class="l-logo-row"><div class="l-ico" style="background:none;padding:0;overflow:visible;"><svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="nlg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#00b4d8;stop-opacity:1"/>
-      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1"/>
-    </linearGradient>
-  </defs>
-  <rect width="36" height="36" rx="10" fill="url(#nlg)"/>
-  <!-- Nodos -->
-  <circle cx="10" cy="10" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="26" cy="10" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="18" cy="18" r="4" fill="white"/>
-  <circle cx="10" cy="26" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="26" cy="26" r="2.5" fill="white" opacity=".9"/>
-  <!-- Conexiones -->
-  <line x1="10" y1="10" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="26" y1="10" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="10" y1="26" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="26" y1="26" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="10" y1="10" x2="26" y2="10" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="10" y1="26" x2="26" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="10" y1="10" x2="10" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="26" y1="10" x2="26" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
+    <div class="l-logo-row"><div class="l-ico" style="background:none;padding:0;overflow:visible;width:38px;height:38px;"><svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+<defs><linearGradient id="blg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00b4d8"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+<rect width="36" height="36" rx="9" fill="url(#blg1)"/>
+<g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M18 9 Q14 8 11 11 Q8 13 8 17 Q8 20 10 22 Q9 25 11 26 Q13 28 15 27 L18 27" stroke-width="1.4" opacity=".95"/>
+  <path d="M18 9 Q22 8 25 11 Q28 13 28 17 Q28 20 26 22 Q27 25 25 26 Q23 28 21 27 L18 27" stroke-width="1.4" opacity=".95"/>
+  <line x1="18" y1="9" x2="18" y2="27" stroke-width=".9" opacity=".5"/>
+  <line x1="13" y1="15" x2="23" y2="15" stroke-width=".8" opacity=".5"/>
+  <line x1="12" y1="19" x2="24" y2="19" stroke-width=".8" opacity=".5"/>
+  <circle cx="18" cy="18" r="1.8" fill="white" stroke="none" opacity=".95"/>
+  <circle cx="13" cy="15" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="23" cy="15" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="13" cy="21" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="23" cy="21" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <line x1="13" y1="15" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="23" y1="15" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="13" y1="21" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="23" y1="21" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+</g>
 </svg></div><div class="l-brand">IA<em>-NEXO</em></div></div>
     <button class="l-th-btn" id="l-th" onclick="toggleTheme()">&#9728;</button>
   </div>
@@ -447,22 +494,25 @@ html,body{height:100%;overflow:hidden;font-family:'Space Grotesk',sans-serif;bac
   <div class="topbar">
     <div class="tb-l">
       <button class="mob-ham" onclick="openSb()">&#9776;</button>
-      <div class="tb-logo" style="background:none;padding:0;overflow:visible;width:auto;height:auto;border-radius:0;"><svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px">
-  <defs><linearGradient id="tlg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00b4d8"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs>
-  <rect width="36" height="36" rx="10" fill="url(#tlg)"/>
-  <circle cx="10" cy="10" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="26" cy="10" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="18" cy="18" r="4" fill="white"/>
-  <circle cx="10" cy="26" r="2.5" fill="white" opacity=".9"/>
-  <circle cx="26" cy="26" r="2.5" fill="white" opacity=".9"/>
-  <line x1="10" y1="10" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="26" y1="10" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="10" y1="26" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="26" y1="26" x2="18" y2="18" stroke="white" stroke-width="1.2" opacity=".5"/>
-  <line x1="10" y1="10" x2="26" y2="10" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="10" y1="26" x2="26" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="10" y1="10" x2="10" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
-  <line x1="26" y1="10" x2="26" y2="26" stroke="white" stroke-width=".7" opacity=".3"/>
+      <div class="tb-logo" style="background:none;padding:0;overflow:visible;width:32px;height:32px;"><svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+<defs><linearGradient id="blg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00b4d8"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+<rect width="36" height="36" rx="9" fill="url(#blg1)"/>
+<g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M18 9 Q14 8 11 11 Q8 13 8 17 Q8 20 10 22 Q9 25 11 26 Q13 28 15 27 L18 27" stroke-width="1.4" opacity=".95"/>
+  <path d="M18 9 Q22 8 25 11 Q28 13 28 17 Q28 20 26 22 Q27 25 25 26 Q23 28 21 27 L18 27" stroke-width="1.4" opacity=".95"/>
+  <line x1="18" y1="9" x2="18" y2="27" stroke-width=".9" opacity=".5"/>
+  <line x1="13" y1="15" x2="23" y2="15" stroke-width=".8" opacity=".5"/>
+  <line x1="12" y1="19" x2="24" y2="19" stroke-width=".8" opacity=".5"/>
+  <circle cx="18" cy="18" r="1.8" fill="white" stroke="none" opacity=".95"/>
+  <circle cx="13" cy="15" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="23" cy="15" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="13" cy="21" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <circle cx="23" cy="21" r=".9" fill="white" stroke="none" opacity=".8"/>
+  <line x1="13" y1="15" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="23" y1="15" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="13" y1="21" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+  <line x1="23" y1="21" x2="18" y2="18" stroke-width=".8" opacity=".6"/>
+</g>
 </svg></div>
       <div class="tb-name">IA<em>-NEXO</em></div>
       <div class="tb-sep"></div>
@@ -776,8 +826,10 @@ async function doRegister(){
 function saveSession(d){TOKEN=d.token;USER={nombre:d.nombre,email:d.email};localStorage.setItem('nx-tok',TOKEN);localStorage.setItem('nx-user',JSON.stringify(USER));}
 
 function enterApp(){
-  document.getElementById('login').style.display='none';
-  document.getElementById('app').style.display='flex';
+  var loginEl=document.getElementById('login');
+var appEl=document.getElementById('app');
+if(loginEl)loginEl.style.display='none';
+if(appEl){appEl.classList.remove('app-hidden');appEl.style.removeProperty('display');appEl.style.display='flex';}
   if(USER){var av=document.getElementById('ubav');var nm=document.getElementById('ubnm');if(av)av.textContent=(USER.nombre||'U').charAt(0).toUpperCase();if(nm)nm.textContent=USER.nombre||'Usuario';}
   mode=localStorage.getItem('nx-mode')||'auto';
   updateAgentUI('sabio');setMode(mode);renderHistSidebar();renderWelcome();
@@ -846,7 +898,26 @@ function renderWelcome(){
 
   document.getElementById('msgs').innerHTML=
     '<div class="welcome" id="wc">'+
-    '<div class="wc-hero"><span class="wc-main-ico" style="display:flex;justify-content:center;"><svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px;animation:bop 3s ease-in-out infinite"><defs><linearGradient id="wlg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#00b4d8"/><stop offset="100%" style="stop-color:#a855f7"/></linearGradient></defs><rect width="72" height="72" rx="20" fill="url(#wlg)"/><circle cx="20" cy="20" r="5" fill="white" opacity=".9"/><circle cx="52" cy="20" r="5" fill="white" opacity=".9"/><circle cx="36" cy="36" r="8" fill="white"/><circle cx="20" cy="52" r="5" fill="white" opacity=".9"/><circle cx="52" cy="52" r="5" fill="white" opacity=".9"/><line x1="20" y1="20" x2="36" y2="36" stroke="white" stroke-width="2.5" opacity=".5"/><line x1="52" y1="20" x2="36" y2="36" stroke="white" stroke-width="2.5" opacity=".5"/><line x1="20" y1="52" x2="36" y2="36" stroke="white" stroke-width="2.5" opacity=".5"/><line x1="52" y1="52" x2="36" y2="36" stroke="white" stroke-width="2.5" opacity=".5"/><line x1="20" y1="20" x2="52" y2="20" stroke="white" stroke-width="1.5" opacity=".3"/><line x1="20" y1="52" x2="52" y2="52" stroke="white" stroke-width="1.5" opacity=".3"/><line x1="20" y1="20" x2="20" y2="52" stroke="white" stroke-width="1.5" opacity=".3"/><line x1="52" y1="20" x2="52" y2="52" stroke="white" stroke-width="1.5" opacity=".3"/></svg></span>'+
+    '<div class="wc-hero"><span class="wc-main-ico" style="display:flex;justify-content:center;margin-bottom:14px;"><svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg" width="72" height="72" style="animation:bop 3s ease-in-out infinite">
+<defs><linearGradient id="blg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00b4d8"/><stop offset="100%" stop-color="#a855f7"/></linearGradient></defs>
+<rect width="72" height="72" rx="18" fill="url(#blg2)"/>
+<g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M36 17 Q27 15 21 21 Q15 26 15 34 Q15 40 19 44 Q17 50 21 53 Q25 56 29 54 L36 54" stroke-width="2.5" opacity=".95"/>
+  <path d="M36 17 Q45 15 51 21 Q57 26 57 34 Q57 40 53 44 Q55 50 51 53 Q47 56 43 54 L36 54" stroke-width="2.5" opacity=".95"/>
+  <line x1="36" y1="17" x2="36" y2="54" stroke-width="1.5" opacity=".45"/>
+  <line x1="25" y1="29" x2="47" y2="29" stroke-width="1.2" opacity=".45"/>
+  <line x1="23" y1="38" x2="49" y2="38" stroke-width="1.2" opacity=".45"/>
+  <circle cx="36" cy="36" r="4" fill="white" stroke="none" opacity=".95"/>
+  <circle cx="26" cy="29" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="46" cy="29" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="26" cy="43" r="2" fill="white" stroke="none" opacity=".85"/>
+  <circle cx="46" cy="43" r="2" fill="white" stroke="none" opacity=".85"/>
+  <line x1="26" y1="29" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="46" y1="29" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="26" y1="43" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+  <line x1="46" y1="43" x2="36" y2="36" stroke-width="1.5" opacity=".6"/>
+</g>
+</svg></span>'+
     '<div class="wc-title">IA-NEXO</div>'+
     '<div class="wc-sub">Pregunta matem\u00e1ticas, filosof\u00eda, c\u00f3digo, arte, historia, recetas — todo. Los 4 agentes usan el mismo motor potente.</div></div>'+
     '<div class="mode-explain">'+
@@ -1168,6 +1239,16 @@ async function genImg(){
   id2.innerHTML='<div class="mav">\u{1F3A8}</div><div><div class="mbu"><div style="font-size:9px;color:var(--t2);margin-bottom:6px">Clic para ampliar</div><img class="msgimg" src="'+url+'" alt="'+prompt+'" onclick="document.getElementById(\'fsimg\').src=this.src;document.getElementById(\'fs\').style.display=\'flex\'" loading="lazy"><div style="margin-top:7px"><a href="'+url+'" download="ia-nexo.jpg" style="font-size:9px;color:var(--pur);text-decoration:none">Descargar imagen</a></div></div><div class="mmeta">\u{1F3A8} Pollinations AI &bull; '+gt()+'</div></div>';
   c.appendChild(id2);c.scrollTop=c.scrollHeight;
 }
+
+
+/* ══ SPLASH SCREEN ══ */
+(function(){
+  // Show splash, dismiss after animation
+  setTimeout(function(){
+    var sp = document.getElementById('splash');
+    if(sp){ sp.classList.add('out'); setTimeout(function(){ sp.style.display='none'; }, 650); }
+  }, 2200);
+})();
 
 /* ══ TOAST ══ */
 function showToast(msg){document.querySelectorAll('.toast').forEach(function(t){t.remove();});var t=document.createElement('div');t.className='toast';t.innerHTML=msg;document.body.appendChild(t);setTimeout(function(){t.remove();},2800);}
