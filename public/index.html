@@ -340,8 +340,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .mob-ov{display:none;position:fixed;inset:0;z-index:14;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);}
 .mob-ov.on{display:block;}
 @media(max-width:700px){
-  .sidebar{position:fixed;left:0;top:60px;bottom:0;width:280px;transform:translateX(-100%);transition:transform .25s;z-index:15;}
-  .sidebar.open{transform:translateX(0);}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:88%;max-width:320px;transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:200;border-radius:0 22px 22px 0;}
+  .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(177,78,255,.3);}
   .mob-ham{display:flex;}
   .ub-nm{display:none;}
   .tb-btn{padding:0 10px;font-size:11px;}
@@ -453,6 +453,83 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   /* Make sidebar scrollable */
   .sidebar{overflow-y:auto;}
 }
+
+.sb-mobile-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 14px 10px;border-bottom:1px solid var(--border);
+}
+.sb-mob-brand{display:flex;align-items:center;gap:8px;}
+.sb-mob-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:900;letter-spacing:2px;}
+.sb-mob-name em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-mob-close{
+  width:32px;height:32px;border-radius:10px;border:1px solid var(--border);
+  background:var(--card2);color:var(--t2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:all .2s;
+}
+.sb-mob-close:hover{border-color:var(--neon-pink);color:var(--neon-pink);}
+
+/* ─── MENSAJE ACTIONS (innovador) ─── */
+.msg-actions{
+  display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;
+  animation:fadeUp .3s ease;
+}
+.msg-act{
+  display:flex;align-items:center;gap:5px;padding:6px 12px;
+  background:var(--card2);backdrop-filter:blur(10px);
+  border:1px solid var(--border);border-radius:20px;
+  color:var(--t2);font-family:inherit;font-size:11px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.msg-act:hover{transform:translateY(-2px);border-color:var(--neon-cyan);color:var(--neon-cyan);box-shadow:0 5px 15px rgba(0,240,255,.2);}
+.msg-act.wa{border-color:rgba(37,211,102,.35);color:#25d366;}
+.msg-act.wa:hover{box-shadow:0 5px 15px rgba(37,211,102,.3);}
+.msg-act.listen.active{background:rgba(177,78,255,.15);border-color:var(--neon-purple);color:var(--neon-purple);}
+.msg-act.fav.saved{background:rgba(255,170,61,.12);border-color:#ffaa3d;color:#ffaa3d;}
+
+/* Favorites panel */
+.fav-badge{
+  position:fixed;bottom:90px;right:16px;z-index:50;
+  width:44px;height:44px;border-radius:50%;
+  background:var(--grad);
+  display:none;align-items:center;justify-content:center;
+  font-size:18px;cursor:pointer;
+  box-shadow:0 5px 20px rgba(177,78,255,.5);
+  transition:all .25s;
+}
+.fav-badge:hover{transform:scale(1.1);}
+.fav-badge.has-items{display:flex;}
+.fav-count{
+  position:absolute;top:-4px;right:-4px;
+  width:18px;height:18px;border-radius:50%;
+  background:#ff3df8;color:#fff;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.fav-modal{
+  position:fixed;inset:0;z-index:400;display:none;
+  align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+}
+.fav-modal.on{display:flex;}
+.fav-sheet{
+  width:100%;max-width:600px;max-height:70vh;overflow-y:auto;
+  background:var(--card);border-radius:24px 24px 0 0;
+  border:1px solid var(--border-glow);padding:0 0 30px;
+  box-shadow:0 -20px 60px rgba(177,78,255,.3);
+}
+.fav-sheet-hdr{
+  position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px;border-bottom:1px solid var(--border);
+  background:var(--card);backdrop-filter:blur(20px);
+}
+.fav-sheet-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.fav-item{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13px;line-height:1.6;color:var(--t2);position:relative;}
+.fav-item:last-child{border-bottom:none;}
+.fav-item-agent{font-size:10px;font-weight:700;margin-bottom:5px;}
+.fav-item-text{color:var(--tx);}
+.fav-item-del{position:absolute;top:12px;right:14px;border:none;background:none;color:var(--t3);cursor:pointer;font-size:15px;}
+.fav-item-del:hover{color:#ff6b9d;}
+.fav-empty{padding:30px;text-align:center;color:var(--t3);font-size:13px;}
 </style>
 </head>
 <body>
@@ -531,6 +608,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   <div class="abody">
     <div class="mob-ov" id="mob-ov"></div>
     <div class="sidebar" id="sidebar">
+      <div class="sb-mobile-header mobile-only">
+        <div class="sb-mob-brand">
+          <svg width="28" height="28"><use href="#ix-logo"/></svg>
+          <span class="sb-mob-name">IA<em>-NEXO</em></span>
+        </div>
+        <button class="sb-mob-close" id="sb-close-btn">&#10005;</button>
+      </div>
       <div class="sb-mobile-mode mobile-only">
         <div class="mode-pill mode-pill-sb">
           <button class="m-opt auto on" id="m-auto-sb" data-mode="auto"><span>&#129302;</span> Auto</button>
@@ -917,6 +1001,40 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       '<div class="mav">' + avatar + '</div>' +
       '<div style="flex:1;min-width:0"><div class="mbu">' + fmtText(text) + '</div>' + meta + '</div>';
     c.appendChild(d);
+
+    // Action buttons on AI messages
+    if (role === 'ai' && !isErr && agentId) {
+      var acts = document.createElement('div');
+      acts.className = 'msg-actions';
+      acts.innerHTML =
+        '<button class="msg-act listen">\uD83D\uDD0A Escuchar</button>' +
+        '<button class="msg-act copy">\uD83D\uDCCB Copiar</button>' +
+        '<button class="msg-act wa">\uD83D\uDCF1 WhatsApp</button>' +
+        '<button class="msg-act fav">\u2665 Guardar</button>';
+      var textForActs = text;
+      var agentForActs = agentId;
+      var listenBtn = acts.querySelector('.listen');
+      var copyBtn = acts.querySelector('.copy');
+      var waBtn = acts.querySelector('.wa');
+      var favBtn = acts.querySelector('.fav');
+      listenBtn.addEventListener('click', function() { narrate(textForActs, listenBtn); });
+      copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(textForActs).then(function() { toast('\uD83D\uDCCB Copiado!'); });
+      });
+      waBtn.addEventListener('click', function() { shareWhatsapp(textForActs); });
+      favBtn.addEventListener('click', function() {
+        favBtn.classList.toggle('saved');
+        if (favBtn.classList.contains('saved')) {
+          favBtn.innerHTML = '\u2665 Guardado';
+          saveFav(textForActs, agentForActs);
+        } else {
+          favBtn.innerHTML = '\u2665 Guardar';
+          toast('Eliminado de favoritos');
+        }
+      });
+      d.appendChild(acts);
+    }
+
     c.scrollTop = c.scrollHeight;
   }
 
@@ -1089,6 +1207,87 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     $('help-modal').classList.remove('on');
   }
 
+  // --- TTS (narrar respuesta) ---
+  var ttsActive = false;
+  function narrate(text, btn) {
+    if (!('speechSynthesis' in window)) { toast('Tu navegador no soporta audio'); return; }
+    if (ttsActive) {
+      speechSynthesis.cancel();
+      ttsActive = false;
+      document.querySelectorAll('.msg-act.listen').forEach(function(b) { b.classList.remove('active'); b.innerHTML = '\uD83D\uDD0A Escuchar'; });
+      return;
+    }
+    ttsActive = true;
+    if (btn) { btn.classList.add('active'); btn.innerHTML = '\u23F9 Detener'; }
+    var clean = text.replace(/```[\s\S]*?```/g, 'codigo').replace(/\*\*/g,'').replace(/\*/g,'').replace(/<[^>]+>/g,'').slice(0, 1200);
+    var utt = new SpeechSynthesisUtterance(clean);
+    utt.lang = 'es-MX'; utt.rate = 0.88;
+    var voices = speechSynthesis.getVoices();
+    var v = null;
+    for (var i = 0; i < voices.length; i++) { if (voices[i].lang.startsWith('es')) { v = voices[i]; break; } }
+    if (v) utt.voice = v;
+    utt.onend = function() {
+      ttsActive = false;
+      if (btn) { btn.classList.remove('active'); btn.innerHTML = '\uD83D\uDD0A Escuchar'; }
+    };
+    speechSynthesis.speak(utt);
+  }
+
+  // --- FAVORITOS ---
+  var favorites = [];
+  try { favorites = JSON.parse(localStorage.getItem('nx-favs') || '[]'); } catch(e) { favorites = []; }
+
+  function saveFav(text, agentId) {
+    var entry = { id: 'f'+Date.now(), text: text.slice(0, 600), agent: agentId, date: new Date().toLocaleDateString('es-ES') };
+    favorites.unshift(entry);
+    if (favorites.length > 30) favorites = favorites.slice(0, 30);
+    localStorage.setItem('nx-favs', JSON.stringify(favorites));
+    updateFavBadge();
+    toast('\u2665 Guardado en favoritos');
+  }
+
+  function deleteFav(id) {
+    favorites = favorites.filter(function(f) { return f.id !== id; });
+    localStorage.setItem('nx-favs', JSON.stringify(favorites));
+    updateFavBadge();
+    renderFavList();
+  }
+
+  function updateFavBadge() {
+    var fab = $('fav-fab');
+    var cnt = $('fav-count');
+    if (fab) fab.className = 'fav-badge' + (favorites.length > 0 ? ' has-items' : '');
+    if (cnt) cnt.textContent = favorites.length;
+  }
+
+  function renderFavList() {
+    var c = $('fav-list');
+    if (!c) return;
+    if (!favorites.length) {
+      c.innerHTML = '<div class="fav-empty">\u2728 Aun no tienes respuestas guardadas.<br>Usa el boton \u2665 Guardar en cada respuesta.</div>';
+      return;
+    }
+    var html = '';
+    for (var i = 0; i < favorites.length; i++) {
+      var f = favorites[i];
+      var a = f.agent ? AGENTS[f.agent] : null;
+      html += '<div class="fav-item">';
+      if (a) html += '<div class="fav-item-agent" style="color:'+a.color+'">'+a.icon+' '+a.name+' &bull; '+f.date+'</div>';
+      html += '<div class="fav-item-text">'+escapeHtml(f.text.slice(0,300))+(f.text.length>300?'...':'')+'</div>';
+      html += '<button class="fav-item-del" data-fid="'+f.id+'">&#128465;</button></div>';
+    }
+    c.innerHTML = html;
+    var dels = c.querySelectorAll('.fav-item-del');
+    for (var k = 0; k < dels.length; k++) {
+      dels[k].addEventListener('click', function() { deleteFav(this.getAttribute('data-fid')); });
+    }
+  }
+
+  function shareWhatsapp(text) {
+    var waMsg = 'IA-NEXO me respondio:\n\n' + text.slice(0, 500) + (text.length > 500 ? '...' : '');
+    window.open('https://wa.me/?text=' + encodeURIComponent(waMsg), '_blank');
+  }
+
   function toast(msg) {
     var existing = document.querySelectorAll('.toast');
     for (var i = 0; i < existing.length; i++) existing[i].remove();
@@ -1169,6 +1368,19 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       this.style.height = 'auto';
       this.style.height = Math.min(this.scrollHeight, 130) + 'px';
     });
+
+    // Favorites
+    var favFab = $('fav-fab');
+    var favClose = $('fav-close');
+    var favModal = $('fav-modal');
+    if (favFab) favFab.addEventListener('click', function() { renderFavList(); favModal.classList.add('on'); });
+    if (favClose) favClose.addEventListener('click', function() { favModal.classList.remove('on'); });
+    if (favModal) favModal.addEventListener('click', function(e) { if (e.target===this) favModal.classList.remove('on'); });
+    updateFavBadge();
+
+    // Sidebar close button (mobile)
+    var sbCloseBtn = $('sb-close-btn');
+    if (sbCloseBtn) sbCloseBtn.addEventListener('click', closeSb);
 
     // Global keyboard shortcuts
     document.addEventListener('keydown', function(e) {
@@ -1319,6 +1531,23 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="help-tip"><span class="help-tip-num">5</span><span>Puedes copiar el c&oacute;digo de las respuestas con el bot&oacute;n de copiar.</span></div>
     </div>
   </div>
+</div>
+
+<!-- FAVORITES BOTTOM SHEET -->
+<div class="fav-modal" id="fav-modal">
+  <div class="fav-sheet">
+    <div class="fav-sheet-hdr">
+      <span class="fav-sheet-title">&#11088; Respuestas guardadas</span>
+      <button class="modal-close" id="fav-close">&#10005;</button>
+    </div>
+    <div id="fav-list"></div>
+  </div>
+</div>
+
+<!-- FAB de favoritos -->
+<div class="fav-badge" id="fav-fab" title="Ver guardados">
+  &#11088;
+  <div class="fav-count" id="fav-count">0</div>
 </div>
 
 </body>
