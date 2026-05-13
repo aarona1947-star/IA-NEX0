@@ -406,6 +406,53 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .kbd{padding:3px 9px;background:var(--card3);border:1px solid var(--border-glow);border-radius:6px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--tx);}
 .help-tip{display:flex;gap:10px;padding:9px 12px;font-size:12px;color:var(--t2);line-height:1.6;}
 .help-tip-num{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+
+/* MOBILE - mejor experiencia */
+.mobile-only{display:none;}
+.desktop-only{display:flex;}
+
+/* Sidebar mobile toggle pill (al top del sidebar) */
+.sb-mobile-mode{padding:14px 10px 6px;}
+.mode-pill-sb{width:100%;}
+.mode-pill-sb .m-opt{flex:1;justify-content:center;padding:9px 12px;font-size:12px;}
+
+/* Sidebar bottom actions */
+.sb-bottom{
+  margin-top:auto;
+  padding:10px;
+  border-top:1px solid var(--border);
+  display:none;
+  flex-direction:column;
+  gap:6px;
+  background:var(--card);
+}
+.sb-action{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 12px;border-radius:11px;
+  background:var(--card2);backdrop-filter:blur(10px);
+  border:1px solid var(--border);color:var(--t2);
+  cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;
+  transition:all .25s;
+}
+.sb-action:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);}
+.sb-action.exit{border-color:rgba(255,61,157,.25);color:#ff6b9d;}
+.sb-action.exit:hover{box-shadow:0 0 15px rgba(255,61,157,.3);}
+
+@media(max-width:700px){
+  .desktop-only{display:none!important;}
+  .mobile-only{display:block;}
+  .sb-bottom{display:flex;}
+  /* Hide secondary topbar buttons on mobile */
+  #btn-theme-app, #btn-big, #btn-new, #btn-logout, .topbar .mode-pill{display:none!important;}
+  /* Keep help button visible and prominent */
+  .help-btn{width:38px;height:38px;font-size:17px;}
+  /* User avatar smaller on mobile */
+  .ub{padding:3px 9px 3px 3px;}
+  .ub-av{width:26px;height:26px;}
+  /* Make sidebar scrollable */
+  .sidebar{overflow-y:auto;}
+}
 </style>
 </head>
 <body>
@@ -470,7 +517,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     </div>
     <div class="tb-r">
       <div class="ub"><div class="ub-av" id="ub-av">U</div><div class="ub-nm" id="ub-nm">Usuario</div></div>
-      <div class="mode-pill">
+      <div class="mode-pill desktop-only">
         <button class="m-opt auto on" id="m-auto" data-mode="auto"><span>&#129302;</span> Auto</button>
         <button class="m-opt manual" id="m-manual" data-mode="manual"><span>&#9881;</span> Manual</button>
       </div>
@@ -484,6 +531,12 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   <div class="abody">
     <div class="mob-ov" id="mob-ov"></div>
     <div class="sidebar" id="sidebar">
+      <div class="sb-mobile-mode mobile-only">
+        <div class="mode-pill mode-pill-sb">
+          <button class="m-opt auto on" id="m-auto-sb" data-mode="auto"><span>&#129302;</span> Auto</button>
+          <button class="m-opt manual" id="m-manual-sb" data-mode="manual"><span>&#9881;</span> Manual</button>
+        </div>
+      </div>
       <div class="sb-mode-card">
         <div class="sb-mode-title">Modo Actual</div>
         <div class="sb-mode-current auto" id="sb-mode-current">
@@ -511,6 +564,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="ag" data-id="creativo">
         <div class="ag-box" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25);color:#a855f7">&#127912;</div>
         <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Arte y escritura</div></div>
+      </div>
+      <div class="sb-bottom">
+        <button class="sb-action" id="btn-new-sb">&#43; Nueva conversaci&oacute;n</button>
+        <button class="sb-action" id="btn-help-sb"><span style="font-size:15px;font-weight:700">?</span> Ayuda</button>
+        <button class="sb-action" id="btn-theme-sb">&#9728; Cambiar tema</button>
+        <button class="sb-action" id="btn-big-sb">&#128065; Letra grande</button>
+        <button class="sb-action exit" id="btn-logout-sb">Cerrar sesi&oacute;n</button>
       </div>
     </div>
     <div class="chatmain">
@@ -710,10 +770,11 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   function setMode(m) {
     mode = m;
     localStorage.setItem('nx-mode', m);
-    var btnAuto = $('m-auto');
-    var btnManual = $('m-manual');
-    if (btnAuto) btnAuto.classList.toggle('on', m === 'auto');
-    if (btnManual) btnManual.classList.toggle('on', m === 'manual');
+    // Update all mode buttons (desktop + mobile)
+    var allModeBtns = document.querySelectorAll('[data-mode]');
+    for (var k = 0; k < allModeBtns.length; k++) {
+      allModeBtns[k].classList.toggle('on', allModeBtns[k].getAttribute('data-mode') === m);
+    }
     var sbCur = $('sb-mode-current');
     var sbLbl = $('sb-mode-label');
     var sbDesc = $('sb-mode-desc');
@@ -1058,9 +1119,27 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     $('mob-ov').addEventListener('click', closeSb);
     $('send-btn').addEventListener('click', send);
 
-    // Mode toggle
+    // Mode toggle (desktop topbar)
     $('m-auto').addEventListener('click', function() { setMode('auto'); toast('Modo Automatico activado'); });
     $('m-manual').addEventListener('click', function() { setMode('manual'); toast('Modo Manual activado'); });
+
+    // Mode toggle (mobile sidebar)
+    var mAutoSb = $('m-auto-sb');
+    var mManualSb = $('m-manual-sb');
+    if (mAutoSb) mAutoSb.addEventListener('click', function() { setMode('auto'); toast('Modo Automatico activado'); });
+    if (mManualSb) mManualSb.addEventListener('click', function() { setMode('manual'); toast('Modo Manual activado'); });
+
+    // Mobile sidebar action buttons (duplicates that call same functions)
+    var btnNewSb = $('btn-new-sb');
+    var btnHelpSb = $('btn-help-sb');
+    var btnThemeSb = $('btn-theme-sb');
+    var btnBigSb = $('btn-big-sb');
+    var btnLogoutSb = $('btn-logout-sb');
+    if (btnNewSb) btnNewSb.addEventListener('click', function() { newChat(); closeSb(); });
+    if (btnHelpSb) btnHelpSb.addEventListener('click', function() { closeSb(); showHelp(); });
+    if (btnThemeSb) btnThemeSb.addEventListener('click', cycleTheme);
+    if (btnBigSb) btnBigSb.addEventListener('click', toggleBig);
+    if (btnLogoutSb) btnLogoutSb.addEventListener('click', doLogout);
 
     // Help
     $('btn-help').addEventListener('click', showHelp);
