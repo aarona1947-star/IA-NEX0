@@ -260,7 +260,12 @@ app.post('/api/imagen', auth, function(req, res) {
   res.json({ imageUrl: 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=768&height=768&seed=' + Math.floor(Math.random()*999999) + '&nologo=true' });
 });
 
+// Pagina de ventas = inicio
+app.get('/',        function(req, res) { res.sendFile(path.join(__dirname, 'public', 'landing.html')); });
 app.get('/landing', function(req, res) { res.sendFile(path.join(__dirname, 'public', 'landing.html')); });
+
+// La app de chat
+app.get('/app',    function(req, res) { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 app.get('*',       function(req, res) { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 
 app.listen(PORT, function() {
