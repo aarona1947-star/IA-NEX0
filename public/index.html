@@ -879,10 +879,45 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   };
 
   var KEYWORDS = {
-    sabio:    ['filosof','estoic','etica','moral','proposito','sentido','consejo','deberia','dilema','reflex','sabid','virtud','medita'],
-    saber:    ['dato','estadistic','cifra','poblac','porcentaj','cuantos','precio','distancia','habitant','capital','historia','cuando','millon','pib','guerra','nacio'],
-    codigo:   ['codigo','programar','funcion','algoritm','matematica','suma','resta','multiplic','divis','ecuacion','calcul','python','javascript','html','css','java','sql','bug','error','array','bucle'],
-    creativo: ['poema','cuento','histori','escrib','creativ','arte','cancion','metafor','inspir','ficcion','novela','rima','haiku','disen','inventa','imagin']
+    sabio: [
+      'filosof','estoic','etica','moral','proposito','sentido','consejo',
+      'deberia','dilema','reflex','sabidur','virtud','medita',
+      'vida','feliz','triste','ansied','depres','motivaci','actitud',
+      'decision','cambi','mejor','crecer','relacion','amor','familia',
+      'estres','ansiedad','mente','psicolog','emocion','sentimient',
+      'por que','significa','importa','debo','vale la pena','crisis'
+    ],
+    saber: [
+      'dato','estadistic','cifra','poblac','porcentaj','cuantos',
+      'precio','distancia','habitant','capital','historia','millon',
+      'pib','guerra','nacio','fecha','cuando ocurri','quien fue',
+      'donde esta','cuanta','cuanto mide','cuanto pesa','temperatura',
+      'velocidad','record','mundial','pais','ciudad','continente',
+      'presidente','rey','inventor','descubri','fundado','creado en',
+      'poblacion','moneda','idioma','bandera','religion','economia'
+    ],
+    codigo: [
+      'codigo','programar','funcion','algoritm','matematica',
+      'suma','resta','multiplic','divis','ecuacion','calcul',
+      'python','javascript','html','css','java','sql','bug','error',
+      'array','bucle','formula','excel','hoja de calculo',
+      'porcentaje de','cuanto es','raiz','potencia','logaritm',
+      'trigonometr','integral','derivada','estadistica','probabilidad',
+      'base de datos','servidor','api','web','app','programa',
+      'if','while','for','variable','clase','objeto','funcion'
+    ],
+    creativo: [
+      'poema','cuento','histori','escrib','creativ','arte','cancion',
+      'metafor','inspir','ficcion','novela','rima','haiku','disen',
+      'inventa','imagin','pint','dibuj','color','artis','crea',
+      'idea','ideas','musica','baila','decor','estilo','moda',
+      'fotograf','pelicula','guion','personaje','comic','ilustr',
+      'letras','lirica','estrofa','ritmo','melodia','composici',
+      'manualidad','bordado','tejido','escultur','ceramica',
+      'receta','cocina','plato','gastronomia','cocinar',
+      'regalo','sorpresa','celebracion','fiesta','decorar',
+      'logo','marca','identidad','publicidad','slogan','nombre para'
+    ]
   };
 
   function $(id) { return document.getElementById(id); }
@@ -1059,14 +1094,19 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       var id = ids[i];
       var kws = KEYWORDS[id];
       for (var j = 0; j < kws.length; j++) {
-        if (t.indexOf(kws[j]) >= 0) scores[id] += kws[j].length > 5 ? 3 : 1;
+        if (t.indexOf(kws[j]) >= 0) {
+          // Longer keyword = more specific = higher weight
+          var weight = kws[j].length > 7 ? 5 : kws[j].length > 4 ? 3 : 1;
+          scores[id] += weight;
+        }
       }
     }
     var best = null, top = 0;
     for (var k = 0; k < ids.length; k++) {
       if (scores[ids[k]] > top) { top = scores[ids[k]]; best = ids[k]; }
     }
-    return top >= 1 ? best : null;
+    // Return best match even if score is low (min 1)
+    return best;
   }
 
   function selectAgent(id) {
@@ -1189,7 +1229,6 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         '<button class="msg-act listen">\uD83D\uDD0A Escuchar</button>' +
         '<button class="msg-act copy">\uD83D\uDCCB Copiar</button>' +
         '<button class="msg-act resumir">\u2014 Resumir</button>' +
-        '<button class="msg-act wa">\uD83D\uDCF1 WhatsApp</button>' +
         '<button class="msg-act fav">\u2665 Guardar</button>';
       var textForActs = text;
       var agentForActs = agentId;
@@ -1201,17 +1240,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         navigator.clipboard.writeText(textForActs).then(function() { toast('\uD83D\uDCCB Copiado!'); });
       });
       var resumirBtn = acts.querySelector('.resumir');
-      var waBtn = acts.querySelector('.wa');
       if (resumirBtn) {
         resumirBtn.addEventListener('click', function() {
           $('inp').value = 'Resume en exactamente 3 puntos breves lo anterior';
           send();
-        });
-      }
-      if (waBtn) {
-        waBtn.addEventListener('click', function() {
-          var waMsg = 'IA-NEXO me respondi\xf3:\n\n' + textForActs.slice(0, 500) + (textForActs.length > 500 ? '...' : '');
-          window.open('https://wa.me/?text=' + encodeURIComponent(waMsg), '_blank');
         });
       }
       favBtn.addEventListener('click', function() {
@@ -1263,8 +1295,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     inp.style.height = 'auto';
 
     if (mode === 'auto') {
-      var det = detectAgent(text) || 'sabio';
-      if (det !== cur) selectAgent(det);
+      var det = detectAgent(text);
+      if (det && det !== cur) selectAgent(det);
     }
 
     addMsg('user', text, null);
