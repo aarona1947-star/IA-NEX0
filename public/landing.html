@@ -13,8 +13,37 @@
 :root{--bg:#0a0612;--card:rgba(20,12,40,.7);--tx:#f0f0ff;--t2:#a89cbf;--cyan:#00f0ff;--purple:#b14eff;--pink:#ff3df8;--gold:#ffaa3d;--green:#3dffaa;--grad:linear-gradient(135deg,#00c9e8,#b14eff,#ff3df8);}
 html{scroll-behavior:smooth;}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;}
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(0,240,255,.12),transparent 40%),radial-gradient(ellipse at top right,rgba(255,61,248,.1),transparent 40%),radial-gradient(ellipse at bottom,rgba(177,78,255,.15),transparent 50%);}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg::before{content:'';position:absolute;inset:-50%;
+  background:conic-gradient(from 0deg at 50% 50%,
+    rgba(0,240,255,.15) 0deg,
+    rgba(177,78,255,.12) 90deg,
+    rgba(255,61,248,.1) 180deg,
+    rgba(0,240,255,.08) 270deg,
+    rgba(0,240,255,.15) 360deg);
+  animation:spin-grad 18s linear infinite;
+  border-radius:50%;
+}
+.bg::after{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 20%,rgba(0,240,255,.12),transparent 45%),
+    radial-gradient(ellipse at 80% 10%,rgba(255,61,248,.1),transparent 40%),
+    radial-gradient(ellipse at 50% 90%,rgba(177,78,255,.14),transparent 50%);
+  animation:pulse-bg 8s ease-in-out infinite alternate;
+}
+@keyframes spin-grad{to{transform:rotate(360deg)}}
+@keyframes pulse-bg{
+  0%{opacity:.6}
+  50%{opacity:1}
+  100%{opacity:.7}
+}
+.orb-l{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;}
+.orb-l-1{width:400px;height:400px;background:radial-gradient(circle,rgba(0,240,255,.2),transparent 70%);top:-10%;left:-8%;animation:orb-move1 14s ease-in-out infinite alternate;}
+.orb-l-2{width:350px;height:350px;background:radial-gradient(circle,rgba(255,61,248,.18),transparent 70%);top:20%;right:-6%;animation:orb-move2 17s ease-in-out infinite alternate;}
+.orb-l-3{width:450px;height:450px;background:radial-gradient(circle,rgba(177,78,255,.15),transparent 70%);bottom:-15%;left:30%;animation:orb-move3 20s ease-in-out infinite alternate;}
+@keyframes orb-move1{to{transform:translate(60px,80px) scale(1.15)}}
+@keyframes orb-move2{to{transform:translate(-50px,60px) scale(.9)}}
+@keyframes orb-move3{to{transform:translate(30px,-60px) scale(1.1)}}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(10,6,18,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06);}
 .nav-brand{display:flex;align-items:center;gap:10px;}
 .nav-logo{width:36px;height:36px;}
@@ -27,7 +56,17 @@ section{position:relative;z-index:1;}
 .hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hero-title{font-family:'Syne',sans-serif;font-size:clamp(38px,7vw,82px);font-weight:900;line-height:1.1;margin-bottom:22px;}
-.hero-title .grad{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-title .grad{
+  background:linear-gradient(135deg,#00f0ff,#b14eff,#ff3df8,#00f0ff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:grad-move 5s ease infinite;
+}
+@keyframes grad-move{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
 .hero-sub{font-size:clamp(15px,2vw,19px);color:var(--t2);max-width:580px;line-height:1.8;margin-bottom:40px;}
 .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
 .btn-primary{padding:17px 38px;background:var(--grad);border:none;border-radius:32px;color:#000;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 0 30px rgba(0,240,255,.3);}
@@ -39,7 +78,13 @@ section{position:relative;z-index:1;}
 .stats{padding:50px 5%;display:flex;justify-content:center;gap:0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);}
 .stat{text-align:center;padding:24px 48px;position:relative;}
 .stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:rgba(177,78,255,.2);}
-.stat-val{font-family:'Syne',sans-serif;font-size:38px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-val{
+  font-family:'Syne',sans-serif;font-size:38px;font-weight:900;
+  background:linear-gradient(135deg,#00f0ff,#b14eff,#ff3df8,#00f0ff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:grad-move 6s ease infinite;
+}
 .stat-lbl{font-size:11px;color:var(--t2);margin-top:5px;letter-spacing:1px;text-transform:uppercase;}
 .features{padding:90px 5%;}
 .section-label{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:14px;}
@@ -142,7 +187,7 @@ footer{padding:40px 5%;border-top:1px solid rgba(255,255,255,.06);display:flex;a
 </style>
 </head>
 <body>
-<div class="bg"></div>
+<div class="bg"><div class="orb-l orb-l-1"></div><div class="orb-l orb-l-2"></div><div class="orb-l orb-l-3"></div></div>
 
 <nav>
   <div class="nav-brand">
@@ -285,6 +330,7 @@ footer{padding:40px 5%;border-top:1px solid rgba(255,255,255,.06);display:flex;a
   </div>
 </section>
 
+<section style="padding:60px 5%;background:rgba(20,12,40,.4);"><div style="max-width:680px;margin:0 auto;text-align:center;"><div style="font-size:11px;color:#00f0ff;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Tu privacidad</div><h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;margin-bottom:16px;">Simple y transparente</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;"><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128274;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Solo tu correo</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">Solo guardamos tu correo y contrase&ntilde;a encriptada. Nada m&aacute;s.</div></div><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128584;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Sin terceros</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">No vendemos ni compartimos tus datos con nadie. Nunca.</div></div><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128465;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Cancela cuando quieras</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">Borra tu cuenta en cualquier momento. Sin preguntas.</div></div></div></div></section>
 <section class="faq" id="faq">
   <div class="section-label">Preguntas frecuentes</div>
   <h2 class="section-title" style="margin-bottom:40px;">&iquest;Tienes dudas?</h2>

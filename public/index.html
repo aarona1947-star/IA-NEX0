@@ -624,6 +624,74 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 :root[data-theme="light"] .l-tab.on{background:#ddd8f5!important;}
 :root[data-theme="light"] .hist-item{color:#1a0d36!important;}
 :root[data-theme="light"] .msg-act{background:rgba(220,215,255,.8)!important;color:#5e4b85!important;}
+
+.msg-counter{
+  display:flex;align-items:center;gap:6px;padding:4px 10px;
+  background:var(--card2);border:1px solid var(--border);border-radius:14px;
+  font-size:10px;font-weight:600;color:var(--t2);
+}
+.msg-counter-bar{width:50px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.msg-counter-fill{height:100%;border-radius:2px;transition:width .4s,background .4s;}
+.msg-counter.warn{border-color:rgba(255,170,61,.4);color:var(--gold);}
+.msg-counter.danger{border-color:rgba(255,61,157,.4);color:var(--neon-pink);animation:blink .8s ease-in-out infinite alternate;}
+@keyframes blink{from{opacity:1}to{opacity:.5}}
+
+.ai-disclaimer{
+  font-size:9px;color:var(--t3);padding:3px 0 0 2px;
+  display:flex;align-items:center;gap:4px;
+}
+
+/* FIX 3 - FORGOT PASSWORD link */
+.forgot-pw{
+  text-align:center;margin-top:8px;font-size:11px;color:var(--t3);
+}
+.forgot-pw span{color:var(--neon-cyan);cursor:pointer;text-decoration:underline;text-underline-offset:2px;}
+
+/* FIX 4 - COLD START / ERROR page */
+.cold-start{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);display:none;
+  flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:24px;
+}
+.cold-start.on{display:flex;}
+.cold-start-ico{font-size:48px;animation:spin-slow 4s linear infinite;}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.cold-start h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;}
+.cold-start p{font-size:13px;color:var(--t2);max-width:280px;line-height:1.6;}
+.cold-start-btn{padding:12px 28px;background:var(--grad);border:none;border-radius:22px;color:#000;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+
+/* FIX 5 - SESSION EXPIRED toast */
+.session-msg{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);
+  background:rgba(255,170,61,.12);border:1px solid rgba(255,170,61,.4);
+  padding:10px 20px;border-radius:13px;font-size:12px;
+  color:var(--gold);z-index:999;display:none;text-align:center;max-width:320px;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+.session-msg.on{display:block;animation:slideDown .3s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%)}}
+
+/* FIX 6 - FILE UPLOAD button */
+.file-btn{
+  width:38px;height:38px;border-radius:12px;flex-shrink:0;
+  background:var(--card2);border:1px solid var(--border);
+  color:var(--t2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  transition:all .2s;
+}
+.file-btn:hover{border-color:var(--neon-purple);color:var(--neon-purple);}
+.file-preview{
+  display:none;align-items:center;gap:8px;padding:7px 14px;
+  background:var(--card2);border-top:1px solid var(--border);
+  font-size:11px;color:var(--t2);
+}
+.file-preview.on{display:flex;}
+.file-preview-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-preview-x{cursor:pointer;color:var(--neon-pink);font-size:14px;padding:0 4px;}
+
+/* FIX 7 - RESUMIR button */
+.msg-act.resumir{border-color:rgba(0,240,255,.25);color:var(--neon-cyan);}
+
 </style>
 </head>
 <body>
@@ -667,6 +735,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="l-err" id="err-l"></div>
       <button class="l-btn" id="btn-l">Entrar al Nexo</button>
       <div class="l-link">&iquest;Sin cuenta? <span id="link-r">Reg&iacute;strate gratis</span></div>
+    <div class="forgot-pw"><span id="forgot-pw-btn">&iquest;Olvidaste tu contrase&ntilde;a?</span></div>
     </div>
     <div class="l-form" id="lf-r">
       <div class="l-field"><label>Nombre</label><input class="l-inp" id="rn" type="text" placeholder="Como te llamamos?" autocomplete="name"></div>
@@ -687,6 +756,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="tb-name">IA<em>-NEXO</em></div>
     </div>
     <div class="tb-r">
+      <div class="msg-counter" id="msg-counter" title="Mensajes usados hoy">
+        <span id="msg-counter-text">0/10</span>
+        <div class="msg-counter-bar"><div class="msg-counter-fill" id="msg-counter-fill" style="width:0%;background:var(--neon-cyan)"></div></div>
+      </div>
       <div class="ub" id="ub-trigger" style="cursor:pointer;" title="Mi cuenta"><div class="ub-av" id="ub-av">U</div><div class="ub-nm" id="ub-nm">Usuario</div></div>
       <div class="mode-pill desktop-only">
         <button class="m-opt auto on" id="m-auto" data-mode="auto"><span>&#129302;</span> Auto</button>
@@ -754,7 +827,14 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="inputbar">
+        <div class="file-preview" id="file-preview">
+          <span style="font-size:16px" id="file-preview-ico">&#128206;</span>
+          <span class="file-preview-name" id="file-preview-name">archivo</span>
+          <span class="file-preview-x" id="file-preview-x">&#10005;</span>
+        </div>
+        <input type="file" id="file-input" style="display:none" accept="image/*,.pdf,.txt,.csv,.json,.py,.js,.html,.css,.md">
         <div class="inputwrap">
+          <button class="file-btn" id="file-btn" title="Adjuntar archivo">&#128206;</button>
           <div class="inputbox">
             <textarea class="inputfield" id="inp" placeholder="Pregunta lo que quieras..." rows="1"></textarea>
             <button class="send" id="send-btn">&#9654;</button>
@@ -935,6 +1015,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     }
     renderHist();
     renderWelcome();
+    updateMsgCounter();
   }
 
   function doLogout() {
@@ -1091,7 +1172,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     var meta = '';
     if (role === 'ai' && a) {
       var time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-      meta = '<div class="mmeta" style="color:' + a.color + '">' + a.name + ' - ' + time + '</div>';
+      meta = '<div class="mmeta" style="color:' + a.color + '">' + a.name + ' - ' + time + '</div>' +
+             '<div class="ai-disclaimer">\u26A0\uFE0F Verifica informaci\u00f3n importante. La IA puede cometer errores.</div>';
     }
     var avatar = role === 'user' ? '\uD83D\uDC64' : (a ? a.icon : '\u26A0');
     d.innerHTML =
@@ -1106,6 +1188,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       acts.innerHTML =
         '<button class="msg-act listen">\uD83D\uDD0A Escuchar</button>' +
         '<button class="msg-act copy">\uD83D\uDCCB Copiar</button>' +
+        '<button class="msg-act resumir">\u2014 Resumir</button>' +
+        '<button class="msg-act wa">\uD83D\uDCF1 WhatsApp</button>' +
         '<button class="msg-act fav">\u2665 Guardar</button>';
       var textForActs = text;
       var agentForActs = agentId;
@@ -1116,6 +1200,20 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       copyBtn.addEventListener('click', function() {
         navigator.clipboard.writeText(textForActs).then(function() { toast('\uD83D\uDCCB Copiado!'); });
       });
+      var resumirBtn = acts.querySelector('.resumir');
+      var waBtn = acts.querySelector('.wa');
+      if (resumirBtn) {
+        resumirBtn.addEventListener('click', function() {
+          $('inp').value = 'Resume en exactamente 3 puntos breves lo anterior';
+          send();
+        });
+      }
+      if (waBtn) {
+        waBtn.addEventListener('click', function() {
+          var waMsg = 'IA-NEXO me respondi\xf3:\n\n' + textForActs.slice(0, 500) + (textForActs.length > 500 ? '...' : '');
+          window.open('https://wa.me/?text=' + encodeURIComponent(waMsg), '_blank');
+        });
+      }
       favBtn.addEventListener('click', function() {
         favBtn.classList.toggle('saved');
         if (favBtn.classList.contains('saved')) {
@@ -1203,6 +1301,39 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       busy = false;
       $('send-btn').disabled = false;
     });
+  }
+
+  function updateMsgCounter() {
+    var today = new Date().toDateString();
+    var stored = localStorage.getItem('nx-day-msgs');
+    var data = { day: today, count: 0 };
+    try { data = JSON.parse(stored) || data; } catch(e) {}
+    if (data.day !== today) { data = { day: today, count: 0 }; localStorage.setItem('nx-day-msgs', JSON.stringify(data)); }
+    var count = data.count;
+    var max = 10; // free plan
+    var pct = Math.min((count/max)*100, 100);
+    var counter = $('msg-counter');
+    var fill = $('msg-counter-fill');
+    var txt = $('msg-counter-text');
+    if (txt) txt.textContent = count + '/' + max;
+    if (fill) { fill.style.width = pct + '%'; fill.style.background = pct>=90?'var(--neon-pink)':pct>=60?'var(--gold)':'var(--neon-cyan)'; }
+    if (counter) { counter.className = 'msg-counter' + (pct>=90?' danger':pct>=60?' warn':''); }
+    if (count >= max) {
+      toast('\uD83D\uDEAB L\xedmite diario. Upgrade a Pro para mensajes ilimitados.');
+      return false;
+    }
+    return true;
+  }
+
+  function incrementDayCount() {
+    var today = new Date().toDateString();
+    var stored = localStorage.getItem('nx-day-msgs');
+    var data = { day: today, count: 0 };
+    try { data = JSON.parse(stored) || data; } catch(e) {}
+    if (data.day !== today) data = { day: today, count: 0 };
+    data.count++;
+    localStorage.setItem('nx-day-msgs', JSON.stringify(data));
+    updateMsgCounter();
   }
 
   function saveChat() {
@@ -1537,6 +1668,93 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       if (ta) { localStorage.setItem('nx-notes', ta.value); toast('\u2705 Nota guardada'); }
     });
 
+    // -- Message counter --
+    updateMsgCounter();
+
+    // -- Forgot password --
+    var forgotBtn = $('forgot-pw-btn');
+    if (forgotBtn) {
+      forgotBtn.addEventListener('click', function() {
+        window.open('https://wa.me/584243602967?text=Hola!+Olvide+mi+contrasena+de+IA-NEXO+y+necesito+recuperarla', '_blank');
+      });
+    }
+
+    // -- File upload --
+    var fileBtn  = $('file-btn');
+    var fileInput = $('file-input');
+    var filePrev = $('file-preview');
+    var filePrevX = $('file-preview-x');
+    var attachedFile = null;
+
+    if (fileBtn) fileBtn.addEventListener('click', function() { if (fileInput) fileInput.click(); });
+
+    if (fileInput) {
+      fileInput.addEventListener('change', function() {
+        var file = this.files[0];
+        if (!file) return;
+        if (file.size > 10 * 1024 * 1024) { toast('Maximo 10MB'); this.value=''; return; }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var b64 = e.target.result.split(',')[1];
+          attachedFile = {
+            data: b64, mimeType: file.type || 'application/octet-stream',
+            fileName: file.name, fileSize: file.size,
+            isImage: file.type.startsWith('image/')
+          };
+          var ico = $('file-preview-ico');
+          var nm  = $('file-preview-name');
+          if (ico) ico.textContent = file.type.startsWith('image/') ? '\uD83D\uDDBC\uFE0F' : '\uD83D\uDCC4';
+          if (nm)  nm.textContent  = file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+          if (filePrev) filePrev.classList.add('on');
+          toast('\uD83D\uDCCE Archivo adjuntado');
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+    }
+
+    if (filePrevX) {
+      filePrevX.addEventListener('click', function() {
+        attachedFile = null;
+        if (filePrev) filePrev.classList.remove('on');
+      });
+    }
+
+    // Override send to include file
+    var origSend = send;
+    send = function() {
+      if (attachedFile) {
+        var inp = $('inp');
+        var text = (inp ? inp.value.trim() : '') || (attachedFile.isImage ? 'Analiza esta imagen.' : 'Analiza este archivo.');
+        if (inp) inp.value = '';
+        if (inp) inp.style.height = 'auto';
+        var det = mode === 'auto' ? (detectAgent(text) || 'sabio') : null;
+        if (det && det !== cur) selectAgent(det);
+        addMsg('user', text + ' [\uD83D\uDCCE ' + attachedFile.fileName + ']', null);
+        hist.push({ role: 'user', content: text });
+        var tid = addTyping();
+        busy = true;
+        $('send-btn').disabled = true;
+        fetch(AGENTS[cur].ep, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
+          body: JSON.stringify({ text: text, history: hist.slice(-6), file: attachedFile })
+        })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+        .then(function(res) {
+          rmTyping(tid);
+          if (!res.ok || res.data.error) addMsg('ai', '! ' + (res.data.error || 'Error'), null, true);
+          else { addMsg('ai', res.data.reply, cur); hist.push({ role: 'assistant', content: res.data.reply }); saveChat(); }
+          busy = false; $('send-btn').disabled = false;
+          attachedFile = null;
+          if (filePrev) filePrev.classList.remove('on');
+        })
+        .catch(function(e) { rmTyping(tid); addMsg('ai','! ' + e.message,null,true); busy=false; $('send-btn').disabled=false; attachedFile=null; });
+      } else {
+        origSend();
+      }
+    };
+
     // Favorites
     var favFab = $('fav-fab');
     var favClose = $('fav-close');
@@ -1620,6 +1838,24 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   } else {
     setupApp();
   }
+
+  // -- COLD START RETRY --
+  window.retryColdStart = function() {
+    var cs = $('cold-start');
+    if (cs) cs.classList.remove('on');
+    window.location.reload();
+  };
+
+  // -- GLOBAL FETCH ERROR HANDLER --
+  var origFetch = window.fetch;
+  window.fetch = function() {
+    return origFetch.apply(this, arguments).catch(function(err) {
+      var cs = $('cold-start');
+      if (cs) cs.classList.add('on');
+      return Promise.reject(err);
+    });
+  };
+
 })();
 </script>
 
@@ -1699,6 +1935,19 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="help-tip"><span class="help-tip-num">5</span><span>Puedes copiar el c&oacute;digo de las respuestas con el bot&oacute;n de copiar.</span></div>
     </div>
   </div>
+</div>
+
+<!-- COLD START -->
+<div class="cold-start" id="cold-start">
+  <div class="cold-start-ico">&#9881;</div>
+  <h2>Servidor iniciando...</h2>
+  <p>El servidor est&aacute; despertando. Esto tarda unos segundos. &iexcl;Ya casi!</p>
+  <button class="cold-start-btn" onclick="retryColdStart()">&#8635; Reintentar</button>
+</div>
+
+<!-- SESSION EXPIRED -->
+<div class="session-msg" id="session-msg">
+  &#128274; Tu sesi&oacute;n venci&oacute;. Tus datos est&aacute;n seguros. Inicia sesi&oacute;n de nuevo.
 </div>
 
 <!-- PANEL OVERLAY -->
