@@ -1964,27 +1964,65 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     var wc = document.querySelector('.welcome');
     if (wc) wc.remove();
     var c = $('msgs');
-    var prompt = ($('img-prompt-ta') ? $('img-prompt-ta').value : 'imagen') || 'imagen generada';
+    var ta = $('img-prompt-ta');
+    var prompt = (ta ? ta.value.trim() : '') || 'imagen generada';
+    var imgUrl = currentImgUrl;
 
     // User bubble
     var ud = document.createElement('div');
     ud.className = 'msg user';
-    ud.innerHTML = '<div class="mav">\uD83D\uDC64</div>' +
-      '<div style="flex:1;min-width:0"><div class="mbu" style="background:var(--grad);color:#fff">\uD83C\uDFA8 ' +
-      escapeHtml(prompt) + '</div></div>';
+    var uav = document.createElement('div');
+    uav.className = 'mav';
+    uav.textContent = String.fromCharCode(0xD83D, 0xDC64);
+    var uwrap = document.createElement('div');
+    uwrap.style.cssText = 'flex:1;min-width:0';
+    var ubub = document.createElement('div');
+    ubub.className = 'mbu';
+    ubub.style.cssText = 'background:var(--grad);color:#fff';
+    ubub.textContent = String.fromCharCode(0xD83C, 0xDFA8) + ' ' + prompt;
+    uwrap.appendChild(ubub);
+    ud.appendChild(uav);
+    ud.appendChild(uwrap);
     c.appendChild(ud);
 
-    // AI bubble with image
+    // AI bubble
     var ad = document.createElement('div');
     ad.className = 'msg ai';
-    ad.innerHTML = '<div class="mav">\uD83C\uDFA8</div>' +
-      '<div style="flex:1;min-width:0"><div class="mbu">' +
-      '<div style="font-size:10px;color:var(--t2);margin-bottom:8px">\uD83C\uDFA8 Generado con Flux AI &bull; Clic para ampliar</div>' +
-      '<img src="' + currentImgUrl + '" style="width:100%;max-width:420px;border-radius:12px;border:1px solid var(--border-glow);cursor:pointer;display:block;" ' +
-      'onclick="window.open(this.src,'_blank')" loading="lazy">' +
-      '<div style="margin-top:8px"><a href="' + currentImgUrl + '" download="ia-nexo.jpg" target="_blank" ' +
-      'style="font-size:11px;color:var(--neon-purple);text-decoration:none;">\u2B07\uFE0F Descargar imagen</a></div>' +
-      '</div><div class="mmeta" style="color:var(--neon-purple)">Pollinations Flux AI</div></div>';
+    var aav = document.createElement('div');
+    aav.className = 'mav';
+    aav.textContent = String.fromCharCode(0xD83C, 0xDFA8);
+    var awrap = document.createElement('div');
+    awrap.style.cssText = 'flex:1;min-width:0';
+    var abub = document.createElement('div');
+    abub.className = 'mbu';
+    var acap = document.createElement('div');
+    acap.style.cssText = 'font-size:10px;color:var(--t2);margin-bottom:8px';
+    acap.textContent = String.fromCharCode(0xD83C, 0xDFA8) + ' Generado con Flux AI';
+    var aimg = document.createElement('img');
+    aimg.src = imgUrl;
+    aimg.style.cssText = 'width:100%;max-width:420px;border-radius:12px;border:1px solid var(--border-glow);cursor:pointer;display:block';
+    aimg.loading = 'lazy';
+    aimg.addEventListener('click', function() { window.open(imgUrl, '_blank'); });
+    var adl = document.createElement('div');
+    adl.style.cssText = 'margin-top:8px';
+    var adla = document.createElement('a');
+    adla.href = imgUrl;
+    adla.download = 'ia-nexo.jpg';
+    adla.target = '_blank';
+    adla.style.cssText = 'font-size:11px;color:var(--neon-purple);text-decoration:none';
+    adla.textContent = String.fromCharCode(0x2B07, 0xFE0F) + ' Descargar imagen';
+    adl.appendChild(adla);
+    abub.appendChild(acap);
+    abub.appendChild(aimg);
+    abub.appendChild(adl);
+    var ameta = document.createElement('div');
+    ameta.className = 'mmeta';
+    ameta.style.color = 'var(--neon-purple)';
+    ameta.textContent = 'Pollinations Flux AI';
+    awrap.appendChild(abub);
+    awrap.appendChild(ameta);
+    ad.appendChild(aav);
+    ad.appendChild(awrap);
     c.appendChild(ad);
     setTimeout(function() { ad.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
   }
