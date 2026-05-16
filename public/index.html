@@ -869,9 +869,172 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .danger-title{font-size:11px;font-weight:700;color:#ff6b9d;margin-bottom:6px;}
 .danger-btn{width:100%;padding:9px;background:transparent;border:1px solid rgba(255,61,157,.35);border-radius:9px;color:#ff6b9d;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;}
 .danger-btn:hover{background:rgba(255,61,157,.1);}
+
+/* === AI FUTURISTIC LAYER === */
+.ai-bg{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;}
+.ai-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,240,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,240,255,.04) 1px, transparent 1px);
+  background-size:50px 50px;
+  animation:grid-pulse 8s ease-in-out infinite;
+}
+@keyframes grid-pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+.ai-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);pointer-events:none;
+}
+.ai-orb-1{
+  width:500px;height:500px;
+  background:radial-gradient(circle,rgba(0,240,255,.15),transparent 70%);
+  top:-15%;left:-10%;
+  animation:orb-drift-1 22s ease-in-out infinite alternate;
+}
+.ai-orb-2{
+  width:450px;height:450px;
+  background:radial-gradient(circle,rgba(177,78,255,.18),transparent 70%);
+  bottom:-15%;right:-10%;
+  animation:orb-drift-2 18s ease-in-out infinite alternate;
+}
+.ai-orb-3{
+  width:350px;height:350px;
+  background:radial-gradient(circle,rgba(255,61,248,.1),transparent 70%);
+  top:30%;left:40%;
+  animation:orb-drift-3 25s ease-in-out infinite alternate;
+}
+@keyframes orb-drift-1{to{transform:translate(80px,60px) scale(1.2)}}
+@keyframes orb-drift-2{to{transform:translate(-70px,-50px) scale(.9)}}
+@keyframes orb-drift-3{to{transform:translate(50px,-80px) scale(1.15)}}
+
+:root[data-theme="light"] .ai-grid{
+  background-image:
+    linear-gradient(rgba(80,40,180,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80,40,180,.05) 1px, transparent 1px);
+}
+:root[data-theme="light"] .ai-orb-1{background:radial-gradient(circle,rgba(0,180,216,.12),transparent 70%);}
+:root[data-theme="light"] .ai-orb-2{background:radial-gradient(circle,rgba(139,61,255,.12),transparent 70%);}
+:root[data-theme="light"] .ai-orb-3{background:radial-gradient(circle,rgba(184,32,160,.08),transparent 70%);}
+
+/* === ENHANCED LOGO with neural pulse === */
+.tb-name{
+  position:relative;
+  background:linear-gradient(135deg,#00f0ff 0%,#4d7fff 30%,#b14eff 65%,#ff3df8 100%);
+  background-size:200% 200%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:brand-flow 6s ease infinite;
+  font-weight:900;
+  letter-spacing:3px;
+}
+@keyframes brand-flow{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+/* === AGENT AVATARS with glow === */
+.ag-box{
+  position:relative;
+  box-shadow:0 0 0 0 currentColor;
+  transition:all .3s;
+}
+.ag.on .ag-box{
+  box-shadow:0 0 25px currentColor,inset 0 0 15px rgba(255,255,255,.1);
+  animation:agent-pulse 2.5s ease-in-out infinite;
+}
+@keyframes agent-pulse{
+  0%,100%{box-shadow:0 0 20px currentColor,inset 0 0 15px rgba(255,255,255,.1)}
+  50%{box-shadow:0 0 35px currentColor,inset 0 0 20px rgba(255,255,255,.15)}
+}
+
+/* === MESSAGE BUBBLES enhanced === */
+.msg.ai .mbu{
+  position:relative;
+  background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);
+  backdrop-filter:blur(20px);
+}
+.msg.ai .mbu::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:linear-gradient(180deg,#00f0ff,#b14eff,#ff3df8);
+  border-radius:3px 0 0 3px;opacity:.7;
+}
+
+/* === INPUT BAR enhanced === */
+.inputbox{
+  position:relative;
+  background:var(--input);
+  border:1.5px solid var(--border);
+  transition:all .3s;
+}
+.inputbox:focus-within{
+  border-color:transparent;
+  box-shadow:
+    0 0 0 1px var(--neon-cyan),
+    0 0 25px rgba(0,240,255,.25);
+}
+.inputbox::after{
+  content:'';position:absolute;inset:-1px;border-radius:inherit;
+  background:linear-gradient(135deg,#00f0ff,#b14eff,#ff3df8);
+  z-index:-1;opacity:0;transition:opacity .3s;
+  filter:blur(8px);
+}
+.inputbox:focus-within::after{opacity:.4;}
+
+/* === SEND BUTTON enhanced === */
+.send{
+  background:linear-gradient(135deg,#00c9e8 0%,#b14eff 50%,#ff3df8 100%)!important;
+  background-size:200% 200%!important;
+  animation:send-flow 3s ease infinite;
+  position:relative;
+  box-shadow:0 0 20px rgba(177,78,255,.5);
+}
+@keyframes send-flow{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+/* === SCANLINE EFFECT on typing === */
+.typing-row .mbu{
+  position:relative;overflow:hidden;
+}
+.typing-row .mbu::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(0,240,255,.1),transparent);
+  animation:scan 1.8s linear infinite;
+}
+@keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* === MODE PILL enhanced === */
+.mode-pill{
+  position:relative;
+  background:linear-gradient(135deg,var(--card2),var(--card3));
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border-glow);
+}
+
+/* === FLOATING NEURAL LINES (background) === */
+.neural-lines{
+  position:absolute;inset:0;pointer-events:none;opacity:.3;
+}
+.neural-line{
+  position:absolute;height:1px;
+  background:linear-gradient(90deg,transparent,var(--neon-cyan),transparent);
+  animation:neural-flow 4s linear infinite;
+}
+@keyframes neural-flow{
+  0%{transform:translateX(-100%);opacity:0}
+  50%{opacity:1}
+  100%{transform:translateX(100vw);opacity:0}
+}
 </style>
 </head>
 <body>
+<div class="ai-bg">
+  <div class="ai-grid"></div>
+  <div class="ai-orb ai-orb-1"></div>
+  <div class="ai-orb ai-orb-2"></div>
+  <div class="ai-orb ai-orb-3"></div>
+</div>
 <div class="bg"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
 <div id="js-error"></div>
 
@@ -2545,6 +2708,16 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     if (ref) localStorage.setItem('nx-ref', ref);
   })();
 
+  // Expose functions for inline onclick handlers
+  window.closeUpgrade = closeUpgrade;
+  window.retryColdStart = retryColdStart;
+  window.generateImage = generateImage;
+  window.applyDiscountCode = applyDiscountCode;
+  window.sendImgToChat = sendImgToChat;
+  window.copyRefCode = copyRefCode;
+  window.closeImgModal = closeImgModal;
+  window.clearAllChats = clearAllChats;
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupApp);
   } else {
@@ -2552,11 +2725,11 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   }
 
   // -- COLD START RETRY --
-  window.retryColdStart = function() {
+  function retryColdStart() {
     var cs = $('cold-start');
     if (cs) cs.classList.remove('on');
     window.location.reload();
-  };
+  }
 
   // -- GLOBAL FETCH ERROR HANDLER --
   var origFetch = window.fetch;
