@@ -748,6 +748,93 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);display:inline-block;margin-left:4px;}
 .sync-dot.syncing{background:var(--gold);box-shadow:0 0 6px var(--gold);animation:blink .6s infinite;}
 .sync-dot.offline{background:var(--t3);box-shadow:none;}
+
+/* BIGGER action buttons */
+.msg-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;}
+.msg-act{
+  display:flex;align-items:center;gap:5px;padding:8px 14px;
+  background:var(--card2);backdrop-filter:blur(10px);
+  border:1px solid var(--border);border-radius:14px;
+  color:var(--t2);font-family:inherit;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+}
+.msg-act:hover{border-color:var(--neon-cyan);color:var(--neon-cyan);box-shadow:0 3px 12px rgba(0,240,255,.2);}
+.msg-act.listen.active{background:rgba(177,78,255,.15);border-color:var(--neon-purple);color:var(--neon-purple);}
+.msg-act.fav.saved{background:rgba(255,170,61,.1);border-color:#ffaa3d;color:#ffaa3d;}
+
+/* IMAGE GENERATOR button */
+.img-gen-btn{
+  width:42px;height:42px;border-radius:13px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(177,78,255,.15),rgba(255,61,248,.15));
+  border:1px solid rgba(177,78,255,.35);
+  color:var(--neon-purple);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;transition:all .25s;
+}
+.img-gen-btn:hover{
+  background:linear-gradient(135deg,rgba(177,78,255,.25),rgba(255,61,248,.25));
+  box-shadow:0 0 18px rgba(177,78,255,.4);transform:scale(1.05);
+}
+
+/* IMAGE MODAL */
+.img-modal{
+  position:fixed;inset:0;z-index:500;display:none;
+  align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(10px);
+}
+.img-modal.on{display:flex;animation:fadeIn .25s ease;}
+@media(min-width:640px){.img-modal{align-items:center;padding:20px;}}
+.img-modal-card{
+  width:100%;max-width:500px;
+  background:var(--card);backdrop-filter:blur(30px);
+  border:1px solid var(--border-glow);
+  border-radius:22px 22px 0 0;padding:24px 22px 32px;
+  box-shadow:0 -20px 60px rgba(177,78,255,.3);
+}
+@media(min-width:640px){.img-modal-card{border-radius:22px;}}
+.img-modal-card::before{content:'';display:block;width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px;}
+.img-modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.img-modal-sub{font-size:12px;color:var(--t2);margin-bottom:16px;line-height:1.6;}
+.img-prompt-ta{
+  width:100%;background:var(--input);border:1px solid var(--border);
+  border-radius:13px;padding:13px 16px;color:var(--tx);
+  font-family:inherit;font-size:14px;outline:none;resize:none;
+  height:80px;line-height:1.55;transition:all .2s;margin-bottom:12px;
+}
+.img-prompt-ta:focus{border-color:var(--neon-purple);}
+.img-prompt-ta::placeholder{color:var(--t3);}
+.img-style-row{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;}
+.img-style{
+  padding:6px 13px;border-radius:10px;font-size:11px;font-weight:600;
+  border:1px solid var(--border);background:var(--card2);color:var(--t2);
+  cursor:pointer;transition:all .2s;
+}
+.img-style.on,.img-style:hover{border-color:var(--neon-purple);color:var(--neon-purple);background:rgba(177,78,255,.08);}
+.img-gen-row{display:flex;gap:10px;}
+.img-gen-submit{
+  flex:1;padding:13px;background:linear-gradient(135deg,#b14eff,#ff3df8);
+  border:none;border-radius:13px;color:#fff;font-family:'Syne',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;
+}
+.img-gen-submit:hover{box-shadow:0 0 25px rgba(177,78,255,.5);}
+.img-gen-submit:disabled{opacity:.5;cursor:not-allowed;}
+.img-cancel{
+  padding:13px 18px;background:transparent;border:1px solid var(--border);
+  border-radius:13px;color:var(--t2);font-family:inherit;font-size:13px;cursor:pointer;
+}
+.img-result{margin-top:14px;display:none;}
+.img-result img{width:100%;border-radius:14px;border:1px solid var(--border-glow);}
+.img-result-actions{display:flex;gap:8px;margin-top:10px;}
+.img-dl{
+  flex:1;padding:10px;background:transparent;border:1px solid rgba(0,240,255,.3);
+  border-radius:10px;color:var(--neon-cyan);font-family:inherit;
+  font-size:12px;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;display:block;
+}
+.img-send-chat{
+  flex:1;padding:10px;background:linear-gradient(135deg,rgba(0,240,255,.15),rgba(177,78,255,.15));
+  border:1px solid var(--border-glow);border-radius:10px;
+  color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;
+}
 </style>
 </head>
 <body>
@@ -883,7 +970,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="inputbar">
-        <div class="file-preview"  id="file-preview">
+        <button class="img-gen-btn" id="img-gen-btn" title="Generar imagen con IA">&#127912;</button>
+        <div class="file-preview"   id="file-preview">
           <span style="font-size:16px" id="file-preview-ico">&#128206;</span>
           <span class="file-preview-name" id="file-preview-name">archivo</span>
           <span class="file-preview-x" id="file-preview-x">&#10005;</span>
@@ -1293,6 +1381,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     var a = agentId ? AGENTS[agentId] : null;
     var d = document.createElement('div');
     d.className = 'msg ' + role + (isErr ? ' err' : '');
+    var isAI = role === 'ai';
     var meta = '';
     if (role === 'ai' && a) {
       var time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -1304,6 +1393,15 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       '<div class="mav">' + avatar + '</div>' +
       '<div style="flex:1;min-width:0"><div class="mbu">' + fmtText(text) + '</div>' + meta + '</div>';
     c.appendChild(d);
+
+    // Scroll: for AI messages go to TOP of message; for user go to bottom
+    if (isAI) {
+      setTimeout(function() {
+        d.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    } else {
+      c.scrollTop = c.scrollHeight;
+    }
 
     // Action buttons on AI messages
     if (role === 'ai' && !isErr && agentId) {
@@ -1345,7 +1443,6 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       if (innerDiv) innerDiv.appendChild(acts);
     }
 
-    c.scrollTop = c.scrollHeight;
   }
 
   function addTyping() {
@@ -1362,7 +1459,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       '<span style="font-size:11px;color:var(--t2);margin-left:5px">' + a.name + ' pensando...</span>' +
       '</div></div></div>';
     c.appendChild(d);
-    c.scrollTop = c.scrollHeight;
+    d.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return id;
   }
 
@@ -1804,6 +1901,89 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       }
     })
     .catch(function() { if (msgEl) { msgEl.className='code-msg err'; msgEl.textContent='Error de conexion.'; } });
+  }
+
+  // IMAGE GENERATOR
+  var currentImgUrl = '';
+  var selectedStyle = '';
+
+  function openImgModal() {
+    var modal = $('img-modal');
+    if (modal) modal.classList.add('on');
+    var ta = $('img-prompt-ta');
+    if (ta) { ta.value = ''; ta.focus(); }
+    var result = $('img-result');
+    if (result) result.style.display = 'none';
+    var btn = $('img-gen-submit');
+    if (btn) { btn.disabled = false; btn.textContent = '\u2728 Generar'; }
+  }
+
+  function closeImgModal() {
+    var modal = $('img-modal');
+    if (modal) modal.classList.remove('on');
+  }
+
+  function generateImage() {
+    var ta = $('img-prompt-ta');
+    var prompt = ta ? ta.value.trim() : '';
+    if (!prompt) { toast('Describe la imagen primero'); return; }
+    var fullPrompt = prompt + (selectedStyle ? ', ' + selectedStyle : '') + ', high quality, 4k, detailed';
+    var btn = $('img-gen-submit');
+    if (btn) { btn.disabled = true; btn.textContent = 'Generando...'; }
+    var result = $('img-result');
+    if (result) result.style.display = 'none';
+    var seed = Math.floor(Math.random() * 9999999);
+    var url = 'https://image.pollinations.ai/prompt/' +
+      encodeURIComponent(fullPrompt) +
+      '?width=1024&height=1024&seed=' + seed +
+      '&model=flux&nologo=true&nofeed=true&enhance=true';
+    currentImgUrl = url;
+    var img = $('img-result-img');
+    if (img) {
+      img.src = '';
+      img.onload = function() {
+        if (result) result.style.display = 'block';
+        if (btn) { btn.disabled = false; btn.textContent = '\u2728 Generar otra'; }
+        var dlLink = $('img-dl-link');
+        if (dlLink) dlLink.href = url;
+      };
+      img.onerror = function() {
+        if (btn) { btn.disabled = false; btn.textContent = '\u2728 Generar'; }
+        toast('Error al generar. Intenta de nuevo.');
+      };
+      img.src = url;
+    }
+  }
+
+  function sendImgToChat() {
+    if (!currentImgUrl) return;
+    closeImgModal();
+    var wc = document.querySelector('.welcome');
+    if (wc) wc.remove();
+    var c = $('msgs');
+    var prompt = ($('img-prompt-ta') ? $('img-prompt-ta').value : 'imagen') || 'imagen generada';
+
+    // User bubble
+    var ud = document.createElement('div');
+    ud.className = 'msg user';
+    ud.innerHTML = '<div class="mav">\uD83D\uDC64</div>' +
+      '<div style="flex:1;min-width:0"><div class="mbu" style="background:var(--grad);color:#fff">\uD83C\uDFA8 ' +
+      escapeHtml(prompt) + '</div></div>';
+    c.appendChild(ud);
+
+    // AI bubble with image
+    var ad = document.createElement('div');
+    ad.className = 'msg ai';
+    ad.innerHTML = '<div class="mav">\uD83C\uDFA8</div>' +
+      '<div style="flex:1;min-width:0"><div class="mbu">' +
+      '<div style="font-size:10px;color:var(--t2);margin-bottom:8px">\uD83C\uDFA8 Generado con Flux AI &bull; Clic para ampliar</div>' +
+      '<img src="' + currentImgUrl + '" style="width:100%;max-width:420px;border-radius:12px;border:1px solid var(--border-glow);cursor:pointer;display:block;" ' +
+      'onclick="window.open(this.src,'_blank')" loading="lazy">' +
+      '<div style="margin-top:8px"><a href="' + currentImgUrl + '" download="ia-nexo.jpg" target="_blank" ' +
+      'style="font-size:11px;color:var(--neon-purple);text-decoration:none;">\u2B07\uFE0F Descargar imagen</a></div>' +
+      '</div><div class="mmeta" style="color:var(--neon-purple)">Pollinations Flux AI</div></div>';
+    c.appendChild(ad);
+    setTimeout(function() { ad.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
   }
 
   function openUserPanel() {
@@ -2272,6 +2452,34 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   </div>
   <div class="code-msg" id="code-msg"></div>
   <button class="upgrade-dismiss" onclick="closeUpgrade()">Continuar con plan gratuito</button>
+  </div>
+</div>
+
+<!-- IMAGE GENERATOR MODAL -->
+<div class="img-modal" id="img-modal">
+  <div class="img-modal-card">
+    <div class="img-modal-title">&#127912; Generar Imagen</div>
+    <div class="img-modal-sub">Describe lo que quieres ver. Usa detalles: colores, estilo, ambiente.</div>
+    <textarea class="img-prompt-ta" id="img-prompt-ta" placeholder="Ej: ciudad futurista de noche con luces de neon, fotorrealista..."></textarea>
+    <div class="img-style-row">
+      <div class="img-style on" data-style="">Fotorrealista</div>
+      <div class="img-style" data-style="digital art, vibrant colors">Arte Digital</div>
+      <div class="img-style" data-style="oil painting, impressionist">Pintura</div>
+      <div class="img-style" data-style="anime style, detailed">Anime</div>
+      <div class="img-style" data-style="3D render, cinema 4d">3D</div>
+      <div class="img-style" data-style="watercolor, soft">Acuarela</div>
+    </div>
+    <div class="img-gen-row">
+      <button class="img-gen-submit" id="img-gen-submit" onclick="generateImage()">&#10024; Generar</button>
+      <button class="img-cancel" onclick="closeImgModal()">Cancelar</button>
+    </div>
+    <div class="img-result" id="img-result">
+      <img id="img-result-img" src="" alt="Imagen generada">
+      <div class="img-result-actions">
+        <a class="img-dl" id="img-dl-link" href="" download="ia-nexo-imagen.jpg" target="_blank">&#11015; Descargar</a>
+        <button class="img-send-chat" onclick="sendImgToChat()">&#128172; Enviar al chat</button>
+      </div>
+    </div>
   </div>
 </div>
 
