@@ -692,6 +692,62 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 /* FIX 7 - RESUMIR button */
 .msg-act.resumir{border-color:rgba(0,240,255,.25);color:var(--neon-cyan);}
 
+
+/* UPGRADE MODAL */
+.upgrade-modal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);}
+.upgrade-modal.on{display:flex;animation:fadeIn .3s ease;}
+.upgrade-card{width:100%;max-width:440px;background:var(--card);border:1px solid rgba(177,78,255,.4);border-radius:24px;padding:32px 28px;text-align:center;box-shadow:0 30px 80px rgba(177,78,255,.35);position:relative;overflow:hidden;}
+.upgrade-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#00f0ff,#b14eff,#ff3df8);}
+.upgrade-ico{font-size:52px;margin-bottom:12px;}
+.upgrade-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:900;margin-bottom:8px;background:linear-gradient(135deg,#00f0ff,#b14eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.upgrade-sub{font-size:13px;color:var(--t2);margin-bottom:24px;line-height:1.65;}
+.upgrade-price{font-family:'Syne',sans-serif;font-size:38px;font-weight:900;color:var(--neon-cyan);margin-bottom:4px;}
+.upgrade-period{font-size:12px;color:var(--t2);margin-bottom:20px;}
+.upgrade-features{list-style:none;text-align:left;margin-bottom:24px;}
+.upgrade-features li{font-size:13px;padding:5px 0;display:flex;align-items:center;gap:8px;}
+.upgrade-features li::before{content:'\u2713';color:var(--neon-cyan);font-weight:700;}
+.upgrade-btn{width:100%;padding:15px;background:linear-gradient(135deg,#00c9e8,#b14eff);border:none;border-radius:13px;color:#000;font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:10px;transition:all .2s;}
+.upgrade-btn:hover{box-shadow:0 0 30px rgba(0,240,255,.4);transform:translateY(-1px);}
+.upgrade-dismiss{width:100%;padding:11px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--t2);font-family:inherit;font-size:12px;cursor:pointer;}
+
+/* TRIAL BADGE */
+.trial-badge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;background:rgba(177,78,255,.15);border:1px solid rgba(177,78,255,.3);font-size:10px;font-weight:700;color:var(--neon-purple);}
+
+/* REFERRAL SECTION in user panel */
+.ref-section{padding:12px;background:linear-gradient(135deg,rgba(0,240,255,.06),rgba(177,78,255,.06));border:1px solid var(--border-glow);border-radius:12px;margin-top:4px;}
+.ref-title{font-size:11px;font-weight:700;color:var(--neon-cyan);margin-bottom:6px;}
+.ref-desc{font-size:10px;color:var(--t2);margin-bottom:8px;line-height:1.5;}
+.ref-link-box{background:var(--input);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:10px;color:var(--t2);word-break:break-all;cursor:pointer;transition:all .2s;}
+.ref-link-box:hover{border-color:var(--neon-cyan);}
+.ref-copy-btn{width:100%;padding:8px;margin-top:6px;background:transparent;border:1px solid rgba(0,240,255,.3);border-radius:9px;color:var(--neon-cyan);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* VOICE MODE */
+.voice-btn{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:var(--card2);border:2px solid var(--border);
+  color:var(--t2);cursor:pointer;display:flex;align-items:center;
+  justify-content:center;font-size:18px;transition:all .25s;
+}
+.voice-btn.listening{
+  background:rgba(255,61,157,.15)!important;
+  border-color:var(--neon-pink)!important;color:var(--neon-pink)!important;
+  animation:voice-pulse 1s ease-in-out infinite;
+}
+@keyframes voice-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,61,157,.4)}50%{box-shadow:0 0 0 10px rgba(255,61,157,0)}}
+
+/* DISCOUNT CODE in upgrade modal */
+.code-row{display:flex;gap:8px;margin-top:14px;}
+.code-input{flex:1;background:var(--input);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--tx);font-family:inherit;font-size:13px;outline:none;text-transform:uppercase;}
+.code-input:focus{border-color:var(--neon-cyan);}
+.code-btn{padding:10px 16px;background:transparent;border:1px solid rgba(0,240,255,.35);border-radius:10px;color:var(--neon-cyan);font-family:'Syne',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.code-msg{font-size:11px;margin-top:6px;display:none;}
+.code-msg.ok{color:var(--green);display:block;}
+.code-msg.err{color:var(--neon-pink);display:block;}
+
+/* CLOUD SYNC indicator */
+.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);display:inline-block;margin-left:4px;}
+.sync-dot.syncing{background:var(--gold);box-shadow:0 0 6px var(--gold);animation:blink .6s infinite;}
+.sync-dot.offline{background:var(--t3);box-shadow:none;}
 </style>
 </head>
 <body>
@@ -753,7 +809,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="tb-l">
       <button class="mob-ham" id="ham">&#9776;</button>
       <svg width="32" height="32"><use href="#ix-logo"/></svg>
-      <div class="tb-name">IA<em>-NEXO</em></div>
+      <div class="tb-name">IA<em>-NEXO</em><span class="sync-dot" id="sync-dot" title="Sincronizado con la nube"></span></div>
     </div>
     <div class="tb-r">
       <div class="msg-counter" id="msg-counter" title="Mensajes usados hoy">
@@ -827,7 +883,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="inputbar">
-        <div class="file-preview" id="file-preview">
+        <div class="file-preview"  id="file-preview">
           <span style="font-size:16px" id="file-preview-ico">&#128206;</span>
           <span class="file-preview-name" id="file-preview-name">archivo</span>
           <span class="file-preview-x" id="file-preview-x">&#10005;</span>
@@ -835,6 +891,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         <input type="file" id="file-input" style="display:none" accept="image/*,.pdf,.txt,.csv,.json,.py,.js,.html,.css,.md">
         <div class="inputwrap">
           <button class="file-btn" id="file-btn" title="Adjuntar archivo">&#128206;</button>
+          <button class="voice-btn" id="voice-btn" title="Mantener para hablar">&#127897;&#65039;</button>
           <div class="inputbox">
             <textarea class="inputfield" id="inp" placeholder="Pregunta lo que quieras..." rows="1"></textarea>
             <button class="send" id="send-btn">&#9654;</button>
@@ -989,6 +1046,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         setBtnBusy('btn-l', false, 'Entrar al Nexo');
         return;
       }
+      localStorage.removeItem('nx-ref');
       saveSession(res.data);
       enterApp();
     })
@@ -1011,10 +1069,11 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       return;
     }
     setBtnBusy('btn-r', true, '');
+    var storedRef = localStorage.getItem('nx-ref') || '';
     fetch('/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre: nm, email: em, password: pw })
+      body: JSON.stringify({ nombre: nm, email: em, password: pw, refCode: storedRef })
     })
     .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
     .then(function(res) {
@@ -1034,7 +1093,14 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 
   function saveSession(d) {
     TOKEN = d.token;
-    USER  = { nombre: d.nombre, email: d.email };
+    USER  = {
+      nombre: d.nombre, email: d.email,
+      plan: d.plan || 'free',
+      trialDays: d.trialDays || 0,
+      refCode: d.refCode || '',
+      planExpiry: d.planExpiry || null,
+      trialExpiry: d.trialExpiry || null
+    };
     localStorage.setItem('nx-tok', TOKEN);
     localStorage.setItem('nx-user', JSON.stringify(USER));
   }
@@ -1051,6 +1117,24 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     renderHist();
     renderWelcome();
     updateMsgCounter();
+    // Merge cloud chats
+    loadCloudChats(function(cloudChats) {
+      if (!cloudChats.length) return;
+      var localIds = {};
+      chats.forEach(function(c) { localIds[c.id] = true; });
+      cloudChats.forEach(function(c) { if (!localIds[c.id]) chats.unshift(c); });
+      chats.sort(function(a,b) { return (b.updatedAt||b.id) > (a.updatedAt||a.id) ? 1 : -1; });
+      if (chats.length > 20) chats = chats.slice(0, 20);
+      localStorage.setItem('nx-chats', JSON.stringify(chats));
+      renderHist();
+    });
+    updatePlanBadge();
+    // Show trial welcome
+    if (USER && USER.plan === 'trial') {
+      setTimeout(function() {
+        toast('\uD83C\uDF89 Bienvenido! Tienes 3 dias Pro gratis activados. \uD83D\uDC4D');
+      }, 800);
+    }
   }
 
   function doLogout() {
@@ -1317,12 +1401,29 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
     .then(function(res) {
       rmTyping(tid);
+      if (res.data && res.data.limitReached) {
+        addMsg('ai', '\uD83D\uDEAB L\u00edmite de mensajes gratuitos alcanzado por hoy.', null, true);
+        showUpgrade('Llegaste al l\u00edmite de ' + (res.data.limit || 10) + ' mensajes gratuitos hoy. Actualiza a Pro para mensajes ilimitados.');
+        busy = false; $('send-btn').disabled = false; return;
+      }
       if (!res.ok || res.data.error) {
         addMsg('ai', '! ' + (res.data.error || 'Error de conexion'), null, true);
       } else {
         addMsg('ai', res.data.reply, cur);
         hist.push({ role: 'assistant', content: res.data.reply });
         saveChat();
+        // Update counter from server response
+        if (res.data.todayMsgs !== undefined) {
+          var fp = parseInt(res.data.todayMsgs);
+          var lim = parseInt(res.data.freeLimit || 10);
+          var pct = Math.min((fp/lim)*100, 100);
+          var fill = $('msg-counter-fill');
+          var txt  = $('msg-counter-text');
+          var counter = $('msg-counter');
+          if (txt) txt.textContent = fp + '/' + lim;
+          if (fill) { fill.style.width = pct+'%'; fill.style.background = pct>=90?'var(--neon-pink)':pct>=60?'var(--gold)':'var(--neon-cyan)'; }
+          if (counter) counter.className = 'msg-counter'+(pct>=90?' danger':pct>=60?' warn':'');
+        }
       }
       busy = false;
       $('send-btn').disabled = false;
@@ -1396,6 +1497,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     activeChat = entry.id;
     localStorage.setItem('nx-chats', JSON.stringify(chats));
     renderHist();
+    // Save to cloud
+    saveCloudChat(entry);
   }
 
   function loadChat(id) {
@@ -1426,6 +1529,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     }
     chats = newChats;
     localStorage.setItem('nx-chats', JSON.stringify(chats));
+    deleteCloudChat(id);
     if (activeChat === id) {
       activeChat = null;
       hist = [];
@@ -1551,6 +1655,157 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   }
 
   // USER PANEL
+  function updatePlanBadge() {
+    var badge = $('up-plan-badge');
+    if (!badge || !USER) return;
+    var plan = USER.plan || 'free';
+    if (plan === 'pro') {
+      badge.className = 'up-plan pro';
+      badge.innerHTML = '\u2728 Plan Pro';
+    } else if (plan === 'trial') {
+      badge.className = 'up-plan trial';
+      badge.innerHTML = '\uD83C\uDF89 Prueba 3 dias';
+    } else {
+      badge.className = 'up-plan';
+      badge.innerHTML = '\u2B50 Plan Gratuito';
+    }
+  }
+
+  function showUpgrade(reason) {
+    var sub = $('upgrade-sub');
+    if (sub && reason) sub.textContent = reason;
+    var btn = $('upgrade-wa-btn');
+    if (btn) btn.onclick = function() {
+      window.open('https://wa.me/584243602967?text=Hola!+Quiero+contratar+el+Plan+Pro+de+IA-NEXO', '_blank');
+    };
+    var m = $('upgrade-modal');
+    if (m) m.classList.add('on');
+  }
+
+  function closeUpgrade() {
+    var m = $('upgrade-modal');
+    if (m) m.classList.remove('on');
+  }
+
+  function copyRefCode() {
+    if (!USER || !USER.refCode) return;
+    var link = window.location.origin + '/?ref=' + USER.refCode;
+    navigator.clipboard.writeText(link).then(function() {
+      toast('\uD83D\uDCCE Link de referido copiado!');
+    });
+  }
+
+
+  // \u2500\u2500\u2500 CLOUD CONVERSATIONS \u2500\u2500\u2500
+  var cloudEnabled = false;
+
+  function setSyncStatus(status) {
+    var dot = $('sync-dot');
+    if (!dot) return;
+    dot.className = 'sync-dot' + (status === 'syncing' ? ' syncing' : status === 'offline' ? ' offline' : '');
+    dot.title = status === 'syncing' ? 'Sincronizando...' : status === 'offline' ? 'Sin conexion a la nube' : 'Sincronizado';
+  }
+
+  function saveCloudChat(entry) {
+    if (!TOKEN) return;
+    setSyncStatus('syncing');
+    fetch('/api/conversations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
+      body: JSON.stringify(entry)
+    })
+    .then(function(r) { r.ok ? setSyncStatus('ok') : setSyncStatus('offline'); })
+    .catch(function() { setSyncStatus('offline'); });
+  }
+
+  function loadCloudChats(cb) {
+    if (!TOKEN) return cb([]);
+    fetch('/api/conversations', { headers: { 'Authorization': 'Bearer ' + TOKEN } })
+      .then(function(r) { return r.json(); })
+      .then(function(d) { cb(d.conversations || []); cloudEnabled = true; setSyncStatus('ok'); })
+      .catch(function() { cb([]); setSyncStatus('offline'); });
+  }
+
+  function deleteCloudChat(id) {
+    if (!TOKEN) return;
+    fetch('/api/conversations/' + id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + TOKEN } })
+      .catch(function(){});
+  }
+
+  // \u2500\u2500\u2500 VOICE MODE \u2500\u2500\u2500
+  var voiceRecog = null;
+  var isListening = false;
+
+  function toggleVoice() {
+    if (isListening) { stopVoice(); return; }
+    startVoice();
+  }
+
+  function startVoice() {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { toast('\uD83C\uDF99\uFE0F Tu navegador no soporta voz'); return; }
+    voiceRecog = new SR();
+    voiceRecog.lang = 'es-MX';
+    voiceRecog.continuous = false;
+    voiceRecog.interimResults = true;
+    voiceRecog.onstart = function() {
+      isListening = true;
+      var btn = $('voice-btn');
+      if (btn) { btn.classList.add('listening'); btn.innerHTML = '\uD83D\uDD34'; }
+      toast('\uD83C\uDF99\uFE0F Escuchando... habla ahora');
+    };
+    voiceRecog.onresult = function(e) {
+      var transcript = '';
+      for (var i = 0; i < e.results.length; i++) transcript += e.results[i][0].transcript;
+      var inp = $('inp');
+      if (inp) inp.value = transcript;
+    };
+    voiceRecog.onend = function() {
+      isListening = false;
+      var btn = $('voice-btn');
+      if (btn) { btn.classList.remove('listening'); btn.innerHTML = '\uD83C\uDF99\uFE0F'; }
+      // Auto-send if we got text
+      var inp = $('inp');
+      if (inp && inp.value.trim()) setTimeout(function() { send(); }, 300);
+    };
+    voiceRecog.onerror = function() {
+      isListening = false;
+      var btn = $('voice-btn');
+      if (btn) { btn.classList.remove('listening'); btn.innerHTML = '\uD83C\uDF99\uFE0F'; }
+      toast('No se pudo escuchar. Intenta de nuevo.');
+    };
+    voiceRecog.start();
+  }
+
+  function stopVoice() {
+    if (voiceRecog) { voiceRecog.stop(); voiceRecog = null; }
+  }
+
+  // \u2500\u2500\u2500 DISCOUNT CODES \u2500\u2500\u2500
+  function applyDiscountCode() {
+    var code = ($('discount-code-input') ? $('discount-code-input').value : '').toUpperCase().trim();
+    var msgEl = $('code-msg');
+    if (!code) { if (msgEl) { msgEl.className='code-msg err'; msgEl.textContent='Ingresa un codigo.'; } return; }
+    fetch('/auth/applyCode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
+      body: JSON.stringify({ code: code })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok) {
+        if (msgEl) { msgEl.className='code-msg ok'; msgEl.textContent='\u2713 ' + d.days + ' dias Pro activados!'; }
+        if (USER) USER.plan = 'pro';
+        localStorage.setItem('nx-user', JSON.stringify(USER));
+        updatePlanBadge();
+        setTimeout(function() { closeUpgrade(); toast('\uD83C\uDF89 Plan Pro activado con codigo!'); }, 1500);
+      } else {
+        if (msgEl) { msgEl.className='code-msg err'; msgEl.textContent = d.error || 'Codigo invalido.'; }
+      }
+    })
+    .catch(function() { if (msgEl) { msgEl.className='code-msg err'; msgEl.textContent='Error de conexion.'; } });
+  }
+
   function openUserPanel() {
     var panel = $('user-panel');
     var ov    = $('panel-ov');
@@ -1595,6 +1850,24 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     // Notes
     var notesEl = $('up-notes-ta');
     if (notesEl) notesEl.value = localStorage.getItem('nx-notes') || '';
+    // Referral link
+    var refBox = $('ref-link-box');
+    var refCntLbl = $('ref-count-lbl');
+    if (refBox && USER && USER.refCode) {
+      refBox.textContent = window.location.origin + '/?ref=' + USER.refCode;
+    }
+    if (refCntLbl && USER) {
+      // Fetch updated user data
+      fetch('/auth/me', { headers: { 'Authorization': 'Bearer ' + TOKEN } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          if (d.refCode) {
+            if (refBox) refBox.textContent = window.location.origin + '/?ref=' + d.refCode;
+            if (refCntLbl) refCntLbl.textContent = (d.refCount || 0) + ' personas registradas con tu link';
+          }
+          updatePlanBadge();
+        }).catch(function(){});
+    }
     panel.classList.add('open');
     if (ov) ov.classList.add('on');
   }
@@ -1865,6 +2138,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     }
   }
 
+  // Check for referral code in URL
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var ref = params.get('ref');
+    if (ref) localStorage.setItem('nx-ref', ref);
+  })();
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupApp);
   } else {
@@ -1969,6 +2249,32 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   </div>
 </div>
 
+
+<!-- UPGRADE MODAL -->
+<div class="upgrade-modal" id="upgrade-modal">
+  <div class="upgrade-card">
+    <div class="upgrade-ico">&#11088;</div>
+    <div class="upgrade-title">Actualiza a Pro</div>
+    <div class="upgrade-sub" id="upgrade-sub">Llegaste al l&iacute;mite de mensajes gratuitos de hoy. Con Pro tienes mensajes ilimitados.</div>
+    <div class="upgrade-price">$4.99</div>
+    <div class="upgrade-period">por mes &bull; cancela cuando quieras</div>
+    <ul class="upgrade-features">
+      <li>Mensajes ilimitados todos los d&iacute;as</li>
+      <li>Los 4 agentes especializados</li>
+      <li>Escuchar respuestas en voz alta</li>
+      <li>Guardar respuestas favoritas</li>
+      <li>Soporte prioritario por WhatsApp</li>
+    </ul>
+    <button class="upgrade-btn" id="upgrade-wa-btn">&#128242; Contratar por WhatsApp</button>
+    <div class="code-row">
+    <input class="code-input" id="discount-code-input" placeholder="CODIGO DE DESCUENTO" maxlength="20">
+    <button class="code-btn" onclick="applyDiscountCode()">Aplicar</button>
+  </div>
+  <div class="code-msg" id="code-msg"></div>
+  <button class="upgrade-dismiss" onclick="closeUpgrade()">Continuar con plan gratuito</button>
+  </div>
+</div>
+
 <!-- COLD START -->
 <div class="cold-start" id="cold-start">
   <div class="cold-start-ico">&#9881;</div>
@@ -2004,6 +2310,14 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     </div>
     <div class="up-sec">Conversaciones recientes</div>
     <div id="up-chats-list"></div>
+    <div class="up-sec">&#127381; Invita y gana</div>
+    <div class="ref-section">
+      <div class="ref-title">&#127381; Programa de Referidos</div>
+      <div class="ref-desc">Comparte tu link. Por cada amigo que se registre, <strong>ambos ganan 7 d&iacute;as Pro gratis</strong>.</div>
+      <div class="ref-link-box" id="ref-link-box" onclick="copyRefCode()">Cargando link...</div>
+      <button class="ref-copy-btn" onclick="copyRefCode()">&#128203; Copiar mi link de referido</button>
+      <div style="font-size:10px;color:var(--t3);margin-top:6px;text-align:center;" id="ref-count-lbl">0 personas registradas con tu link</div>
+    </div>
     <div class="up-sec">&#128203; Mis notas r&aacute;pidas</div>
     <div class="up-notes-wrap">
       <textarea class="up-notes-ta" id="up-notes-ta" placeholder="Escribe algo que quieras recordar..."></textarea>

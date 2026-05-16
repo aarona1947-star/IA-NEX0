@@ -13,81 +13,99 @@ var SECRET = process.env.JWT_SECRET || 'nexo-secret-2025-change-this';
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ─── DATABASE: MongoDB Atlas (si MONGO_URI) o archivo local ───
+// ─── DATABASE ───
 var useMongo = false;
-var mongoClient = null;
-var mongoDB = null;
+var mongoDB  = null;
+var DB_FILE  = path.join(__dirname, 'users.json');
 
-// Intentar conectar a MongoDB si hay URI configurada
 if (process.env.MONGO_URI) {
   try {
-    var mongodb = require('mongodb');
+    var mongodb    = require('mongodb');
     var MongoClient = mongodb.MongoClient;
     MongoClient.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
       .then(function(client) {
-        mongoClient = client;
-        mongoDB = client.db('nexo');
+        mongoDB  = client.db('nexo');
         useMongo = true;
-        console.log('  MongoDB: Conectado (cuentas persistentes)');
+        console.log('  MongoDB: Conectado');
+        // Create indexes
+        mongoDB.collection('users').createIndex({ email: 1 }, { unique: true }).catch(function(){});
+        mongoDB.collection('usage').createIndex({ email: 1, date: 1 }).catch(function(){});
       })
-      .catch(function(e) {
-        console.log('  MongoDB: Error - usando archivo local (' + e.message + ')');
-      });
-  } catch(e) {
-    console.log('  MongoDB: No instalado - usando archivo local');
-  }
+      .catch(function(e) { console.log('  MongoDB error:', e.message); });
+  } catch(e) { console.log('  MongoDB no instalado'); }
 }
 
-// ─── DB HELPERS (funciona con MongoDB O archivo) ───
-var DB_FILE = path.join(__dirname, 'users.json');
-
-function getUsers(cb) {
-  if (useMongo && mongoDB) {
-    mongoDB.collection('users').find({}).toArray(function(err, docs) {
-      if (err) return cb({});
-      var users = {};
-      docs.forEach(function(d) { users[d.email] = d; });
-      cb(users);
-    });
-  } else {
-    try { cb(JSON.parse(fs.readFileSync(DB_FILE, 'utf8'))); }
-    catch(e) { cb({}); }
-  }
-}
-
+// ─── DB HELPERS ───
 function getUser(email, cb) {
   if (useMongo && mongoDB) {
-    mongoDB.collection('users').findOne({ email: email }, function(err, doc) {
-      cb(err ? null : doc);
-    });
+    mongoDB.collection('users').findOne({ email: email }, cb);
   } else {
     try {
       var users = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-      cb(users[email] || null);
-    } catch(e) { cb(null); }
+      cb(null, users[email] || null);
+    } catch(e) { cb(null, null); }
   }
 }
 
-function saveUser(email, userData, cb) {
+function saveUser(email, data, cb) {
   if (useMongo && mongoDB) {
-    mongoDB.collection('users').updateOne(
-      { email: email },
-      { $set: userData },
-      { upsert: true },
-      function(err) { cb(err ? false : true); }
-    );
+    mongoDB.collection('users').updateOne({ email: email }, { $set: data }, { upsert: true }, cb);
   } else {
     try {
       var users = {};
       try { users = JSON.parse(fs.readFileSync(DB_FILE, 'utf8')); } catch(e) {}
-      users[email] = userData;
+      users[email] = Object.assign(users[email] || {}, data);
       fs.writeFileSync(DB_FILE, JSON.stringify(users, null, 2));
-      cb(true);
-    } catch(e) { cb(false); }
+      cb(null);
+    } catch(e) { cb(e); }
   }
 }
 
-// ─── AUTH middleware ───
+// ─── USAGE TRACKING ───
+function getTodayUsage(email, cb) {
+  var today = new Date().toISOString().slice(0, 10);
+  if (useMongo && mongoDB) {
+    mongoDB.collection('usage').findOne({ email: email, date: today }, function(err, doc) {
+      cb(doc ? doc.count : 0);
+    });
+  } else {
+    try {
+      var usage = JSON.parse(fs.readFileSync(path.join(__dirname, 'usage.json'), 'utf8'));
+      var key = email + '_' + today;
+      cb(usage[key] || 0);
+    } catch(e) { cb(0); }
+  }
+}
+
+function incrementUsage(email, cb) {
+  var today = new Date().toISOString().slice(0, 10);
+  if (useMongo && mongoDB) {
+    mongoDB.collection('usage').updateOne(
+      { email: email, date: today },
+      { $inc: { count: 1 } },
+      { upsert: true },
+      function() { if (cb) cb(); }
+    );
+  } else {
+    try {
+      var usageFile = path.join(__dirname, 'usage.json');
+      var usage = {};
+      try { usage = JSON.parse(fs.readFileSync(usageFile, 'utf8')); } catch(e) {}
+      var key = email + '_' + today;
+      usage[key] = (usage[key] || 0) + 1;
+      fs.writeFileSync(usageFile, JSON.stringify(usage));
+    } catch(e) {}
+    if (cb) cb();
+  }
+}
+
+// ─── REFERRAL SYSTEM ───
+function genRefCode(nombre) {
+  var base = (nombre || 'user').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 6);
+  return base + Math.random().toString(36).slice(2, 6);
+}
+
+// ─── AUTH MIDDLEWARE ───
 function auth(req, res, next) {
   var token = (req.headers.authorization || '').replace('Bearer ', '');
   if (!token) return res.status(401).json({ error: 'Inicia sesion para continuar.' });
@@ -95,16 +113,45 @@ function auth(req, res, next) {
     req.user = jwt.verify(token, SECRET);
     next();
   } catch(e) {
-    res.status(401).json({ error: 'Sesion expirada. Inicia sesion de nuevo.' });
+    res.status(401).json({ error: 'Sesion expirada.' });
   }
 }
 
-// ─── AUTH ROUTES ───
+// Check plan and usage
+function checkPlan(req, res, next) {
+  getUser(req.user.email, function(err, user) {
+    if (!user) return res.status(401).json({ error: 'Usuario no encontrado.' });
+    var now = new Date();
+    var isPro = user.plan === 'pro' && user.planExpiry && new Date(user.planExpiry) > now;
+    var isTrial = user.trialExpiry && new Date(user.trialExpiry) > now;
+    req.isPro = isPro || isTrial;
+    req.user.plan = isPro ? 'pro' : (isTrial ? 'trial' : 'free');
+    if (req.isPro) return next();
+    // Free plan: check daily limit
+    getTodayUsage(req.user.email, function(count) {
+      var FREE_LIMIT = parseInt(process.env.FREE_LIMIT || '10');
+      if (count >= FREE_LIMIT) {
+        return res.status(429).json({
+          error: 'Llegaste al limite de ' + FREE_LIMIT + ' mensajes hoy.',
+          limitReached: true,
+          plan: 'free',
+          count: count,
+          limit: FREE_LIMIT
+        });
+      }
+      req.msgCount = count;
+      next();
+    });
+  });
+}
+
+// ─── REGISTER ───
 app.post('/auth/register', function(req, res) {
   var b = req.body || {};
   var nombre = (b.nombre || '').trim();
   var email  = (b.email  || '').trim().toLowerCase();
   var pw     = b.password || '';
+  var refCode = (b.refCode || '').trim().toLowerCase();
 
   if (!nombre || !email || !pw)
     return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
@@ -113,97 +160,213 @@ app.post('/auth/register', function(req, res) {
   if (!email.includes('@') || !email.includes('.'))
     return res.status(400).json({ error: 'Email invalido.' });
 
-  getUser(email, function(existing) {
-    if (existing)
-      return res.status(400).json({ error: 'Ya existe una cuenta con ese email. Inicia sesion.' });
+  getUser(email, function(err, existing) {
+    if (existing) return res.status(400).json({ error: 'Ya existe una cuenta con ese email.' });
 
     bcrypt.hash(pw, 10, function(err, hash) {
       if (err) return res.status(500).json({ error: 'Error al procesar. Intenta de nuevo.' });
+
+      // 3-day free trial for all new users
+      var trialExpiry = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+      var myRefCode   = genRefCode(nombre);
 
       var userData = {
         id: 'u' + Date.now(),
         nombre: nombre,
         email: email,
         password: hash,
+        plan: 'free',
+        planExpiry: null,
+        trialExpiry: trialExpiry.toISOString(),
+        refCode: myRefCode,
+        refCount: 0,
         creado: new Date().toISOString()
       };
 
-      saveUser(email, userData, function(ok) {
-        if (!ok) return res.status(500).json({ error: 'Error al guardar. Intenta de nuevo.' });
+      saveUser(email, userData, function(saveErr) {
+        if (saveErr) return res.status(500).json({ error: 'Error al guardar. Intenta de nuevo.' });
+        // WhatsApp notification to admin
+        var waBotKey = process.env.WA_BOT_KEY || '';
+        if (waBotKey) {
+          var waMsg = encodeURIComponent('IA-NEXO Nuevo usuario: ' + nombre + ' (' + email + ')');
+          fetch('https://api.callmebot.com/whatsapp.php?phone=584243602967&text=' + waMsg + '&apikey=' + waBotKey).catch(function(){});
+        }
+        console.log('[NUEVO USUARIO] ' + nombre + ' <' + email + '>');
+
+        // Process referral - give referrer 7 extra days
+        if (refCode) {
+          if (useMongo && mongoDB) {
+            mongoDB.collection('users').findOne({ refCode: refCode }, function(err, referrer) {
+              if (referrer && referrer.email !== email) {
+                var bonus = new Date(Math.max(Date.now(), new Date(referrer.planExpiry || Date.now()).getTime()) + 7 * 24 * 60 * 60 * 1000);
+                mongoDB.collection('users').updateOne(
+                  { refCode: refCode },
+                  { $set: { plan: 'pro', planExpiry: bonus.toISOString() }, $inc: { refCount: 1 } },
+                  function() {}
+                );
+              }
+            });
+          }
+        }
+
         var token = jwt.sign({ id: userData.id, nombre: nombre, email: email }, SECRET, { expiresIn: '30d' });
-        res.json({ token: token, nombre: nombre, email: email });
+        res.json({
+          token: token,
+          nombre: nombre,
+          email: email,
+          plan: 'trial',
+          trialDays: 3,
+          refCode: myRefCode
+        });
       });
     });
   });
 });
 
+// ─── LOGIN ───
 app.post('/auth/login', function(req, res) {
   var b = req.body || {};
   var email = (b.email    || '').trim().toLowerCase();
   var pw    = b.password  || '';
 
-  if (!email || !pw)
-    return res.status(400).json({ error: 'Email y contrasena requeridos.' });
+  if (!email || !pw) return res.status(400).json({ error: 'Email y contrasena requeridos.' });
 
-  getUser(email, function(user) {
-    if (!user)
-      return res.status(401).json({ error: 'No existe cuenta con ese email.' });
+  getUser(email, function(err, user) {
+    if (!user) return res.status(401).json({ error: 'No existe cuenta con ese email.' });
 
     bcrypt.compare(pw, user.password, function(err, ok) {
-      if (!ok)
-        return res.status(401).json({ error: 'Contrasena incorrecta.' });
+      if (!ok) return res.status(401).json({ error: 'Contrasena incorrecta.' });
+
+      var now = new Date();
+      var isPro   = user.plan === 'pro'   && user.planExpiry  && new Date(user.planExpiry)  > now;
+      var isTrial = user.trialExpiry && new Date(user.trialExpiry) > now;
+      var planLabel = isPro ? 'pro' : (isTrial ? 'trial' : 'free');
 
       var token = jwt.sign({ id: user.id, nombre: user.nombre, email: email }, SECRET, { expiresIn: '30d' });
-      res.json({ token: token, nombre: user.nombre, email: email });
+      res.json({
+        token: token,
+        nombre: user.nombre,
+        email: email,
+        plan: planLabel,
+        refCode: user.refCode || '',
+        planExpiry: user.planExpiry || null,
+        trialExpiry: user.trialExpiry || null
+      });
     });
   });
 });
 
+// ─── ME ───
 app.get('/auth/me', auth, function(req, res) {
-  res.json({ nombre: req.user.nombre, email: req.user.email });
+  getUser(req.user.email, function(err, user) {
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
+    var now = new Date();
+    var isPro   = user.plan === 'pro'   && user.planExpiry  && new Date(user.planExpiry)  > now;
+    var isTrial = user.trialExpiry && new Date(user.trialExpiry) > now;
+    getTodayUsage(req.user.email, function(count) {
+      res.json({
+        nombre: user.nombre,
+        email: user.email,
+        plan: isPro ? 'pro' : (isTrial ? 'trial' : 'free'),
+        planExpiry: user.planExpiry || null,
+        trialExpiry: user.trialExpiry || null,
+        refCode: user.refCode || '',
+        refCount: user.refCount || 0,
+        todayMsgs: count,
+        freeLimit: parseInt(process.env.FREE_LIMIT || '10')
+      });
+    });
+  });
+});
+
+// ─── ADMIN: Activate Pro ───
+app.post('/admin/activate', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+
+  var email = (req.body.email || '').trim().toLowerCase();
+  var days  = parseInt(req.body.days || '30');
+  if (!email) return res.status(400).json({ error: 'Email requerido.' });
+
+  getUser(email, function(err, user) {
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
+    var base = (user.plan === 'pro' && user.planExpiry && new Date(user.planExpiry) > new Date())
+      ? new Date(user.planExpiry) : new Date();
+    var expiry = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
+    saveUser(email, { plan: 'pro', planExpiry: expiry.toISOString() }, function() {
+      res.json({ ok: true, email: email, plan: 'pro', expiresAt: expiry.toISOString(), days: days });
+    });
+  });
+});
+
+// ─── ADMIN: List users ───
+app.get('/admin/users', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+
+  if (useMongo && mongoDB) {
+    mongoDB.collection('users').find({}, { projection: { password: 0 } }).toArray(function(err, users) {
+      var now = new Date();
+      var result = (users || []).map(function(u) {
+        return {
+          nombre: u.nombre, email: u.email,
+          plan: u.plan === 'pro' && u.planExpiry && new Date(u.planExpiry) > now ? 'pro' : 'free',
+          planExpiry: u.planExpiry, trialExpiry: u.trialExpiry,
+          refCode: u.refCode, refCount: u.refCount || 0, creado: u.creado
+        };
+      });
+      res.json({ total: result.length, users: result });
+    });
+  } else {
+    try {
+      var users = JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
+      var result = Object.values(users).map(function(u) {
+        return { nombre: u.nombre, email: u.email, plan: u.plan, creado: u.creado };
+      });
+      res.json({ total: result.length, users: result });
+    } catch(e) { res.json({ total: 0, users: [] }); }
+  }
+});
+
+// ─── USAGE STATS ───
+app.get('/auth/usage', auth, function(req, res) {
+  getTodayUsage(req.user.email, function(count) {
+    res.json({ today: count, limit: parseInt(process.env.FREE_LIMIT || '10') });
+  });
 });
 
 // ─── AI PROMPTS ───
 var ESTILOS = {
-  sabio:    'Eres sabio y reflexivo. Usas analogias cuando ayuda. Para temas filosoficos profundizas; para preguntas simples vas directo.',
-  saber:    'Eres preciso y factual. Citas datos reales o estimaciones realistas. Organizas bien la informacion.',
-  codigo:   'Eres tecnico y directo. Para matematicas das el resultado correcto. Para codigo das fragmentos limpios y funcionales.',
+  sabio:    'Eres sabio y reflexivo. Para temas filosoficos profundizas; para preguntas simples vas directo.',
+  saber:    'Eres preciso y factual. Citas datos reales. Organizas bien la informacion.',
+  codigo:   'Eres tecnico y directo. Para matematicas das el resultado correcto. Para codigo das fragmentos limpios.',
   creativo: 'Eres imaginativo y expresivo. Escribes con metaforas, color y emocion.'
 };
 
 function buildPrompt(agentId) {
-  var estilo = ESTILOS[agentId] || ESTILOS.sabio;
-  return (
-    'Eres un asistente de IA llamado IA-NEXO. ' + estilo + '\n\n' +
-    'REGLAS:\n' +
-    '- Responde SIEMPRE en espanol\n' +
-    '- Responde CUALQUIER pregunta\n' +
-    '- NUNCA digas "no puedo" o "no tengo acceso"\n' +
-    '- NUNCA empieces con "Claro!", "Por supuesto!"\n' +
-    '- Para matematicas: resultado exacto y correcto\n' +
-    '- Para codigo: fragmento limpio que funcione\n' +
-    '- Se natural, como un amigo muy inteligente'
-  );
+  return 'Eres IA-NEXO. ' + (ESTILOS[agentId] || ESTILOS.sabio) + '\n' +
+    'REGLAS: Responde SIEMPRE en espanol. Responde CUALQUIER pregunta. ' +
+    'NUNCA digas "no puedo". Se natural, como un amigo muy inteligente.';
 }
 
-// ─── GEMINI ENGINE ───
 function llamarGemini(history, text, agentId, fileData, cb) {
   var key = (process.env.GEMINI_KEY || '').trim();
   if (!key || key.startsWith('PEGA_'))
-    return cb(new Error('Falta configurar GEMINI_KEY en las variables de Railway.'));
+    return cb(new Error('Falta configurar GEMINI_KEY.'));
 
-  var prompt = buildPrompt(agentId);
   var hist = (history || []).slice(-10).map(function(m) {
     return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
   });
 
   var parts = [];
   if (fileData && fileData.data) {
-    var isTextFile = fileData.mimeType && (fileData.mimeType.startsWith('text/') || fileData.mimeType === 'application/json');
-    if (isTextFile && fileData.textContent) {
-      parts.push({ text: (text || 'Analiza este archivo.') + '\n\nArchivo "' + fileData.fileName + '":\n' + fileData.textContent.slice(0, 8000) });
+    var isText = fileData.mimeType && fileData.mimeType.startsWith('text/');
+    if (isText && fileData.textContent) {
+      parts.push({ text: (text || 'Analiza.') + '\nArchivo "' + fileData.fileName + '":\n' + fileData.textContent.slice(0, 8000) });
     } else {
-      parts.push({ text: text || 'Analiza este archivo.' });
+      parts.push({ text: text || 'Analiza.' });
       parts.push({ inlineData: { mimeType: fileData.mimeType, data: fileData.data } });
     }
   } else {
@@ -213,23 +376,21 @@ function llamarGemini(history, text, agentId, fileData, cb) {
 
   var modelos = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
   var idx = 0;
-
   function next() {
-    if (idx >= modelos.length) return cb(new Error('No pude conectar con la IA. Intenta en unos segundos.'));
+    if (idx >= modelos.length) return cb(new Error('No pude conectar. Intenta en unos segundos.'));
     var modelo = modelos[idx++];
     fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent?key=' + key, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: prompt }] },
+        system_instruction: { parts: [{ text: buildPrompt(agentId) }] },
         contents: hist,
         generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
       })
     })
     .then(function(r) { return r.text(); })
     .then(function(raw) {
-      var json;
-      try { json = JSON.parse(raw); } catch(e) { return next(); }
+      var json; try { json = JSON.parse(raw); } catch(e) { return next(); }
       if (json.error) return next();
       var reply = json.candidates && json.candidates[0] && json.candidates[0].content
         && json.candidates[0].content.parts && json.candidates[0].content.parts[0]
@@ -244,11 +405,18 @@ function llamarGemini(history, text, agentId, fileData, cb) {
 
 // ─── AGENT ROUTES ───
 ['sabio', 'saber', 'codigo', 'creativo'].forEach(function(agente) {
-  app.post('/api/' + agente, auth, function(req, res) {
+  app.post('/api/' + agente, auth, checkPlan, function(req, res) {
     llamarGemini(req.body.history || [], req.body.text || '', agente, req.body.file || null,
       function(err, reply) {
         if (err) return res.status(500).json({ error: err.message });
-        res.json({ reply: reply });
+        // Count usage for free users
+        if (!req.isPro) incrementUsage(req.user.email);
+        res.json({
+          reply: reply,
+          plan: req.user.plan,
+          todayMsgs: (req.msgCount || 0) + 1,
+          freeLimit: parseInt(process.env.FREE_LIMIT || '10')
+        });
       }
     );
   });
@@ -260,19 +428,253 @@ app.post('/api/imagen', auth, function(req, res) {
   res.json({ imageUrl: 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=768&height=768&seed=' + Math.floor(Math.random()*999999) + '&nologo=true' });
 });
 
-// Pagina de ventas = inicio
-app.get('/',        function(req, res) { res.sendFile(path.join(__dirname, 'public', 'landing.html')); });
-app.get('/landing', function(req, res) { res.sendFile(path.join(__dirname, 'public', 'landing.html')); });
 
-// La app de chat
-app.get('/app',    function(req, res) { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
-app.get('*',       function(req, res) { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
+// ─── CONVERSATIONS (cloud storage) ───
+app.get('/api/conversations', auth, function(req, res) {
+  if (!useMongo || !mongoDB) return res.json({ conversations: [] });
+  mongoDB.collection('conversations')
+    .find({ userId: req.user.id })
+    .sort({ updatedAt: -1 })
+    .limit(20)
+    .toArray(function(err, docs) {
+      res.json({ conversations: docs || [] });
+    });
+});
+
+app.post('/api/conversations', auth, function(req, res) {
+  if (!useMongo || !mongoDB) return res.json({ ok: false });
+  var conv = req.body;
+  if (!conv.id) return res.status(400).json({ error: 'ID requerido.' });
+  mongoDB.collection('conversations').updateOne(
+    { id: conv.id, userId: req.user.id },
+    { $set: {
+        id: conv.id,
+        userId: req.user.id,
+        title: (conv.title || 'Conversacion').slice(0, 60),
+        hist: (conv.hist || []).slice(-30),
+        agent: conv.agent || 'sabio',
+        updatedAt: new Date().toISOString()
+      }
+    },
+    { upsert: true },
+    function(err) { res.json({ ok: !err }); }
+  );
+});
+
+app.delete('/api/conversations/:id', auth, function(req, res) {
+  if (!useMongo || !mongoDB) return res.json({ ok: false });
+  mongoDB.collection('conversations').deleteOne(
+    { id: req.params.id, userId: req.user.id },
+    function(err) { res.json({ ok: !err }); }
+  );
+});
+
+// ─── DISCOUNT CODES ───
+app.post('/admin/codes', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+  if (!useMongo || !mongoDB) return res.status(503).json({ error: 'MongoDB requerido.' });
+  var code = (req.body.code || '').toUpperCase().trim();
+  var days = parseInt(req.body.days || '30');
+  var maxUses = parseInt(req.body.maxUses || '100');
+  if (!code) return res.status(400).json({ error: 'Codigo requerido.' });
+  mongoDB.collection('codes').updateOne(
+    { code: code },
+    { $set: { code, days, maxUses, uses: 0, active: true, createdAt: new Date().toISOString() } },
+    { upsert: true },
+    function(err) { res.json({ ok: !err, code, days, maxUses }); }
+  );
+});
+
+app.post('/auth/applyCode', auth, function(req, res) {
+  var code = (req.body.code || '').toUpperCase().trim();
+  if (!code) return res.status(400).json({ error: 'Ingresa un codigo.' });
+  if (!useMongo || !mongoDB) return res.status(503).json({ error: 'Servicio no disponible.' });
+  mongoDB.collection('codes').findOne({ code: code, active: true }, function(err, doc) {
+    if (!doc) return res.status(404).json({ error: 'Codigo invalido o expirado.' });
+    if (doc.uses >= doc.maxUses) return res.status(400).json({ error: 'Codigo agotado.' });
+    // Apply to user
+    getUser(req.user.email, function(err2, user) {
+      if (!user) return res.status(404).json({ error: 'Usuario no encontrado.' });
+      var base = (user.plan === 'pro' && user.planExpiry && new Date(user.planExpiry) > new Date())
+        ? new Date(user.planExpiry) : new Date();
+      var expiry = new Date(base.getTime() + doc.days * 24 * 60 * 60 * 1000);
+      saveUser(req.user.email, { plan: 'pro', planExpiry: expiry.toISOString() }, function() {
+        mongoDB.collection('codes').updateOne({ code }, { $inc: { uses: 1 } }, function() {});
+        res.json({ ok: true, days: doc.days, expiresAt: expiry.toISOString() });
+      });
+    });
+  });
+});
+
+app.get('/admin/codes', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+  if (!useMongo || !mongoDB) return res.json({ codes: [] });
+  mongoDB.collection('codes').find({}).toArray(function(err, docs) {
+    res.json({ codes: docs || [] });
+  });
+});
+
+// ─── ADMIN STATS ───
+app.get('/admin/stats', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+  if (!useMongo || !mongoDB) return res.json({ totalMsgs: 0, todayMsgs: 0, activeUsers: 0 });
+  var today = new Date().toISOString().slice(0, 10);
+  var promises = [
+    new Promise(function(r) { mongoDB.collection('usage').aggregate([{ $group: { _id: null, total: { $sum: '$count' } } }]).toArray(function(e, d) { r(d && d[0] ? d[0].total : 0); }); }),
+    new Promise(function(r) { mongoDB.collection('usage').aggregate([{ $match: { date: today } }, { $group: { _id: null, total: { $sum: '$count' } } }]).toArray(function(e, d) { r(d && d[0] ? d[0].total : 0); }); }),
+    new Promise(function(r) { mongoDB.collection('users').countDocuments({}, function(e, n) { r(n || 0); }); }),
+    new Promise(function(r) { mongoDB.collection('usage').distinct('email', { date: today }, function(e, d) { r(d ? d.length : 0); }); })
+  ];
+  Promise.all(promises).then(function(results) {
+    res.json({ totalMsgs: results[0], todayMsgs: results[1], totalUsers: results[2], todayActiveUsers: results[3] });
+  }).catch(function() { res.json({ totalMsgs: 0, todayMsgs: 0, totalUsers: 0, todayActiveUsers: 0 }); });
+});
+
+// ─── ROUTES ───
+app.get('/landing', function(req, res) { res.sendFile(path.join(__dirname, 'public', 'landing.html')); });
+app.get('/admin',   function(req, res) { res.sendFile(path.join(__dirname, 'public', 'admin.html')); });
+app.get('*',        function(req, res) { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
 
 app.listen(PORT, function() {
   var ok = process.env.GEMINI_KEY && !process.env.GEMINI_KEY.startsWith('PEGA_');
-  console.log('\n  IA-NEXO v9.1');
+  console.log('\n  IA-NEXO v12');
   console.log('  Puerto : ' + PORT);
-  console.log('  Gemini : ' + (ok ? 'OK' : 'Falta GEMINI_KEY'));
-  console.log('  DB     : ' + (process.env.MONGO_URI ? 'MongoDB (configurando...)' : 'Archivo local (usuarios.json)'));
+  console.log('  Gemini : ' + (ok ? 'OK' : 'FALTA GEMINI_KEY'));
+  console.log('  DB     : ' + (process.env.MONGO_URI ? 'MongoDB' : 'Archivo local'));
+  console.log('  Admin  : /admin (key: ' + (process.env.ADMIN_KEY || 'nexo-admin-2025') + ')');
   console.log('');
 });
+
+// ─── CLOUD CONVERSATIONS ───
+app.post('/chats/save', auth, function(req, res) {
+  var chat = req.body.chat;
+  if (!chat || !chat.id) return res.status(400).json({ error: 'Chat invalido.' });
+  chat.email = req.user.email;
+  chat.updatedAt = new Date().toISOString();
+  if (useMongo && mongoDB) {
+    mongoDB.collection('chats').updateOne(
+      { id: chat.id, email: req.user.email },
+      { $set: chat },
+      { upsert: true },
+      function(err) { res.json({ ok: !err }); }
+    );
+  } else {
+    res.json({ ok: true }); // fallback: client stores locally
+  }
+});
+
+app.get('/chats/list', auth, function(req, res) {
+  if (useMongo && mongoDB) {
+    mongoDB.collection('chats')
+      .find({ email: req.user.email }, { projection: { _id: 0, password: 0 } })
+      .sort({ updatedAt: -1 }).limit(20).toArray(function(err, docs) {
+        res.json({ chats: docs || [] });
+      });
+  } else {
+    res.json({ chats: [] });
+  }
+});
+
+app.delete('/chats/:id', auth, function(req, res) {
+  if (useMongo && mongoDB) {
+    mongoDB.collection('chats').deleteOne({ id: req.params.id, email: req.user.email },
+      function(err) { res.json({ ok: !err }); });
+  } else { res.json({ ok: true }); }
+});
+
+// ─── DISCOUNT CODES ───
+app.post('/admin/discount/create', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+  var code = {
+    code: (req.body.code || '').toUpperCase().trim(),
+    pct: parseInt(req.body.pct || '50'),
+    days: parseInt(req.body.days || '30'),
+    maxUses: parseInt(req.body.maxUses || '100'),
+    uses: 0,
+    active: true,
+    creado: new Date().toISOString()
+  };
+  if (!code.code) return res.status(400).json({ error: 'Codigo requerido.' });
+  if (useMongo && mongoDB) {
+    mongoDB.collection('discounts').updateOne({ code: code.code }, { $set: code }, { upsert: true },
+      function() { res.json({ ok: true, code: code }); });
+  } else { res.json({ ok: true, code: code }); }
+});
+
+app.post('/discount/apply', auth, function(req, res) {
+  var code = (req.body.code || '').toUpperCase().trim();
+  if (!code) return res.status(400).json({ error: 'Ingresa un codigo.' });
+  if (useMongo && mongoDB) {
+    mongoDB.collection('discounts').findOne({ code: code, active: true }, function(err, dc) {
+      if (!dc) return res.status(404).json({ error: 'Codigo invalido o expirado.' });
+      if (dc.uses >= dc.maxUses) return res.status(400).json({ error: 'Codigo agotado.' });
+      getUser(req.user.email, function(err2, user) {
+        var base = (user && user.plan === 'pro' && user.planExpiry && new Date(user.planExpiry) > new Date())
+          ? new Date(user.planExpiry) : new Date();
+        var daysGranted = Math.round(dc.days * (dc.pct / 100) + dc.days * (1 - dc.pct / 100));
+        var expiry = new Date(base.getTime() + daysGranted * 24 * 60 * 60 * 1000);
+        saveUser(req.user.email, { plan: 'pro', planExpiry: expiry.toISOString() }, function() {
+          mongoDB.collection('discounts').updateOne({ code: code }, { $inc: { uses: 1 } }, function() {});
+          res.json({ ok: true, daysGranted: daysGranted, expiry: expiry.toISOString(), pct: dc.pct });
+        });
+      });
+    });
+  } else {
+    res.status(503).json({ error: 'Funcion no disponible sin MongoDB.' });
+  }
+});
+
+// ─── ADMIN STATS ───
+app.get('/admin/stats', function(req, res) {
+  var adminKey = req.headers['x-admin-key'] || '';
+  if (adminKey !== (process.env.ADMIN_KEY || 'nexo-admin-2025'))
+    return res.status(403).json({ error: 'No autorizado.' });
+  if (!useMongo || !mongoDB) return res.json({ error: 'Solo disponible con MongoDB.' });
+  var now = new Date();
+  var today = now.toISOString().slice(0, 10);
+  var week  = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  Promise.all([
+    mongoDB.collection('users').countDocuments(),
+    mongoDB.collection('users').countDocuments({ plan: 'pro', planExpiry: { $gt: now.toISOString() } }),
+    mongoDB.collection('usage').aggregate([
+      { $match: { date: today } },
+      { $group: { _id: null, total: { $sum: '$count' } } }
+    ]).toArray(),
+    mongoDB.collection('usage').aggregate([
+      { $match: { date: { $gte: week } } },
+      { $group: { _id: '$date', total: { $sum: '$count' } } },
+      { $sort: { _id: 1 } }
+    ]).toArray(),
+    mongoDB.collection('users').countDocuments({
+      creado: { $gte: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString() }
+    })
+  ]).then(function(results) {
+    res.json({
+      totalUsers:   results[0],
+      proUsers:     results[1],
+      msgsToday:    results[2][0] ? results[2][0].total : 0,
+      weeklyMsgs:   results[3],
+      newUsersWeek: results[4],
+      revenue: (results[1] * 4.99).toFixed(2)
+    });
+  }).catch(function(e) { res.status(500).json({ error: e.message }); });
+});
+
+// ─── NEW USER NOTIFICATION (ntfy.sh) ───
+function notifyNewUser(nombre, email) {
+  var channel = process.env.NTFY_CHANNEL;
+  if (!channel) return;
+  fetch('https://ntfy.sh/' + channel, {
+    method: 'POST',
+    headers: { 'Title': 'Nuevo usuario en IA-NEXO', 'Priority': 'high', 'Tags': 'tada' },
+    body: nombre + ' (' + email + ') se registro ahora mismo!'
+  }).catch(function() {});
+}

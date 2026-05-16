@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>IA-NEXO Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0612;color:#f0f0ff;min-height:100vh;padding:20px;}
+.login-card{max-width:360px;margin:80px auto;background:rgba(20,12,40,.9);border:1px solid rgba(177,78,255,.3);border-radius:18px;padding:32px;}
+h1{font-size:22px;margin-bottom:4px;background:linear-gradient(135deg,#00f0ff,#b14eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sub{font-size:12px;color:#a89cbf;margin-bottom:24px;}
+input{width:100%;background:rgba(10,4,22,.8);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;color:#f0f0ff;font-size:14px;outline:none;margin-bottom:12px;}
+input:focus{border-color:#b14eff;}
+button{width:100%;padding:13px;background:linear-gradient(135deg,#00c9e8,#b14eff);border:none;border-radius:10px;color:#000;font-size:14px;font-weight:700;cursor:pointer;}
+.dashboard{max-width:900px;margin:0 auto;display:none;}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.header h1{font-size:24px;}
+.logout-btn{padding:8px 18px;background:rgba(255,61,157,.15);border:1px solid rgba(255,61,157,.3);border-radius:9px;color:#ff6b9d;cursor:pointer;font-size:12px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:rgba(20,12,40,.8);border:1px solid rgba(177,78,255,.2);border-radius:14px;padding:18px;text-align:center;}
+.stat-val{font-size:32px;font-weight:700;background:linear-gradient(135deg,#00f0ff,#b14eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-lbl{font-size:11px;color:#a89cbf;margin-top:4px;}
+.card{background:rgba(20,12,40,.8);border:1px solid rgba(177,78,255,.2);border-radius:14px;padding:20px;margin-bottom:18px;}
+.card-title{font-size:14px;font-weight:700;margin-bottom:16px;color:#00f0ff;}
+.activate-row{display:flex;gap:10px;}
+.activate-row input{margin-bottom:0;flex:1;}
+.activate-row select{background:rgba(10,4,22,.8);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 14px;color:#f0f0ff;font-size:13px;outline:none;}
+.act-btn{width:auto;padding:12px 22px;white-space:nowrap;flex-shrink:0;}
+.success{color:#3dffaa;font-size:12px;margin-top:8px;display:none;}
+.error-msg{color:#ff6b9d;font-size:12px;margin-top:8px;display:none;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{text-align:left;padding:10px 12px;color:#a89cbf;border-bottom:1px solid rgba(255,255,255,.07);font-size:10px;letter-spacing:1px;text-transform:uppercase;}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);}
+tr:hover td{background:rgba(177,78,255,.05);}
+.badge{padding:3px 10px;border-radius:8px;font-size:10px;font-weight:700;}
+.badge.pro{background:rgba(0,240,255,.12);color:#00f0ff;}
+.badge.free{background:rgba(255,255,255,.06);color:#a89cbf;}
+.badge.trial{background:rgba(177,78,255,.12);color:#b14eff;}
+.quick-act{padding:4px 10px;border-radius:7px;border:1px solid rgba(0,240,255,.3);background:transparent;color:#00f0ff;cursor:pointer;font-size:10px;font-weight:600;}
+.quick-act:hover{background:rgba(0,240,255,.08);}
+.ref-link{font-size:11px;padding:10px 14px;background:rgba(0,240,255,.05);border:1px solid rgba(0,240,255,.2);border-radius:10px;color:#a89cbf;word-break:break-all;margin-top:8px;}
+.copy-ref{padding:6px 14px;border:1px solid rgba(0,240,255,.3);background:transparent;color:#00f0ff;border-radius:7px;cursor:pointer;font-size:11px;margin-top:8px;}
+</style>
+</head>
+<body>
+
+<div class="login-card" id="login-section">
+  <h1>IA-NEXO Admin</h1>
+  <p class="sub">Panel de administracion</p>
+  <input type="password" id="admin-key-input" placeholder="Clave de admin">
+  <button onclick="adminLogin()">Entrar</button>
+  <div class="error-msg" id="login-err">Clave incorrecta</div>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <div class="header">
+    <h1>Panel de Admin</h1>
+    <button class="logout-btn" onclick="adminLogout()">Salir</button>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="s-total">-</div><div class="stat-lbl">Total usuarios</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-pro">-</div><div class="stat-lbl">Plan Pro</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-trial">-</div><div class="stat-lbl">En prueba</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-free">-</div><div class="stat-lbl">Plan Gratis</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Activar Plan Pro</div>
+    <div class="activate-row">
+      <input type="email" id="act-email" placeholder="correo@cliente.com">
+      <select id="act-days">
+        <option value="30">30 dias</option>
+        <option value="7">7 dias</option>
+        <option value="90">90 dias</option>
+        <option value="365">1 ano</option>
+      </select>
+      <button class="act-btn" onclick="activatePro()">Activar Pro</button>
+    </div>
+    <div class="success" id="act-success">Plan Pro activado correctamente</div>
+    <div class="error-msg" id="act-error">Error al activar</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Link de Referidos</div>
+    <p style="font-size:12px;color:#a89cbf;margin-bottom:8px;">Comparte este link. Por cada persona que se registre con el, ambos ganan 7 dias Pro:</p>
+    <div class="ref-link" id="ref-link-display">Cargando...</div>
+    <button class="copy-ref" onclick="copyRefLink()">Copiar link</button>
+  </div>
+
+  <div class="stats-grid" id="live-stats" style="margin-bottom:18px;">
+    <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Mensajes hoy</div></div>
+    <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Total mensajes</div></div>
+    <div class="stat-card"><div class="stat-val">-</div><div class="stat-lbl">Activos hoy</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Crear Codigo de Descuento</div>
+    <div class="activate-row">
+      <input type="text" id="code-name" placeholder="Ej: NEXO50" style="text-transform:uppercase">
+      <select id="code-days">
+        <option value="7">7 dias</option>
+        <option value="30" selected>30 dias</option>
+        <option value="90">90 dias</option>
+      </select>
+      <input type="number" id="code-uses" placeholder="Max usos" value="100" style="width:100px">
+      <button class="act-btn" onclick="createCode()">Crear Codigo</button>
+    </div>
+    <div class="success" id="code-success"></div>
+    <div id="codes-list" style="margin-top:12px;font-size:12px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Todos los usuarios</div>
+    <div style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Nombre</th><th>Email</th><th>Plan</th><th>Expira</th><th>Referidos</th><th>Registrado</th><th>Accion</th></tr></thead>
+        <tbody id="users-table"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+var ADMIN_KEY = '';
+var BASE = window.location.origin;
+
+function adminLogin() {
+  var key = document.getElementById('admin-key-input').value;
+  fetch('/admin/users', { headers: { 'x-admin-key': key } })
+    .then(function(r) {
+      if (!r.ok) { document.getElementById('login-err').style.display='block'; return null; }
+      return r.json();
+    })
+    .then(function(data) {
+      if (!data) return;
+      ADMIN_KEY = key;
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      renderUsers(data.users);
+      updateStats(data.users);
+    });
+}
+
+function adminLogout() {
+  ADMIN_KEY = '';
+  document.getElementById('login-section').style.display = 'block';
+  document.getElementById('dashboard').style.display = 'none';
+}
+
+function updateStats(users) {
+  var now = new Date();
+  var pro   = users.filter(function(u) { return u.plan === 'pro'; }).length;
+  var trial = users.filter(function(u) { return u.plan === 'trial'; }).length;
+  document.getElementById('s-total').textContent = users.length;
+  document.getElementById('s-pro').textContent = pro;
+  document.getElementById('s-trial').textContent = trial;
+  document.getElementById('s-free').textContent = users.length - pro - trial;
+  document.getElementById('ref-link-display').textContent = BASE + '/?ref=TUCODIGO';
+  // Load live stats
+  fetch('/admin/stats', { headers: { 'x-admin-key': ADMIN_KEY } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var statsEl = document.getElementById('live-stats');
+      if (statsEl) statsEl.innerHTML =
+        '<div class="stat-card"><div class="stat-val">' + d.todayMsgs + '</div><div class="stat-lbl">Mensajes hoy</div></div>' +
+        '<div class="stat-card"><div class="stat-val">' + d.totalMsgs + '</div><div class="stat-lbl">Mensajes total</div></div>' +
+        '<div class="stat-card"><div class="stat-val">' + d.todayActiveUsers + '</div><div class="stat-lbl">Activos hoy</div></div>';
+    }).catch(function(){});
+  // Load codes
+  loadCodes();
+}
+
+function renderUsers(users) {
+  var tbody = document.getElementById('users-table');
+  tbody.innerHTML = users.map(function(u) {
+    var exp = u.planExpiry ? new Date(u.planExpiry).toLocaleDateString('es-ES') : '-';
+    var created = u.creado ? new Date(u.creado).toLocaleDateString('es-ES') : '-';
+    var badgeCls = u.plan === 'pro' ? 'pro' : u.plan === 'trial' ? 'trial' : 'free';
+    return '<tr>' +
+      '<td>' + (u.nombre||'-') + '</td>' +
+      '<td>' + u.email + '</td>' +
+      '<td><span class="badge ' + badgeCls + '">' + (u.plan||'free').toUpperCase() + '</span></td>' +
+      '<td>' + exp + '</td>' +
+      '<td>' + (u.refCount||0) + '</td>' +
+      '<td>' + created + '</td>' +
+      '<td><button class="quick-act" onclick="quickActivate(\''+u.email+'\')">+30 dias Pro</button></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function quickActivate(email) {
+  document.getElementById('act-email').value = email;
+  document.getElementById('act-days').value = '30';
+  activatePro();
+}
+
+function activatePro() {
+  var email = document.getElementById('act-email').value.trim();
+  var days  = document.getElementById('act-days').value;
+  var succ  = document.getElementById('act-success');
+  var err   = document.getElementById('act-error');
+  succ.style.display = 'none'; err.style.display = 'none';
+
+  fetch('/admin/activate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY },
+    body: JSON.stringify({ email: email, days: parseInt(days) })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d.ok) {
+      succ.textContent = 'Pro activado para ' + email + ' por ' + days + ' dias. Vence: ' + new Date(d.expiresAt).toLocaleDateString('es-ES');
+      succ.style.display = 'block';
+      document.getElementById('act-email').value = '';
+      loadUsers();
+    } else {
+      err.textContent = d.error || 'Error';
+      err.style.display = 'block';
+    }
+  })
+  .catch(function() { err.style.display='block'; err.textContent='Error de conexion'; });
+}
+
+function loadUsers() {
+  fetch('/admin/users', { headers: { 'x-admin-key': ADMIN_KEY } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) { renderUsers(data.users); updateStats(data.users); });
+}
+
+function createCode() {
+  var code = (document.getElementById('code-name').value || '').toUpperCase().trim();
+  var days = document.getElementById('code-days').value;
+  var maxUses = document.getElementById('code-uses').value || 100;
+  if (!code) { alert('Ingresa un nombre para el codigo'); return; }
+  fetch('/admin/codes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY },
+    body: JSON.stringify({ code, days: parseInt(days), maxUses: parseInt(maxUses) })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    var s = document.getElementById('code-success');
+    if (s) { s.style.display='block'; s.textContent = 'Codigo creado: ' + d.code + ' (' + d.days + ' dias, max ' + d.maxUses + ' usos)'; }
+    loadCodes();
+  });
+}
+
+function loadCodes() {
+  fetch('/admin/codes', { headers: { 'x-admin-key': ADMIN_KEY } })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      var el = document.getElementById('codes-list');
+      if (!el || !d.codes || !d.codes.length) { if(el) el.innerHTML='<span style="color:#a89cbf">Sin codigos aun</span>'; return; }
+      el.innerHTML = '<table><thead><tr><th>Codigo</th><th>Dias</th><th>Usos</th><th>Max</th><th>Activo</th></tr></thead><tbody>' +
+        d.codes.map(function(c) {
+          return '<tr><td><strong style="color:#00f0ff">' + c.code + '</strong></td><td>' + c.days + '</td><td>' + (c.uses||0) + '</td><td>' + c.maxUses + '</td><td>' + (c.active ? 'Si' : 'No') + '</td></tr>';
+        }).join('') + '</tbody></table>';
+    }).catch(function(){});
+}
+
+function copyRefLink() {
+  var txt = document.getElementById('ref-link-display').textContent;
+  navigator.clipboard.writeText(txt).then(function() { alert('Link copiado!'); });
+}
+
+document.getElementById('admin-key-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') adminLogin();
+});
+</script>
+</body>
+</html>
