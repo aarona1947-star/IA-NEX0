@@ -1305,7 +1305,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
   function escapeAttr(s) {
-    return String(s || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    var r = String(s || '');
+    r = r.split('&').join('&amp;');
+    r = r.split('"').join('&quot;');
+    return r;
   }
 
   function renderWelcome() {
