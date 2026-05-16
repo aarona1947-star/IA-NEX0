@@ -835,6 +835,40 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   border:1px solid var(--border-glow);border-radius:10px;
   color:var(--tx);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;
 }
+
+/* TONE SELECTOR */
+.tone-selector{display:flex;gap:5px;padding:6px;background:var(--card2);border-radius:13px;border:1px solid var(--border);margin-bottom:8px;overflow-x:auto;}
+.tone-opt{flex-shrink:0;padding:6px 11px;border-radius:9px;border:none;background:transparent;color:var(--t2);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tone-opt.on{background:var(--grad);color:#000;font-weight:700;}
+
+/* SEARCH BAR in sidebar */
+.hist-search{margin:8px 10px;padding:8px 12px;background:var(--input);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--tx);font-family:inherit;outline:none;width:calc(100% - 20px);transition:all .2s;}
+.hist-search:focus{border-color:var(--neon-cyan);}
+.hist-search::placeholder{color:var(--t3);}
+
+/* PROMPT SUGGESTIONS */
+.prompt-tips{background:linear-gradient(135deg,rgba(0,240,255,.06),rgba(177,78,255,.06));border:1px solid var(--border-glow);border-radius:13px;padding:14px;margin-bottom:14px;}
+.prompt-tips-title{font-size:11px;font-weight:700;color:var(--neon-cyan);margin-bottom:9px;display:flex;align-items:center;gap:6px;}
+.prompt-tip{font-size:12px;color:var(--t2);margin-bottom:6px;line-height:1.55;padding-left:14px;position:relative;}
+.prompt-tip::before{content:'\2022';color:var(--neon-purple);position:absolute;left:4px;}
+
+/* EDIT BUTTON in messages */
+.msg-act.edit{border-color:rgba(255,170,61,.3);color:#ffaa3d;}
+.msg-edit-box{
+  width:100%;margin-top:8px;background:var(--input);
+  border:1px solid var(--neon-cyan);border-radius:11px;
+  padding:11px 13px;color:var(--tx);font-family:inherit;
+  font-size:13px;outline:none;resize:vertical;min-height:80px;
+}
+.msg-edit-actions{display:flex;gap:6px;margin-top:6px;}
+.msg-edit-save{padding:7px 14px;background:var(--grad);border:none;border-radius:9px;color:#000;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;}
+.msg-edit-cancel{padding:7px 14px;background:transparent;border:1px solid var(--border);border-radius:9px;color:var(--t2);font-family:inherit;font-size:11px;cursor:pointer;}
+
+/* PRIVACY/DELETE option */
+.danger-zone{margin-top:14px;padding:11px;background:rgba(255,61,157,.06);border:1px solid rgba(255,61,157,.2);border-radius:12px;}
+.danger-title{font-size:11px;font-weight:700;color:#ff6b9d;margin-bottom:6px;}
+.danger-btn{width:100%;padding:9px;background:transparent;border:1px solid rgba(255,61,157,.35);border-radius:9px;color:#ff6b9d;font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;}
+.danger-btn:hover{background:rgba(255,61,157,.1);}
 </style>
 </head>
 <body>
@@ -941,6 +975,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       </div>
       <div class="sb-sec">Conversaciones</div>
       <div class="sb-new" id="sb-new">+ Nueva conversaci&oacute;n</div>
+      <input type="text" class="hist-search" id="hist-search" placeholder="&#128269; Buscar conversaciones...">
       <div class="hist-section" id="hist-section"></div>
       <div class="sb-sec">Agentes</div>
       <div class="ag on" data-id="sabio">
@@ -970,6 +1005,14 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="inputbar">
+      <div class="tone-selector" id="tone-selector">
+        <button class="tone-opt on" data-tone="balanceado">&#9881;&#65039; Auto</button>
+        <button class="tone-opt" data-tone="conciso">&#9889; Conciso</button>
+        <button class="tone-opt" data-tone="detallado">&#128218; Detallado</button>
+        <button class="tone-opt" data-tone="creativo">&#127912; Creativo</button>
+        <button class="tone-opt" data-tone="tecnico">&#128187; T&eacute;cnico</button>
+        <button class="tone-opt" data-tone="simple">&#129489;&#8205;&#127891; Simple</button>
+      </div>
         <button class="img-gen-btn" id="img-gen-btn" title="Generar imagen con IA">&#127912;</button>
         <div class="file-preview"   id="file-preview">
           <span style="font-size:16px" id="file-preview-ico">&#128206;</span>
@@ -1414,6 +1457,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         '<button class="msg-act listen">\uD83D\uDD0A Escuchar</button>' +
         '<button class="msg-act copy">\uD83D\uDCCB Copiar</button>' +
         '<button class="msg-act resumir">\u2014 Resumir</button>' +
+        '<button class="msg-act edit">\u270F\uFE0F Editar</button>' +
         '<button class="msg-act fav">\u2665 Guardar</button>';
       var textForActs = text;
       var agentForActs = agentId;
@@ -1425,10 +1469,17 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         navigator.clipboard.writeText(textForActs).then(function() { toast('\uD83D\uDCCB Copiado!'); });
       });
       var resumirBtn = acts.querySelector('.resumir');
+      var editBtn = acts.querySelector('.edit');
       if (resumirBtn) {
         resumirBtn.addEventListener('click', function() {
           $('inp').value = 'Resume en exactamente 3 puntos breves lo anterior';
           send();
+        });
+      }
+      if (editBtn) {
+        editBtn.addEventListener('click', function() {
+          var bub = d.querySelector('.mbu');
+          if (bub) startEditMsg(bub, textForActs);
         });
       }
       favBtn.addEventListener('click', function() {
@@ -1641,7 +1692,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   function renderHist() {
     var c = $('hist-section');
     if (!c) return;
-    if (!chats.length) {
+    var filtered = histFilter ? chats.filter(function(ch) {
+      return (ch.title || '').toLowerCase().indexOf(histFilter) >= 0;
+    }) : chats;
+    if (!filtered.length) {
       c.innerHTML = '<div style="font-size:10px;color:var(--t3);padding:6px 14px">Sin conversaciones aun</div>';
       return;
     }
@@ -2027,6 +2081,88 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     setTimeout(function() { ad.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
   }
 
+// -- TONE SELECTOR --
+  var currentTone = 'balanceado';
+  function setTone(t) {
+    currentTone = t;
+    localStorage.setItem('nx-tone', t);
+    var opts = document.querySelectorAll('.tone-opt');
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].classList.toggle('on', opts[i].getAttribute('data-tone') === t);
+    }
+  }
+
+  function getToneInstruction() {
+    switch(currentTone) {
+      case 'conciso':   return 'Responde MUY breve, max 3 lineas. Solo lo esencial.';
+      case 'detallado': return 'Responde con detalle: contexto, ejemplos, pasos.';
+      case 'creativo':  return 'Responde con creatividad, metaforas y ejemplos vividos.';
+      case 'tecnico':   return 'Responde con precision tecnica y vocabulario especializado.';
+      case 'simple':    return 'Responde como si hablaras con alguien que no sabe del tema. Lenguaje simple.';
+      default:          return '';
+    }
+  }
+
+  // -- HISTORY SEARCH --
+  var histFilter = '';
+  function filterHistory(q) {
+    histFilter = (q || '').toLowerCase().trim();
+    renderHist();
+  }
+
+  // -- CLEAR ALL CONVERSATIONS --
+  function clearAllChats() {
+    if (!confirm('Borrar TODAS tus conversaciones? Esta accion no se puede deshacer.')) return;
+    chats = [];
+    activeChat = null;
+    hist = [];
+    localStorage.setItem('nx-chats', '[]');
+    // Also clear from cloud
+    if (TOKEN) {
+      fetch('/api/conversations', { headers: { 'Authorization': 'Bearer ' + TOKEN } })
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          (d.conversations || []).forEach(function(c) {
+            fetch('/api/conversations/' + c.id, { method: 'DELETE', headers: { 'Authorization': 'Bearer ' + TOKEN } }).catch(function(){});
+          });
+        });
+    }
+    renderHist();
+    $('msgs').innerHTML = '';
+    renderWelcome();
+    closeUserPanel();
+    toast('Todas las conversaciones borradas');
+  }
+
+  // -- EDIT AI RESPONSE --
+  function startEditMsg(bub, text) {
+    var ta = document.createElement('textarea');
+    ta.className = 'msg-edit-box';
+    ta.value = text;
+    var actions = document.createElement('div');
+    actions.className = 'msg-edit-actions';
+    var save = document.createElement('button');
+    save.className = 'msg-edit-save';
+    save.textContent = 'Guardar';
+    var cancel = document.createElement('button');
+    cancel.className = 'msg-edit-cancel';
+    cancel.textContent = 'Cancelar';
+    actions.appendChild(save);
+    actions.appendChild(cancel);
+    var origHtml = bub.innerHTML;
+    bub.innerHTML = '';
+    bub.appendChild(ta);
+    bub.appendChild(actions);
+    ta.focus();
+    save.addEventListener('click', function() {
+      var newText = ta.value;
+      bub.innerHTML = fmtText(newText);
+    });
+    cancel.addEventListener('click', function() {
+      bub.innerHTML = origHtml;
+    });
+  }
+
   function openUserPanel() {
     var panel = $('user-panel');
     var ov    = $('panel-ov');
@@ -2264,7 +2400,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         fetch(AGENTS[cur].ep, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + TOKEN },
-          body: JSON.stringify({ text: text, history: hist.slice(-6), file: attachedFile })
+          body: JSON.stringify({ text: getToneInstruction() ? (getToneInstruction() + '\n\n' + text) : text, history: hist.slice(-6), file: attachedFile })
         })
         .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
         .then(function(res) {
@@ -2337,6 +2473,49 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
           });
         }
       })(enterIds[j]);
+    }
+
+    // Voice + Image generator buttons
+    // Tone selector
+    var toneBtns = document.querySelectorAll('.tone-opt');
+    for (var iTo = 0; iTo < toneBtns.length; iTo++) {
+      (function(b) {
+        b.addEventListener('click', function() { setTone(this.getAttribute('data-tone')); });
+      })(toneBtns[iTo]);
+    }
+    var savedTone = localStorage.getItem('nx-tone');
+    if (savedTone) setTone(savedTone);
+
+    // History search
+    var histSearch = $('hist-search');
+    if (histSearch) histSearch.addEventListener('input', function() { filterHistory(this.value); });
+
+    // Clear all conversations
+    var clearBtn = $('clear-all-btn');
+    if (clearBtn) clearBtn.addEventListener('click', clearAllChats);
+
+    var voiceBtn = $('voice-btn');
+    if (voiceBtn) voiceBtn.addEventListener('click', toggleVoice);
+    var imgGenBtn = $('img-gen-btn');
+    if (imgGenBtn) imgGenBtn.addEventListener('click', openImgModal);
+    var imgModal = $('img-modal');
+    if (imgModal) imgModal.addEventListener('click', function(e) { if (e.target === this) closeImgModal(); });
+    var stylesEls = document.querySelectorAll('.img-style');
+    for (var iSt = 0; iSt < stylesEls.length; iSt++) {
+      (function(el) {
+        el.addEventListener('click', function() {
+          var all = document.querySelectorAll('.img-style');
+          for (var k = 0; k < all.length; k++) all[k].classList.remove('on');
+          this.classList.add('on');
+          selectedStyle = this.getAttribute('data-style') || '';
+        });
+      })(stylesEls[iSt]);
+    }
+    var imgTa = $('img-prompt-ta');
+    if (imgTa) {
+      imgTa.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateImage(); }
+      });
     }
 
     if (TOKEN) {
@@ -2571,6 +2750,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="up-notes-wrap">
       <textarea class="up-notes-ta" id="up-notes-ta" placeholder="Escribe algo que quieras recordar..."></textarea>
       <button class="up-notes-save" id="up-notes-save">&#128190; Guardar nota</button>
+      <div class="danger-zone">
+        <div class="danger-title">&#9888;&#65039; Privacidad</div>
+        <button class="danger-btn" id="clear-all-btn">Borrar todas mis conversaciones</button>
+      </div>
     </div>
   </div>
 </div>
