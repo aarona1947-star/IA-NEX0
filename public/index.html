@@ -1122,13 +1122,19 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .inputbox::after{display:none!important;}
 .inputbox:focus-within{box-shadow:none!important;}
 
-/* ═══ MESSAGES - cleaner ═══ */
+/* ═══ MESSAGES - fill height, center content ═══ */
+.chatmain{display:flex;flex-direction:column;flex:1;min-width:0;overflow:hidden;}
 .msgs{
-  max-width:780px;
-  margin:0 auto;
-  width:100%;
-  padding:24px 16px 16px!important;
+  flex:1;overflow-y:auto;
+  padding:28px 24px 16px!important;
+  max-width:none!important;
+  width:100%!important;
+  margin:0!important;
+  box-sizing:border-box;
 }
+/* Center messages and welcome inside msgs */
+.msg{max-width:720px;margin-left:auto!important;margin-right:auto!important;}
+.welcome{max-width:680px!important;width:100%;margin:auto!important;padding:32px 20px!important;}
 .msg.ai .mbu{
   background:var(--card)!important;
   border:1px solid var(--border)!important;
@@ -1296,12 +1302,15 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   .inputbar{padding:8px 12px 14px!important;}
 }
 
-/* ─── SIDEBAR TOP ROW (mobile only) ─── */
+/* ─── SIDEBAR TOP ROW (mobile only — display controlado por .mobile-only) ─── */
 .sb-toprow{
-  display:flex;align-items:center;gap:8px;
+  align-items:center;gap:8px;
   padding:12px 12px 10px;
   border-bottom:1px solid var(--border);
   flex-shrink:0;
+}
+@media(max-width:700px){
+  .sb-toprow{display:flex!important;}
 }
 .sb-toprow .mode-pill-sb{gap:2px!important;}
 .sb-toprow .sb-mob-close{
@@ -1327,12 +1336,12 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 
 /* ─── INPUT BAR — new integrated layout ─── */
 .inputbar{
-  padding:10px 16px 16px!important;
+  padding:10px 24px 18px!important;
   background:transparent!important;
   border-top:none!important;
-  max-width:780px;
-  margin:0 auto;
   width:100%;
+  max-width:none!important;
+  box-sizing:border-box;
 }
 .inputwrap{
   display:flex;flex-direction:column;
