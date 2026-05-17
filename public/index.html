@@ -1112,74 +1112,6 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   background:rgba(0,240,255,.04)!important;
 }
 
-/* ═══ INPUT BAR - integrated send button (Claude style) ═══ */
-.inputbar{
-  padding:12px 16px 18px!important;
-  background:transparent!important;
-  border-top:none!important;
-  max-width:780px;
-  margin:0 auto;
-  width:100%;
-}
-
-/* Tone selector - more subtle, integrated */
-.tone-selector{
-  margin-bottom:8px!important;
-  padding:4px!important;
-  background:var(--card2)!important;
-  border-radius:10px!important;
-  width:fit-content;
-  margin-left:auto;
-  margin-right:auto;
-  gap:2px!important;
-}
-.tone-opt{
-  padding:5px 10px!important;
-  font-size:10px!important;
-  border-radius:7px!important;
-}
-
-/* Main input area - integrated send button */
-.inputwrap{
-  position:relative;
-  background:var(--card)!important;
-  border:1.5px solid var(--border)!important;
-  border-radius:22px!important;
-  padding:8px 8px 8px 12px!important;
-  align-items:flex-end!important;
-  gap:8px!important;
-  transition:border-color .2s;
-  box-shadow:0 4px 20px rgba(0,0,0,.04);
-}
-.inputwrap:focus-within{
-  border-color:var(--neon-cyan)!important;
-  box-shadow:0 0 0 3px rgba(0,240,255,.1),0 4px 20px rgba(0,240,255,.08);
-}
-
-/* File and voice buttons - smaller, cleaner */
-.file-btn,.voice-btn,.img-gen-btn{
-  width:34px!important;height:34px!important;
-  border-radius:10px!important;
-  background:transparent!important;
-  border:none!important;
-  color:var(--t3)!important;
-  font-size:15px!important;
-  flex-shrink:0;
-  transition:all .15s;
-}
-.file-btn:hover,.voice-btn:hover,.img-gen-btn:hover{
-  background:var(--card2)!important;
-  color:var(--neon-cyan)!important;
-  box-shadow:none!important;
-  transform:none!important;
-}
-.img-gen-btn{color:var(--neon-purple)!important;}
-.img-gen-btn:hover{color:var(--neon-pink)!important;background:rgba(177,78,255,.08)!important;}
-.voice-btn.listening{
-  background:rgba(255,61,157,.15)!important;
-  color:var(--neon-pink)!important;
-}
-
 /* Input field - clean, no border (parent has border) */
 .inputbox{
   flex:1!important;
@@ -1189,38 +1121,6 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 }
 .inputbox::after{display:none!important;}
 .inputbox:focus-within{box-shadow:none!important;}
-.inputfield{
-  background:transparent!important;
-  border:none!important;
-  padding:8px 0!important;
-  font-size:14px!important;
-  outline:none!important;
-  resize:none;
-  min-height:24px;
-  max-height:140px;
-}
-
-/* SEND button - inside input, smaller, elegant */
-.send{
-  width:36px!important;height:36px!important;
-  border-radius:10px!important;
-  background:linear-gradient(135deg,#b14eff,#ff3df8)!important;
-  background-size:100% 100%!important;
-  box-shadow:0 2px 8px rgba(177,78,255,.3)!important;
-  font-size:13px!important;
-  flex-shrink:0;
-  margin-bottom:1px;
-}
-.send:hover{
-  box-shadow:0 4px 14px rgba(177,78,255,.5)!important;
-  transform:translateY(-1px);
-}
-.send:disabled{
-  opacity:.4;
-  background:var(--card3)!important;
-  box-shadow:none!important;
-  cursor:not-allowed;
-}
 
 /* ═══ MESSAGES - cleaner ═══ */
 .msgs{
@@ -1395,6 +1295,144 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   .msgs{padding:16px 12px!important;}
   .inputbar{padding:8px 12px 14px!important;}
 }
+
+/* ─── SIDEBAR TOP ROW (mobile only) ─── */
+.sb-toprow{
+  display:flex;align-items:center;gap:8px;
+  padding:12px 12px 10px;
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.sb-toprow .mode-pill-sb{gap:2px!important;}
+.sb-toprow .sb-mob-close{
+  width:32px;height:32px;flex-shrink:0;
+  border-radius:9px;border:1px solid var(--border);
+  background:var(--card2);color:var(--t3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  transition:all .2s;
+}
+.sb-toprow .sb-mob-close:hover{border-color:var(--neon-pink);color:var(--neon-pink);}
+
+/* ─── SIDEBAR TOOLS ─── */
+.sb-tools{padding:0 10px 6px;}
+.sb-tool{
+  width:100%;display:flex;align-items:center;gap:9px;
+  padding:9px 12px;margin-bottom:4px;
+  border-radius:10px;border:1px solid var(--border);
+  background:transparent;color:var(--t2);
+  font-family:inherit;font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .18s;text-align:left;
+}
+.sb-tool:hover{background:var(--card2);color:var(--tx);border-color:var(--border-glow);}
+
+/* ─── INPUT BAR — new integrated layout ─── */
+.inputbar{
+  padding:10px 16px 16px!important;
+  background:transparent!important;
+  border-top:none!important;
+  max-width:780px;
+  margin:0 auto;
+  width:100%;
+}
+.inputwrap{
+  display:flex;flex-direction:column;
+  background:var(--card)!important;
+  border:1.5px solid var(--border)!important;
+  border-radius:18px!important;
+  padding:12px 12px 8px!important;
+  gap:0!important;
+  transition:border-color .2s;
+  box-shadow:0 4px 24px rgba(0,0,0,.06);
+}
+.inputwrap:focus-within{
+  border-color:var(--neon-cyan)!important;
+  box-shadow:0 0 0 3px rgba(0,240,255,.08),0 4px 24px rgba(0,240,255,.1)!important;
+}
+.inputfield{
+  width:100%;background:transparent!important;
+  border:none!important;padding:0 0 10px!important;
+  font-size:15px!important;outline:none!important;
+  resize:none;min-height:28px;max-height:160px;
+  line-height:1.6;color:var(--tx);font-family:inherit;
+}
+.inputfield::placeholder{color:var(--t3);}
+.input-bottom-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:6px;border-top:1px solid var(--border);
+}
+.input-left-tools{display:flex;align-items:center;gap:2px;}
+
+/* Tool buttons inside input */
+.file-btn,.voice-btn,.img-gen-btn{
+  width:32px!important;height:32px!important;
+  border-radius:9px!important;background:transparent!important;
+  border:none!important;color:var(--t3)!important;
+  font-size:15px!important;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;
+}
+.file-btn:hover,.voice-btn:hover{background:var(--card2)!important;color:var(--t2)!important;}
+.img-gen-btn{color:var(--neon-purple)!important;}
+.img-gen-btn:hover{background:rgba(177,78,255,.08)!important;color:var(--neon-pink)!important;}
+.voice-btn.listening{background:rgba(255,61,157,.15)!important;color:var(--neon-pink)!important;}
+
+/* Tone pills - compact inside input */
+.tone-selector{
+  display:flex;gap:2px!important;padding:3px!important;
+  background:var(--card2)!important;
+  border:1px solid var(--border)!important;
+  border-radius:9px!important;
+  margin:0 4px!important;
+  overflow:hidden;
+}
+.tone-opt{
+  padding:4px 9px!important;font-size:10px!important;
+  border-radius:6px!important;border:none!important;
+  background:transparent;color:var(--t3)!important;
+  font-family:inherit;font-weight:600;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
+}
+.tone-opt.on{background:var(--card3)!important;color:var(--tx)!important;}
+.tone-opt:hover:not(.on){color:var(--t2)!important;}
+
+/* Send button — integrated */
+.send{
+  width:36px!important;height:36px!important;
+  border-radius:11px!important;border:none;flex-shrink:0;
+  background:var(--grad)!important;
+  color:#fff;cursor:pointer;
+  font-size:14px!important;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  box-shadow:0 2px 12px rgba(177,78,255,.35)!important;
+}
+.send:hover:not(:disabled){
+  box-shadow:0 4px 20px rgba(0,240,255,.4),0 4px 20px rgba(177,78,255,.3)!important;
+  transform:scale(1.05)!important;
+}
+.send:disabled{opacity:.4;cursor:not-allowed;box-shadow:none!important;}
+
+/* File preview above inputwrap */
+.file-preview{
+  display:none;align-items:center;gap:8px;padding:6px 12px;
+  background:rgba(0,240,255,.06);border:1px solid rgba(0,240,255,.2);
+  border-radius:10px;margin-bottom:6px;
+  font-size:11px;color:var(--t2);
+}
+.file-preview.on{display:flex;}
+.file-preview-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.file-preview-x{cursor:pointer;color:var(--neon-pink);font-size:14px;padding:0 4px;}
+
+/* Disclaimer */
+.ai-disclaimer{
+  font-size:9px;color:var(--t3);padding:4px 2px 0;
+  display:flex;align-items:center;justify-content:center;gap:4px;text-align:center;
+}
+
+@media(max-width:700px){
+  .inputwrap{border-radius:16px!important;padding:10px 10px 6px!important;}
+  .tone-opt{padding:3px 7px!important;font-size:9px!important;}
+  .input-left-tools{gap:1px;}
+}
 </style>
 </head>
 <body>
@@ -1484,18 +1522,12 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   <div class="abody">
     <div class="mob-ov" id="mob-ov"></div>
     <div class="sidebar" id="sidebar">
-      <div class="sb-mobile-header mobile-only">
-        <div class="sb-mob-brand">
-          <svg width="28" height="28"><use href="#ix-logo"/></svg>
-          <span class="sb-mob-name">IA<em>-NEXO</em></span>
-        </div>
-        <button class="sb-mob-close" id="sb-close-btn">&#10005;</button>
-      </div>
-      <div class="sb-mobile-mode mobile-only">
-        <div class="mode-pill mode-pill-sb">
+      <div class="sb-toprow mobile-only">
+        <div class="mode-pill mode-pill-sb" style="flex:1">
           <button class="m-opt auto on" id="m-auto-sb" data-mode="auto"><span>&#129302;</span> Auto</button>
           <button class="m-opt manual" id="m-manual-sb" data-mode="manual"><span>&#9881;</span> Manual</button>
         </div>
+        <button class="sb-mob-close" id="sb-close-btn" title="Cerrar">&#10005;</button>
       </div>
       <div class="sb-mode-card">
         <div class="sb-mode-title">Modo Actual</div>
@@ -1526,6 +1558,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         <div class="ag-box" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25);color:#a855f7">&#127912;</div>
         <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Arte y escritura</div></div>
       </div>
+      <div class="sb-sec">Herramientas</div>
+      <div class="sb-tools">
+        <button class="sb-tool" id="sb-img-btn">&#127912; Generar imagen</button>
+        <button class="sb-tool" id="sb-fav-btn">&#11088; Respuestas guardadas</button>
+        <button class="sb-tool" id="sb-notes-btn">&#128203; Mis notas</button>
+        <button class="sb-tool" id="sb-shortcuts-btn">&#9889; Atajos de teclado</button>
+      </div>
       <div class="sb-bottom">
         <button class="sb-action" id="btn-new-sb">&#43; Nueva conversaci&oacute;n</button>
         <button class="sb-action" id="btn-help-sb"><span style="font-size:15px;font-weight:700">?</span> Ayuda</button>
@@ -1537,27 +1576,29 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     <div class="chatmain">
       <div class="msgs" id="msgs"></div>
       <div class="inputbar">
-      <div class="tone-selector" id="tone-selector">
-        <button class="tone-opt on" data-tone="balanceado">&#9881;&#65039; Auto</button>
-        <button class="tone-opt" data-tone="conciso">&#9889; Conciso</button>
-        <button class="tone-opt" data-tone="detallado">&#128218; Detallado</button>
-        <button class="tone-opt" data-tone="creativo">&#127912; Creativo</button>
-        <button class="tone-opt" data-tone="tecnico">&#128187; T&eacute;cnico</button>
-        <button class="tone-opt" data-tone="simple">&#129489;&#8205;&#127891; Simple</button>
-      </div>
-        <button class="img-gen-btn" id="img-gen-btn" title="Generar imagen con IA">&#127912;</button>
-        <div class="file-preview"   id="file-preview">
+        <input type="file" id="file-input" style="display:none" accept="image/*,.pdf,.txt,.csv,.json,.py,.js,.html,.css,.md">
+        <div class="file-preview" id="file-preview">
           <span style="font-size:16px" id="file-preview-ico">&#128206;</span>
           <span class="file-preview-name" id="file-preview-name">archivo</span>
           <span class="file-preview-x" id="file-preview-x">&#10005;</span>
         </div>
-        <input type="file" id="file-input" style="display:none" accept="image/*,.pdf,.txt,.csv,.json,.py,.js,.html,.css,.md">
         <div class="inputwrap">
-          <button class="file-btn" id="file-btn" title="Adjuntar archivo">&#128206;</button>
-          <button class="voice-btn" id="voice-btn" title="Mantener para hablar">&#127897;&#65039;</button>
-          <div class="inputbox">
-            <textarea class="inputfield" id="inp" placeholder="Pregunta lo que quieras..." rows="1"></textarea>
-            <button class="send" id="send-btn">&#9654;</button>
+          <textarea class="inputfield" id="inp" placeholder="Pregunta lo que quieras..." rows="1"></textarea>
+          <div class="input-bottom-row">
+            <div class="input-left-tools">
+              <button class="file-btn" id="file-btn" title="Adjuntar archivo">&#128206;</button>
+              <button class="voice-btn" id="voice-btn" title="Voz">&#127897;&#65039;</button>
+              <button class="img-gen-btn" id="img-gen-btn" title="Generar imagen">&#127912;</button>
+              <div class="tone-selector" id="tone-selector">
+                <button class="tone-opt on" data-tone="balanceado">Auto</button>
+                <button class="tone-opt" data-tone="conciso">&#9889;</button>
+                <button class="tone-opt" data-tone="detallado">&#128218;</button>
+                <button class="tone-opt" data-tone="creativo">&#127912;</button>
+                <button class="tone-opt" data-tone="tecnico">&#128187;</button>
+                <button class="tone-opt" data-tone="simple">&#129489;</button>
+              </div>
+            </div>
+            <button class="send" id="send-btn" title="Enviar">&#9654;</button>
           </div>
         </div>
       </div>
@@ -2961,6 +3002,16 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     // Sidebar close button (mobile)
     var sbCloseBtn = $('sb-close-btn');
     if (sbCloseBtn) sbCloseBtn.addEventListener('click', closeSb);
+
+    // Sidebar tool buttons
+    var sbImgBtn = $('sb-img-btn');
+    var sbFavBtn = $('sb-fav-btn');
+    var sbNotesBtn = $('sb-notes-btn');
+    var sbShortcutsBtn = $('sb-shortcuts-btn');
+    if (sbImgBtn) sbImgBtn.addEventListener('click', function() { closeSb(); openImgModal(); });
+    if (sbFavBtn) sbFavBtn.addEventListener('click', function() { closeSb(); renderFavList(); var fm = $('fav-modal'); if(fm) fm.classList.add('on'); });
+    if (sbNotesBtn) sbNotesBtn.addEventListener('click', function() { closeSb(); openUserPanel(); });
+    if (sbShortcutsBtn) sbShortcutsBtn.addEventListener('click', function() { closeSb(); showHelp(); });
 
     // Global keyboard shortcuts
     document.addEventListener('keydown', function(e) {
