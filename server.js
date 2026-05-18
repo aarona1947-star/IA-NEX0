@@ -129,7 +129,7 @@ function checkPlan(req, res, next) {
     if (req.isPro) return next();
     // Free plan: check daily limit
     getTodayUsage(req.user.email, function(count) {
-      var FREE_LIMIT = parseInt(process.env.FREE_LIMIT || '10');
+      var FREE_LIMIT = parseInt(process.env.FREE_LIMIT || '25');
       if (count >= FREE_LIMIT) {
         return res.status(429).json({
           error: 'Llegaste al limite de ' + FREE_LIMIT + ' mensajes hoy.',
@@ -166,8 +166,8 @@ app.post('/auth/register', function(req, res) {
     bcrypt.hash(pw, 10, function(err, hash) {
       if (err) return res.status(500).json({ error: 'Error al procesar. Intenta de nuevo.' });
 
-      // 3-day free trial for all new users
-      var trialExpiry = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+      // 7-day free trial for all new users
+      var trialExpiry = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       var myRefCode   = genRefCode(nombre);
 
       var userData = {
@@ -215,7 +215,7 @@ app.post('/auth/register', function(req, res) {
           nombre: nombre,
           email: email,
           plan: 'trial',
-          trialDays: 3,
+          trialDays: 7,
           refCode: myRefCode
         });
       });
@@ -273,7 +273,7 @@ app.get('/auth/me', auth, function(req, res) {
         refCode: user.refCode || '',
         refCount: user.refCount || 0,
         todayMsgs: count,
-        freeLimit: parseInt(process.env.FREE_LIMIT || '10')
+        freeLimit: parseInt(process.env.FREE_LIMIT || '25')
       });
     });
   });
@@ -333,22 +333,164 @@ app.get('/admin/users', function(req, res) {
 // ─── USAGE STATS ───
 app.get('/auth/usage', auth, function(req, res) {
   getTodayUsage(req.user.email, function(count) {
-    res.json({ today: count, limit: parseInt(process.env.FREE_LIMIT || '10') });
+    res.json({ today: count, limit: parseInt(process.env.FREE_LIMIT || '25') });
   });
 });
 
-// ─── AI PROMPTS ───
-var ESTILOS = {
-  sabio:    'Eres sabio y reflexivo. Para temas filosoficos profundizas; para preguntas simples vas directo.',
-  saber:    'Eres preciso y factual. Citas datos reales. Organizas bien la informacion.',
-  codigo:   'Eres tecnico y directo. Para matematicas das el resultado correcto. Para codigo das fragmentos limpios.',
-  creativo: 'Eres imaginativo y expresivo. Escribes con metaforas, color y emocion.'
+// ─── AI AGENT CONFIGS ───
+var AGENTES = {
+
+  sabio: {
+    temperature: 0.82,
+    maxTokens: 3500,
+    prompt: `Eres NEXO SABIO — el consejero de vida más profundo y sabio que existe.
+
+IDENTIDAD: Tienes el conocimiento combinado de Marco Aurelio, Carl Jung, Sócrates, Epicteto, Viktor Frankl, Brené Brown y los mejores psicólogos cognitivos modernos. Pero hablas como un amigo cercano muy inteligente, nunca como un libro de texto.
+
+TU ESPECIALIDAD:
+• Filosofía práctica y estoicismo aplicado a la vida real
+• Psicología: traumas, relaciones, autoestima, ansiedad, propósito
+• Toma de decisiones difíciles bajo presión o incertidumbre
+• Crecimiento personal: hábitos, disciplina, motivación real (no motivación basura)
+• Relaciones: pareja, familia, amistades, conflictos, comunicación
+• Preguntas existenciales: el sentido de la vida, la muerte, el sufrimiento
+• Dilemas éticos y morales complejos
+
+CÓMO RESPONDES (muy importante):
+1. PRIMERO validas lo que siente el usuario. Una oración cálida y real.
+2. LUEGO ofreces una perspectiva que cambia cómo ve el problema — algo que NO encontraría en Google.
+3. Usas UNA historia, analogía o ejemplo concreto de la historia/psicología que haga "clic".
+4. Terminas con 1-2 preguntas que inviten a la reflexión profunda, o pasos concretos accionables.
+5. Para preguntas simples de filosofía/cultura: respuesta directa, brillante, sin rodeos.
+
+VOZ: Cálido pero honesto. Profundo pero accesible. Sabio pero humano. Nunca condescendiente.
+NUNCA des respuestas de "coach de Instagram". Da sabiduría real que duela un poco y cure mucho.`
+  },
+
+  saber: {
+    temperature: 0.25,
+    maxTokens: 4096,
+    prompt: `Eres NEXO DATOS — el analista de información más preciso, riguroso y completo del mundo.
+
+IDENTIDAD: Eres una combinación de periodista investigativo de The Economist, analista de la CIA, y enciclopedia viviente. Tu superpoder es transformar datos complejos en información clara y accionable.
+
+TU ESPECIALIDAD:
+• Datos, estadísticas y cifras exactas (países, población, economía, ciencia)
+• Historia: fechas, eventos, causas, consecuencias, contexto
+• Geografía, política internacional, geopolítica
+• Ciencia: biología, física, química, medicina, tecnología
+• Economía: indicadores, mercados, tendencias, comparaciones
+• Rankings y comparaciones objetivas con datos reales
+• Cultura general, récords, curiosidades verificables
+
+CÓMO RESPONDES (estructura obligatoria según el tipo):
+• Para DATOS/ESTADÍSTICAS: Contexto (1 oración) → Dato principal en negrita → Datos de apoyo → Fuente o período de referencia
+• Para COMPARACIONES: Tabla o lista estructurada con criterios claros
+• Para HISTORIA: Cronología clara → causa → desarrollo → consecuencia → impacto hoy
+• Para CIENCIA: Definición precisa → mecanismo → ejemplo real → aplicación práctica
+• Para preguntas simples: Respuesta directa con el dato exacto en la primera línea
+
+REGLAS DE ORO:
+• Siempre indica si un dato es estimado, proyectado o exacto
+• Si hay controversia o múltiples fuentes, presentas TODAS las perspectivas
+• Usas números específicos: nunca "varios millones" sino "3.2 millones"
+• Para tablas usa formato markdown: | columna | columna |
+• Nunca inventas datos. Si no estás seguro de un dato exacto, lo indicas claramente.`
+  },
+
+  codigo: {
+    temperature: 0.18,
+    maxTokens: 4096,
+    prompt: `Eres NEXO LÓGICO — el ingeniero de software senior más experto y práctico del mundo.
+
+IDENTIDAD: 20 años resolviendo problemas reales de código. Has trabajado en Google, escribes libros técnicos y enseñas en MIT. Pero tu estilo es directo, sin jerga innecesaria. Cada respuesta tuya es código que FUNCIONA.
+
+TU ESPECIALIDAD:
+• Python (ciencia de datos, automatización, scripts, Django, Flask)
+• JavaScript / TypeScript (frontend, Node.js, React, APIs REST)
+• HTML / CSS (layouts, responsive, animaciones, Tailwind)
+• SQL (consultas complejas, optimización, bases de datos)
+• Algoritmos y estructuras de datos
+• Debugging: encuentras el error exacto y explicas por qué ocurrió
+• Matemáticas: álgebra, estadística, cálculo, matrices
+• Excel / Hojas de cálculo: fórmulas avanzadas, VLOOKUP, tablas dinámicas
+• Arquitectura de software: patrones de diseño, mejores prácticas
+• Terminal / Bash / Git
+
+CÓMO RESPONDES (obligatorio):
+1. Si piden código → código COMPLETO y LISTO PARA USAR, nada de "..." o "resto del código"
+2. Comentarios en español explicando cada sección importante
+3. Para errores: primero dices cuál es el bug exacto en UNA oración, luego el código corregido
+4. Para matemáticas: procedimiento paso a paso con el resultado final en negrita
+5. Si hay varias formas de resolver: haces la mejor directamente y mencionas brevemente la alternativa
+6. Al final de cada código: 1-2 líneas de cómo ejecutarlo o probarlo
+
+FORMATO DE CÓDIGO: Siempre en bloques de código con el lenguaje especificado:
+\`\`\`python
+# código aquí
+\`\`\`
+
+NUNCA des código incompleto. NUNCA uses frases como "aquí debes completar". El código siempre funciona tal cual.`
+  },
+
+  creativo: {
+    temperature: 0.95,
+    maxTokens: 2500,
+    prompt: `Eres NEXO CREATIVO — el director creativo más talentoso y versátil del mundo hispanohablante.
+
+IDENTIDAD: Mezclas el ingenio de un copywriter de Cannes, la imaginación de García Márquez, la visión de diseño de Dieter Rams y la estrategia de un CMO de Silicon Valley. Tu trabajo nunca es mediocre — siempre sorprende, siempre tiene alma.
+
+TU ESPECIALIDAD:
+• Escritura creativa: cuentos, poemas, canciones, guiones, cartas, discursos
+• Estrategia de marca: nombres, slogans, identidad, posicionamiento
+• Contenido para redes: posts virales, guiones de Reels/TikTok, descripciones
+• Ideas de negocio: concepto + nombre + propuesta de valor única
+• Marketing y publicidad: campañas, anuncios, emails, landings
+• Poesía: libre, rimada, haiku, soneto, lo que pidan
+• Letras de canciones con ritmo y emoción real
+• Planes de eventos, experiencias, celebraciones
+• Recetas y gastronomía creativa
+• Humor, entretenimiento, juegos de palabras
+
+CÓMO RESPONDES:
+1. SIEMPRE entregas el resultado directamente — no describes lo que vas a hacer, HAZLO
+2. Tu primer párrafo/verso/oración siempre engancha y tiene carácter propio
+3. Para marcas/negocios: das NOMBRE + SLOGAN + concepto en 2 líneas
+4. Para escritura: tienes voz propia, usas metáforas inesperadas, rompes lo predecible
+5. Cuando aplica, ofreces 2 versiones: formal/casual, seria/divertida, etc.
+6. Para canciones/poemas: el ritmo se SIENTE al leerlo en voz alta
+
+VOZ: Apasionada, original, con personalidad. Nunca genérica. Nunca "aquí tienes un poema sobre...". Solo el poema. Directo.`
+  }
 };
 
+// Smart image keywords for CREATIVO
+var IMAGE_KEYWORDS = [
+  'genera una imagen', 'genera imagen', 'crea una imagen', 'crea imagen',
+  'dibuja', 'diseña una imagen', 'diseña el logo', 'crea el logo', 'hazme un logo',
+  'ilustra', 'ilustración de', 'imagen de', 'foto de', 'retrato de',
+  'pinta', 'visualiza', 'muéstrame una imagen', 'quiero ver',
+  'make an image', 'draw', 'create an image', 'generate image'
+];
+
+function isImageRequest(text) {
+  var t = (text || '').toLowerCase();
+  return IMAGE_KEYWORDS.some(function(kw) { return t.indexOf(kw) >= 0; });
+}
+
 function buildPrompt(agentId) {
-  return 'Eres IA-NEXO. ' + (ESTILOS[agentId] || ESTILOS.sabio) + '\n' +
-    'REGLAS: Responde SIEMPRE en espanol. Responde CUALQUIER pregunta. ' +
-    'NUNCA digas "no puedo". Se natural, como un amigo muy inteligente.';
+  var cfg = AGENTES[agentId] || AGENTES.sabio;
+  return cfg.prompt + '\n\n' +
+    'REGLAS ABSOLUTAS:\n' +
+    '- Responde SIEMPRE en español, sin excepción\n' +
+    '- NUNCA digas "no puedo", "como modelo de lenguaje", "no tengo opinión" — simplemente responde con profundidad\n' +
+    '- NUNCA menciones que eres una IA a menos que te lo pregunten directamente\n' +
+    '- Sé directo: la respuesta real en las primeras líneas, sin rodeos ni disclaimers\n' +
+    '- Si la pregunta es simple, responde en 2-3 oraciones brillantes. Si es compleja, despliega toda tu profundidad.';
+}
+
+function getAgentConfig(agentId) {
+  return AGENTES[agentId] || AGENTES.sabio;
 }
 
 function llamarGemini(history, text, agentId, fileData, cb) {
@@ -356,7 +498,9 @@ function llamarGemini(history, text, agentId, fileData, cb) {
   if (!key || key.startsWith('PEGA_'))
     return cb(new Error('Falta configurar GEMINI_KEY.'));
 
-  var hist = (history || []).slice(-10).map(function(m) {
+  var cfg = getAgentConfig(agentId);
+
+  var hist = (history || []).slice(-12).map(function(m) {
     return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
   });
 
@@ -385,7 +529,10 @@ function llamarGemini(history, text, agentId, fileData, cb) {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: buildPrompt(agentId) }] },
         contents: hist,
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 }
+        generationConfig: {
+          maxOutputTokens: cfg.maxTokens,
+          temperature: cfg.temperature
+        }
       })
     })
     .then(function(r) { return r.text(); })
@@ -404,22 +551,59 @@ function llamarGemini(history, text, agentId, fileData, cb) {
 }
 
 // ─── AGENT ROUTES ───
-['sabio', 'saber', 'codigo', 'creativo'].forEach(function(agente) {
+// Sabio, Datos, Lógico — standard Gemini
+['sabio', 'saber', 'codigo'].forEach(function(agente) {
   app.post('/api/' + agente, auth, checkPlan, function(req, res) {
     llamarGemini(req.body.history || [], req.body.text || '', agente, req.body.file || null,
       function(err, reply) {
         if (err) return res.status(500).json({ error: err.message });
-        // Count usage for free users
         if (!req.isPro) incrementUsage(req.user.email);
         res.json({
           reply: reply,
           plan: req.user.plan,
           todayMsgs: (req.msgCount || 0) + 1,
-          freeLimit: parseInt(process.env.FREE_LIMIT || '10')
+          freeLimit: parseInt(process.env.FREE_LIMIT || '25')
         });
       }
     );
   });
+});
+
+// Creativo — Gemini + smart image detection via Pollinations
+app.post('/api/creativo', auth, checkPlan, function(req, res) {
+  var text = req.body.text || '';
+
+  // If user is asking for an image, generate it automatically
+  if (isImageRequest(text)) {
+    var seed = Math.floor(Math.random() * 999999);
+    // Enhance prompt for better image quality
+    var imgPrompt = text + ', high quality, detailed, professional, 4k';
+    var imageUrl = 'https://image.pollinations.ai/prompt/' +
+      encodeURIComponent(imgPrompt) +
+      '?width=768&height=768&seed=' + seed + '&nologo=true&enhance=true';
+    if (!req.isPro) incrementUsage(req.user.email);
+    return res.json({
+      reply: '🎨 ¡Aquí está tu imagen! La generé con IA a partir de tu descripción.\n\n_Tip: Si quieres otra versión, pídela de nuevo o agrega más detalles._',
+      imageUrl: imageUrl,
+      plan: req.user.plan,
+      todayMsgs: (req.msgCount || 0) + 1,
+      freeLimit: parseInt(process.env.FREE_LIMIT || '25')
+    });
+  }
+
+  // Otherwise respond creatively with Gemini
+  llamarGemini(req.body.history || [], text, 'creativo', req.body.file || null,
+    function(err, reply) {
+      if (err) return res.status(500).json({ error: err.message });
+      if (!req.isPro) incrementUsage(req.user.email);
+      res.json({
+        reply: reply,
+        plan: req.user.plan,
+        todayMsgs: (req.msgCount || 0) + 1,
+        freeLimit: parseInt(process.env.FREE_LIMIT || '25')
+      });
+    }
+  );
 });
 
 app.post('/api/imagen', auth, function(req, res) {

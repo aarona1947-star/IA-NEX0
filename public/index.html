@@ -219,6 +219,15 @@ body.big .inputfield{font-size:17px!important;}
 .tdot::after{content:'...';animation:dots 1.5s infinite;}
 @keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
 .msg-img{max-width:100%;border-radius:10px;margin-top:8px;box-shadow:var(--shadow-sm);}
+.chat-img-wrap{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+.chat-img-dl{
+  display:inline-block;padding:7px 14px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;font-size:12px;font-weight:600;
+  color:var(--t2);text-decoration:none;transition:all .2s;
+  align-self:flex-start;
+}
+.chat-img-dl:hover{background:var(--card3);color:var(--tx);}
 .agent-badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:10px;font-weight:700;margin-bottom:6px;}
 
 /* ── INPUT BAR ── */
@@ -417,7 +426,51 @@ body.big .inputfield{font-size:17px!important;}
 .content{line-height:1.6;}
 .brand{display:flex;align-items:center;gap:8px;}
 
-/* ── DESKTOP/MOBILE TOGGLE ── */
+/* ── THEME TOGGLE BUTTON ── */
+.theme-toggle-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;
+  background:var(--card2);border:1.5px solid var(--border);
+  border-radius:20px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:12px;font-weight:700;
+  color:var(--t2);transition:all .2s;
+  white-space:nowrap;flex-shrink:0;
+}
+.theme-toggle-btn:hover{background:var(--card3);border-color:var(--border-glow);color:var(--tx);}
+/* Show only the right icon based on theme */
+:root[data-theme="dark"]  .theme-icon-dark {display:none;}
+:root[data-theme="dark"]  .theme-icon-light{display:inline;}
+:root[data-theme="light"] .theme-icon-dark {display:inline;}
+:root[data-theme="light"] .theme-icon-light{display:none;}
+@media(max-width:700px){
+  .theme-toggle-btn{padding:7px 10px;border-radius:12px;}
+  .theme-toggle-label{display:none!important;}
+}
+
+/* ── TONE SELECTOR — scrollable on mobile ── */
+.tone-selector{
+  display:flex;gap:2px;padding:2px;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;flex-shrink:0;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.tone-selector::-webkit-scrollbar{display:none;}
+
+/* ── MOBILE AUTO/MANUAL MODE PILL in topbar ── */
+.mob-mode-pill{
+  display:none;
+}
+@media(max-width:700px){
+  .mob-mode-pill{
+    display:flex;
+    background:var(--card2);border:1px solid var(--border);
+    border-radius:8px;padding:2px;gap:2px;
+    flex-shrink:0;
+  }
+  .mob-mode-pill .m-opt{padding:5px 9px;font-size:10px;}
+}
 .desktop-only{display:flex;}
 .mobile-only{display:none;}
 .mob-nav{display:none;}
@@ -585,6 +638,10 @@ body.big .inputfield{font-size:17px!important;}
       <button class="mob-ham" id="ham">&#9776;</button>
       <img src="/images/icono-nexo.png" width="32" height="32" style="border-radius:8px;object-fit:contain;" alt="IA-NEXO">
       <div class="tb-name">IA<em>-NEXO</em><span class="sync-dot" id="sync-dot" title="Sincronizado con la nube"></span></div>
+      <div class="mob-mode-pill">
+        <button class="m-opt auto on" id="m-auto-mob" data-mode="auto">🤖 Auto</button>
+        <button class="m-opt manual" id="m-manual-mob" data-mode="manual">⚙️ Manual</button>
+      </div>
     </div>
     <div class="tb-r">
       <div class="msg-counter" id="msg-counter" title="Mensajes usados hoy">
@@ -596,11 +653,16 @@ body.big .inputfield{font-size:17px!important;}
         <button class="m-opt auto on" id="m-auto" data-mode="auto"><span>&#129302;</span> Auto</button>
         <button class="m-opt manual" id="m-manual" data-mode="manual"><span>&#9881;</span> Manual</button>
       </div>
+      <!-- Dark/Light toggle — always visible -->
+      <button class="theme-toggle-btn" id="btn-theme-app" title="Cambiar tema">
+        <span class="theme-icon-dark">🌙</span>
+        <span class="theme-icon-light">☀️</span>
+        <span class="theme-toggle-label desktop-only" id="theme-label-text">Oscuro</span>
+      </button>
       <button class="help-btn" id="btn-help" title="Ayuda">?</button>
-      <button class="tb-btn" id="btn-theme-app">&#9728; Claro</button>
-      <button class="tb-btn" id="btn-big">Grande</button>
-      <button class="tb-btn" id="btn-new">+ Nueva</button>
-      <button class="tb-btn exit" id="btn-logout">Salir</button>
+      <button class="tb-btn desktop-only" id="btn-big">Grande</button>
+      <button class="tb-btn desktop-only" id="btn-new">+ Nueva</button>
+      <button class="tb-btn exit desktop-only" id="btn-logout">Salir</button>
     </div>
   </div>
   <div class="abody">
@@ -782,11 +844,14 @@ body.big .inputfield{font-size:17px!important;}
     document.documentElement.setAttribute('data-theme', t);
     document.documentElement.style.colorScheme = t;
     var isDark = (t === 'dark');
-    var lD = '\u2600\uFE0F Claro'; var lL = '\uD83C\uDF19 Oscuro';
-    var iD = '\u2600\uFE0F';       var iL = '\uD83C\uDF19';
-    var b1 = $('btn-theme-app');   if (b1) b1.textContent = isDark ? lD : lL;
-    var b2 = $('btn-theme-sb');    if (b2) b2.textContent = isDark ? lD : lL;
-    var b3 = $('btn-theme-login'); if (b3) b3.textContent = isDark ? iD : iL;
+    // Update label text on the new toggle button
+    var lbl = $('theme-label-text');
+    if (lbl) lbl.textContent = isDark ? 'Claro' : 'Oscuro';
+    // Update sidebar and login buttons (old style)
+    var b2 = $('btn-theme-sb');    if (b2) b2.textContent = isDark ? '☀️ Claro' : '🌙 Oscuro';
+    var b3 = $('btn-theme-login'); if (b3) b3.textContent = isDark ? '☀️' : '🌙';
+    // Update mobile tools sheet icon
+    var mobIco = $('mob-theme-ico'); if (mobIco) mobIco.textContent = isDark ? '☀️' : '🌙';
   }
 
   function cycleTheme() { applyTheme(theme === 'dark' ? 'light' : 'dark'); }
@@ -1086,7 +1151,7 @@ body.big .inputfield{font-size:17px!important;}
     return t;
   }
 
-  function addMsg(role, text, agentId, isErr) {
+  function addMsg(role, text, agentId, isErr, imageUrl) {
     var wc = document.querySelector('.welcome');
     if (wc) wc.remove();
     var c = $('msgs');
@@ -1101,9 +1166,19 @@ body.big .inputfield{font-size:17px!important;}
              '<div class="ai-disclaimer">\u26A0\uFE0F Verifica informaci\u00f3n importante. La IA puede cometer errores.</div>';
     }
     var avatar = role === 'user' ? '\uD83D\uDC64' : (a ? a.icon : '\u26A0');
+    // Build image HTML if imageUrl is provided
+    var imgHtml = '';
+    if (imageUrl) {
+      imgHtml = '<div class="chat-img-wrap">' +
+        '<img class="msg-img" src="' + imageUrl + '" alt="Imagen generada" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'" ' +
+        'onload="this.closest(\'.msgs\').scrollTop=this.closest(\'.msgs\').scrollHeight">' +
+        '<a class="chat-img-dl" href="' + imageUrl + '" download="ia-nexo-imagen.jpg" target="_blank">⬇ Descargar imagen</a>' +
+        '</div>';
+    }
     d.innerHTML =
       '<div class="mav">' + avatar + '</div>' +
-      '<div style="flex:1;min-width:0"><div class="mbu">' + fmtText(text) + '</div>' + meta + '</div>';
+      '<div style="flex:1;min-width:0"><div class="mbu">' + fmtText(text) + imgHtml + '</div>' + meta + '</div>';
     c.appendChild(d);
 
     // Scroll: for AI messages go to TOP of message; for user go to bottom
@@ -1259,7 +1334,12 @@ body.big .inputfield{font-size:17px!important;}
       if (!res.ok || res.data.error) {
         addMsg('ai', '! ' + (res.data.error || 'Error de conexion'), null, true);
       } else {
-        addMsg('ai', res.data.reply, cur);
+        // If response includes an image (from NEXO CREATIVO auto-generate)
+        if (res.data.imageUrl) {
+          addMsg('ai', res.data.reply, cur, false, res.data.imageUrl);
+        } else {
+          addMsg('ai', res.data.reply, cur);
+        }
         hist.push({ role: 'assistant', content: res.data.reply });
         saveChat();
         // Update counter from server response
@@ -1986,6 +2066,12 @@ body.big .inputfield{font-size:17px!important;}
     // Mode toggle (desktop topbar)
     $('m-auto').addEventListener('click', function() { setMode('auto'); toast('Modo Automatico activado'); });
     $('m-manual').addEventListener('click', function() { setMode('manual'); toast('Modo Manual activado'); });
+
+    // Mobile topbar mode buttons
+    var mAutoMob = $('m-auto-mob');
+    var mManualMob = $('m-manual-mob');
+    if (mAutoMob) mAutoMob.addEventListener('click', function() { setMode('auto'); toast('Modo Automático ✅'); });
+    if (mManualMob) mManualMob.addEventListener('click', function() { setMode('manual'); toast('Modo Manual ✅'); });
 
     // Mode toggle (mobile sidebar)
     var mAutoSb = $('m-auto-sb');
