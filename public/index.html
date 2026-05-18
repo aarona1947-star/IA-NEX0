@@ -604,24 +604,90 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 /* Plan days remaining */
 .plan-days{font-size:10px;color:var(--t3);text-align:center;padding:0 12px 8px;}
 
-/* ── MOBILE ── */
 .desktop-only{display:flex;}
 .mobile-only{display:none;}
+.mob-nav{display:none;}
+
 @media(max-width:700px){
   .desktop-only{display:none!important;}
   .mobile-only{display:block;}
   .sb-toprow{display:flex!important;}
-  .sidebar{position:fixed;left:-100%;top:0;bottom:0;width:80%;max-width:280px;transition:left .3s cubic-bezier(.4,0,.2,1);z-index:30;}
+  .tb-btn{display:none!important;}
+  .msg-counter{display:none!important;}
+  .help-btn{display:none!important;}
+  .mob-ham{display:flex!important;width:36px;height:36px;background:none;border:none;font-size:20px;color:var(--t2);cursor:pointer;align-items:center;justify-content:center;}
+
+  .sidebar{position:fixed;left:-100%;top:0;bottom:0;width:82%;max-width:300px;transition:left .28s cubic-bezier(.4,0,.2,1);z-index:200;box-shadow:4px 0 24px rgba(0,0,0,.15);}
   .sidebar.open{left:0;}
-  .mob-ham{display:flex!important;}
-  .wc-grid{grid-template-columns:repeat(2,1fr)!important;}
-  .mbu{max-width:92%;}
-  .msgs{padding:16px 12px 8px!important;}
-  .inputbar{padding:6px 10px 12px!important;}
-  .tone-selector{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .input-left-tools{overflow-x:auto;}
-  .tb-btn{display:none;}
-  .msg-counter{display:none;}
+
+  .chatmain{background:var(--bg);}
+  .msgs{padding:16px 12px 72px!important;}
+  .msgs > .msg,.msgs > .welcome{max-width:100%!important;}
+  .mbu{max-width:90%!important;font-size:14px;}
+
+  .welcome{padding:20px 14px 8px!important;}
+  .wc-logo{width:60px!important;height:60px!important;margin-bottom:12px!important;border-radius:14px!important;}
+  .wc-logo img{width:60px!important;height:60px!important;}
+  .wc-title{font-size:26px!important;margin-bottom:5px!important;}
+  .wc-sub{font-size:13px!important;margin-bottom:14px!important;}
+  .wc-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;max-width:100%!important;margin-bottom:14px!important;}
+  .wc-card{padding:12px 8px 10px!important;}
+  .wc-card .wc-card-ico,.wc-card .wc-icon{width:54px!important;height:54px!important;}
+  .wc-card .wc-card-ico img,.wc-card .wc-icon img{width:54px!important;height:54px!important;}
+  .wc-card .wc-card-nm,.wc-card .wc-name{font-size:9px!important;}
+  .chip,.wc-sug{font-size:11px!important;padding:7px 11px!important;}
+
+  .inputbar{padding:6px 10px 6px!important;background:var(--card)!important;border-top:1px solid var(--border)!important;padding-bottom:calc(6px + 64px + env(safe-area-inset-bottom,0px))!important;}
+  .inputwrap{border-radius:14px!important;padding:10px 10px 7px!important;max-width:100%!important;}
+  .inputfield{font-size:15px!important;}
+  .tone-selector{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:none;}
+  .tone-opt{padding:4px 8px!important;font-size:10px!important;}
+  .input-left-tools{overflow-x:auto;gap:0!important;}
+
+  /* BOTTOM NAV */
+  .mob-nav{display:flex;position:fixed;bottom:0;left:0;right:0;height:64px;background:var(--card);border-top:1px solid var(--border);box-shadow:0 -4px 20px rgba(0,0,0,.08);z-index:100;padding:0 4px;padding-bottom:env(safe-area-inset-bottom,0px);align-items:center;justify-content:space-around;}
+  .mob-nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:var(--t3);font-family:"Inter",sans-serif;font-size:10px;font-weight:600;letter-spacing:.2px;padding:6px 4px;border-radius:12px;transition:all .2s;min-height:52px;}
+  .mob-nav-btn.active{color:var(--accent);}
+  .mob-nav-btn.active svg{stroke:var(--accent);}
+  .mob-nav-btn svg{stroke:var(--t3);transition:stroke .2s;}
+  .mob-nav-center{width:52px!important;height:52px!important;border-radius:16px!important;background:var(--grad)!important;color:white!important;flex:0 0 52px!important;box-shadow:0 4px 14px rgba(124,58,237,.35)!important;margin:0 4px;}
+  .mob-nav-center svg{stroke:white!important;}
+  .mob-nav-center span{display:none;}
+
+  /* MOBILE SHEETS */
+  .mob-sheet{position:fixed;inset:0;z-index:300;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none;}
+  .mob-sheet.open{pointer-events:all;}
+  .mob-sheet-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;transition:opacity .28s;backdrop-filter:blur(2px);}
+  .mob-sheet.open .mob-sheet-overlay{opacity:1;}
+  .mob-sheet-card{position:relative;background:var(--card);border-radius:24px 24px 0 0;padding:12px 16px 24px;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:85vh;overflow-y:auto;}
+  .mob-sheet.open .mob-sheet-card{transform:translateY(0);}
+  .mob-sheet-tall .mob-sheet-card{max-height:90vh;}
+  .mob-sheet-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 14px;}
+  .mob-sheet-title{font-size:18px;font-weight:800;color:var(--tx);margin-bottom:16px;font-family:"Plus Jakarta Sans","Inter",sans-serif;letter-spacing:-.3px;}
+
+  .mob-agent-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .mob-agent-card{background:var(--card2);border:1px solid var(--border);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;transition:all .2s;}
+  .mob-agent-card:active{transform:scale(.97);}
+  .mob-agent-card img{width:64px;height:64px;object-fit:contain;margin-bottom:8px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));}
+  .mob-agent-name{font-size:11px;font-weight:800;letter-spacing:.5px;margin-bottom:3px;}
+  .mob-agent-role{font-size:10px;color:var(--t3);}
+
+  .mob-new-chat-btn{width:100%;padding:12px;background:var(--grad);border:none;border-radius:12px;color:white;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:12px;}
+  .mob-hist-search{width:100%;padding:10px 14px;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;color:var(--tx);font-family:inherit;font-size:13px;outline:none;margin-bottom:10px;}
+  .mob-hist-search:focus{border-color:var(--accent);}
+  .mob-hist-list{display:flex;flex-direction:column;gap:2px;}
+
+  .mob-tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
+  .mob-tool-btn{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px 8px;font-family:inherit;font-size:11px;font-weight:600;color:var(--t2);cursor:pointer;transition:all .2s;}
+  .mob-tool-btn:active{transform:scale(.96);}
+  .mob-tool-btn.exit{color:#dc2626;border-color:#fecaca;}
+  .mob-tool-ico{font-size:26px;display:block;}
+
+  .mob-user-info{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:4px;}
+  .mob-user-av{width:40px;height:40px;border-radius:50%;background:var(--grad);color:white;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .mob-user-name{font-size:14px;font-weight:700;color:var(--tx);}
+  .mob-user-plan{font-size:11px;color:var(--t3);margin-top:2px;}
+  .mob-upgrade-btn{margin-left:auto;padding:8px 14px;background:var(--grad);border:none;border-radius:10px;color:white;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 }
 </style>
 </head>
@@ -2744,8 +2810,187 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     requestAnimationFrame(draw);
   }
 
-  draw();
-})();
+<!-- ═══════════════════════════════
+     MOBILE BOTTOM NAVIGATION BAR
+═══════════════════════════════ -->
+<nav class="mob-nav" id="mob-nav">
+  <button class="mob-nav-btn active" id="mnb-chat" onclick="mobTab('chat')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span>Chat</span>
+  </button>
+  <button class="mob-nav-btn" id="mnb-agents" onclick="mobTab('agents')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span>Agentes</span>
+  </button>
+  <button class="mob-nav-btn mob-nav-center" id="mnb-new" onclick="newChat()">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  </button>
+  <button class="mob-nav-btn" id="mnb-history" onclick="mobTab('history')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    <span>Historial</span>
+  </button>
+  <button class="mob-nav-btn" id="mnb-tools" onclick="mobTab('tools')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M21 12h-2M5 12H3M12 21v-2M12 5V3"/></svg>
+    <span>Más</span>
+  </button>
+</nav>
+
+<!-- MOBILE AGENT SHEET -->
+<div class="mob-sheet" id="mob-agent-sheet">
+  <div class="mob-sheet-overlay" onclick="closeMobSheet('mob-agent-sheet')"></div>
+  <div class="mob-sheet-card">
+    <div class="mob-sheet-handle"></div>
+    <div class="mob-sheet-title">Elige tu agente</div>
+    <div class="mob-agent-grid" id="mob-agent-grid">
+      <div class="mob-agent-card" onclick="selectAgent('sabio');closeMobSheet('mob-agent-sheet')">
+        <img src="/images/agente-sabio.png" alt="Sabio">
+        <div class="mob-agent-name" style="color:#f59e0b">NEXO SABIO</div>
+        <div class="mob-agent-role">Filosofía y consejos</div>
+      </div>
+      <div class="mob-agent-card" onclick="selectAgent('saber');closeMobSheet('mob-agent-sheet')">
+        <img src="/images/agente-datos.png" alt="Datos">
+        <div class="mob-agent-name" style="color:#39d98a">NEXO DATOS</div>
+        <div class="mob-agent-role">Información y cifras</div>
+      </div>
+      <div class="mob-agent-card" onclick="selectAgent('codigo');closeMobSheet('mob-agent-sheet')">
+        <img src="/images/agente-logico.png" alt="Logico">
+        <div class="mob-agent-name" style="color:#f59e0b">NEXO LÓGICO</div>
+        <div class="mob-agent-role">Código y matemáticas</div>
+      </div>
+      <div class="mob-agent-card" onclick="selectAgent('creativo');closeMobSheet('mob-agent-sheet')">
+        <img src="/images/agente-creativo.png" alt="Creativo">
+        <div class="mob-agent-name" style="color:#a855f7">NEXO CREATIVO</div>
+        <div class="mob-agent-role">Arte y escritura</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE HISTORY SHEET -->
+<div class="mob-sheet" id="mob-history-sheet">
+  <div class="mob-sheet-overlay" onclick="closeMobSheet('mob-history-sheet')"></div>
+  <div class="mob-sheet-card mob-sheet-tall">
+    <div class="mob-sheet-handle"></div>
+    <div class="mob-sheet-title">Conversaciones</div>
+    <button class="mob-new-chat-btn" onclick="newChat();closeMobSheet('mob-history-sheet')">+ Nueva conversación</button>
+    <input class="mob-hist-search" id="mob-hist-search" type="text" placeholder="🔍 Buscar...">
+    <div class="mob-hist-list" id="mob-hist-list"></div>
+  </div>
+</div>
+
+<!-- MOBILE TOOLS SHEET -->
+<div class="mob-sheet" id="mob-tools-sheet">
+  <div class="mob-sheet-overlay" onclick="closeMobSheet('mob-tools-sheet')"></div>
+  <div class="mob-sheet-card">
+    <div class="mob-sheet-handle"></div>
+    <div class="mob-sheet-title">Herramientas</div>
+    <div class="mob-tools-grid">
+      <button class="mob-tool-btn" onclick="openImgModal();closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico">🎨</span>
+        <span>Generar imagen</span>
+      </button>
+      <button class="mob-tool-btn" onclick="renderFavList();document.getElementById('fav-modal').classList.add('on');closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico">⭐</span>
+        <span>Guardados</span>
+      </button>
+      <button class="mob-tool-btn" onclick="showHelp();closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico">❓</span>
+        <span>Ayuda</span>
+      </button>
+      <button class="mob-tool-btn" onclick="toggleTheme();closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico" id="mob-theme-ico">☀️</span>
+        <span id="mob-theme-txt">Modo claro</span>
+      </button>
+      <button class="mob-tool-btn" onclick="toggleBig();closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico">🔤</span>
+        <span>Letra grande</span>
+      </button>
+      <button class="mob-tool-btn exit" onclick="logout()">
+        <span class="mob-tool-ico">🚪</span>
+        <span>Cerrar sesión</span>
+      </button>
+    </div>
+    <!-- User info -->
+    <div class="mob-user-info" id="mob-user-info">
+      <div class="mob-user-av" id="mob-user-av">A</div>
+      <div>
+        <div class="mob-user-name" id="mob-user-name">Usuario</div>
+        <div class="mob-user-plan" id="mob-user-plan">Plan Gratis</div>
+      </div>
+      <button class="mob-upgrade-btn" onclick="showUpgrade();closeMobSheet('mob-tools-sheet')">⭐ Pro</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── MOBILE TAB NAVIGATION ── */
+function mobTab(tab) {
+  var btns = document.querySelectorAll('.mob-nav-btn');
+  btns.forEach(function(b) { b.classList.remove('active'); });
+
+  if (tab === 'chat') {
+    document.getElementById('mnb-chat').classList.add('active');
+    closeMobSheet('mob-agent-sheet');
+    closeMobSheet('mob-history-sheet');
+    closeMobSheet('mob-tools-sheet');
+  } else if (tab === 'agents') {
+    document.getElementById('mnb-agents').classList.add('active');
+    closeMobSheet('mob-history-sheet');
+    closeMobSheet('mob-tools-sheet');
+    openMobSheet('mob-agent-sheet');
+  } else if (tab === 'history') {
+    document.getElementById('mnb-history').classList.add('active');
+    closeMobSheet('mob-agent-sheet');
+    closeMobSheet('mob-tools-sheet');
+    // Sync history list
+    var mobList = document.getElementById('mob-hist-list');
+    var mainList = document.getElementById('hist-section');
+    if (mobList && mainList) mobList.innerHTML = mainList.innerHTML;
+    openMobSheet('mob-history-sheet');
+  } else if (tab === 'tools') {
+    document.getElementById('mnb-tools').classList.add('active');
+    closeMobSheet('mob-agent-sheet');
+    closeMobSheet('mob-history-sheet');
+    // Update user info
+    if (window.USER) {
+      var av = document.getElementById('mob-user-av');
+      var nm = document.getElementById('mob-user-name');
+      var pl = document.getElementById('mob-user-plan');
+      if (av) av.textContent = (USER.nombre || 'U')[0].toUpperCase();
+      if (nm) nm.textContent = USER.nombre || 'Usuario';
+      if (pl) pl.textContent = USER.plan === 'pro' ? '⭐ Plan Pro' : USER.plan === 'trial' ? '🎉 Prueba 7 días' : 'Plan Gratuito';
+    }
+    openMobSheet('mob-tools-sheet');
+  }
+}
+
+function openMobSheet(id) {
+  var el = document.getElementById(id);
+  if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeMobSheet(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+  // Reset nav to chat if all closed
+  var anyOpen = document.querySelectorAll('.mob-sheet.open').length > 0;
+  if (!anyOpen) {
+    document.body.style.overflow = '';
+    var btns = document.querySelectorAll('.mob-nav-btn');
+    btns.forEach(function(b) { b.classList.remove('active'); });
+    var chatBtn = document.getElementById('mnb-chat');
+    if (chatBtn) chatBtn.classList.add('active');
+  }
+}
+
+// Close sheets on Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    ['mob-agent-sheet','mob-history-sheet','mob-tools-sheet'].forEach(closeMobSheet);
+  }
+});
+
+// Sync history when updated
+var _origRenderHist = window.renderHist;
 </script>
 
 </body>
