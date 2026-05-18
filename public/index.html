@@ -181,6 +181,15 @@ body.big .inputfield{font-size:17px!important;}
 .wc-card .wc-card-ico,.wc-card .wc-icon{width:80px;height:80px;display:flex;align-items:center;justify-content:center;}
 .wc-card .wc-card-ico img,.wc-card .wc-icon img{width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.18));}
 .wc-card .wc-card-nm,.wc-card .wc-name{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+.wc-card-free-tag{font-size:9px;font-weight:800;color:#059669;background:rgba(5,150,105,.1);border:1px solid rgba(5,150,105,.2);padding:2px 8px;border-radius:20px;letter-spacing:.5px;}
+.wc-card-pro-tag{font-size:9px;font-weight:800;color:#7c3aed;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);padding:2px 8px;border-radius:20px;letter-spacing:.5px;}
+.wc-card-general{border-color:rgba(124,58,237,.3)!important;box-shadow:0 2px 12px rgba(124,58,237,.12);}
+.wc-card-locked{cursor:pointer;position:relative;opacity:.75;}
+.wc-card-locked:hover{opacity:1;border-color:rgba(124,58,237,.3)!important;}
+.wc-card-lock-overlay{font-size:18px;position:absolute;top:10px;right:10px;}
+/* Pro agents in sidebar - dimmed for free */
+.ag-pro{opacity:.7;}
+.ag-pro:hover{opacity:1;}
 .wc-chips,.wc-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;}
 .chip,.wc-sug{padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm);}
 .chip:hover,.wc-sug:hover{border-color:var(--border-glow);color:var(--accent);background:var(--card2);transform:translateY(-1px);}
@@ -709,21 +718,30 @@ body.big .inputfield{font-size:17px!important;}
       <input type="text" class="hist-search" id="hist-search" placeholder="&#128269; Buscar conversaciones...">
       <div class="hist-section" id="hist-section"></div>
       <div class="sb-sec">Agentes</div>
-      <div class="ag on" data-id="sabio">
+      <!-- NEXO GENERAL — free agent -->
+      <div class="ag on" data-id="general">
+        <div class="ag-box" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.25);overflow:hidden;padding:2px;"><img src="/images/icono-nexo.png" style="width:100%;height:100%;object-fit:contain;border-radius:6px;" alt="General"></div>
+        <div class="ag-info">
+          <div class="ag-name" style="color:#7c3aed">NEXO GENERAL <span style="font-size:9px;background:rgba(124,58,237,.15);color:#7c3aed;padding:1px 6px;border-radius:8px;margin-left:4px;font-weight:700;">GRATIS</span></div>
+          <div class="ag-role">Asistente completo</div>
+        </div>
+      </div>
+      <!-- PRO agents — locked for free users -->
+      <div class="ag ag-pro" data-id="sabio">
         <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-sabio.png" style="width:100%;height:100%;object-fit:contain;" alt="Sabio"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO SABIO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Filosof&iacute;a y consejos</div></div>
+        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO SABIO <span class="ag-lock">🔒</span></div><div class="ag-role">Filosof&iacute;a y consejos</div></div>
       </div>
-      <div class="ag" data-id="saber">
+      <div class="ag ag-pro" data-id="saber">
         <div class="ag-box" style="background:rgba(57,217,138,.08);border-color:rgba(57,217,138,.2);overflow:hidden;padding:2px;"><img src="/images/agente-datos.png" style="width:100%;height:100%;object-fit:contain;" alt="Datos"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#39d98a">NEXO DATOS <span class="ag-lock">&#128274;</span></div><div class="ag-role">Informaci&oacute;n y cifras</div></div>
+        <div class="ag-info"><div class="ag-name" style="color:#39d98a">NEXO DATOS <span class="ag-lock">🔒</span></div><div class="ag-role">Informaci&oacute;n y cifras</div></div>
       </div>
-      <div class="ag" data-id="codigo">
+      <div class="ag ag-pro" data-id="codigo">
         <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-logico.png" style="width:100%;height:100%;object-fit:contain;" alt="Logico"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO L&Oacute;GICO <span class="ag-lock">&#128274;</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
+        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO L&Oacute;GICO <span class="ag-lock">🔒</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
       </div>
-      <div class="ag" data-id="creativo">
+      <div class="ag ag-pro" data-id="creativo">
         <div class="ag-box" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2);overflow:hidden;padding:2px;"><img src="/images/agente-creativo.png" style="width:100%;height:100%;object-fit:contain;" alt="Creativo"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Arte y escritura</div></div>
+        <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">🔒</span></div><div class="ag-role">Arte y escritura</div></div>
       </div>
       <div class="sb-sec">Herramientas</div>
       <div class="sb-tools">
@@ -809,9 +827,10 @@ body.big .inputfield{font-size:17px!important;}
   var activeChat = null;
 
   var AGENTS = {
+    general:  { name: 'NEXO GENERAL', icon: '<img src="/images/icono-nexo.png" style="width:48px;height:48px;object-fit:contain;border-radius:10px;" alt="General">', color: '#7c3aed', ep: '/api/general' },
     sabio:    { name: 'NEXO SABIO',    icon: '<img src="/images/agente-sabio.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Sabio">',    color: '#f59e0b', ep: '/api/sabio' },
     saber:    { name: 'NEXO DATOS',    icon: '<img src="/images/agente-datos.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Datos">',    color: '#39d98a', ep: '/api/saber' },
-    codigo:   { name: 'NEXO LOGICO',   icon: '<img src="/images/agente-logico.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Logico">',   color: '#f59e0b', ep: '/api/codigo' },
+    codigo:   { name: 'NEXO LÓGICO',   icon: '<img src="/images/agente-logico.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Logico">',   color: '#f59e0b', ep: '/api/codigo' },
     creativo: { name: 'NEXO CREATIVO', icon: '<img src="/images/agente-creativo.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Creativo">', color: '#a855f7', ep: '/api/creativo' }
   };
 
@@ -1077,12 +1096,17 @@ body.big .inputfield{font-size:17px!important;}
   }
 
   function selectAgent(id) {
+    // Free users can only use general
+    var isPro = USER && (USER.plan === 'pro' || USER.plan === 'trial');
+    if (!isPro && id !== 'general') {
+      showUpgrade('Los agentes especializados son exclusivos de Plan Pro. ¡Desbloquéalos por $4.99/mes!');
+      return;
+    }
     cur = id;
     var els = document.querySelectorAll('.ag');
     for (var i = 0; i < els.length; i++) {
       var isOn = els[i].getAttribute('data-id') === id;
       els[i].classList.toggle('on', isOn);
-      els[i].classList.toggle('locked', mode === 'manual' && isOn);
     }
     closeSb();
   }
@@ -1108,15 +1132,43 @@ body.big .inputfield{font-size:17px!important;}
 
   function renderWelcome() {
     var hello = USER ? 'Hola ' + escapeHtml(USER.nombre) + ', ' : '';
+    var isPro = USER && (USER.plan === 'pro' || USER.plan === 'trial');
     var agentsHTML = '';
-    var ids = ['sabio','saber','codigo','creativo'];
-    for (var i = 0; i < ids.length; i++) {
-      var id = ids[i];
-      var a = AGENTS[id];
-      agentsHTML += '<div class="wc-card" data-agent="' + id + '">' +
-        '<div class="wc-card-ico">' + a.icon + '</div>' +
-        '<div class="wc-card-nm" style="color:' + a.color + '">' + a.name + '</div>' +
+
+    if (isPro) {
+      // Pro: show all 5 agents
+      var ids = ['general','sabio','saber','codigo','creativo'];
+      for (var i = 0; i < ids.length; i++) {
+        var id = ids[i];
+        var a = AGENTS[id];
+        agentsHTML += '<div class="wc-card" data-agent="' + id + '">' +
+          '<div class="wc-card-ico">' + a.icon + '</div>' +
+          '<div class="wc-card-nm" style="color:' + a.color + '">' + a.name + '</div>' +
+          '</div>';
+      }
+    } else {
+      // Free: NEXO GENERAL + locked Pro agents
+      var ag = AGENTS['general'];
+      agentsHTML += '<div class="wc-card wc-card-general" data-agent="general">' +
+        '<div class="wc-card-ico">' + ag.icon + '</div>' +
+        '<div class="wc-card-nm" style="color:#7c3aed">NEXO GENERAL</div>' +
+        '<div class="wc-card-free-tag">GRATIS</div>' +
         '</div>';
+      var proAgents = [
+        { id:'sabio',    name:'NEXO SABIO',    color:'#f59e0b', img:'/images/agente-sabio.png' },
+        { id:'saber',    name:'NEXO DATOS',    color:'#39d98a', img:'/images/agente-datos.png' },
+        { id:'codigo',   name:'NEXO LÓGICO',   color:'#f59e0b', img:'/images/agente-logico.png' },
+        { id:'creativo', name:'NEXO CREATIVO', color:'#a855f7', img:'/images/agente-creativo.png' }
+      ];
+      for (var j = 0; j < proAgents.length; j++) {
+        var pa = proAgents[j];
+        agentsHTML += '<div class="wc-card wc-card-locked" data-agent-pro="' + pa.id + '">' +
+          '<div class="wc-card-lock-overlay">🔒</div>' +
+          '<div class="wc-card-ico" style="opacity:.45"><img src="' + pa.img + '" style="width:52px;height:52px;object-fit:contain;filter:grayscale(60%);"></div>' +
+          '<div class="wc-card-nm" style="color:' + pa.color + ';opacity:.6">' + pa.name + '</div>' +
+          '<div class="wc-card-pro-tag">PRO</div>' +
+          '</div>';
+      }
     }
     var suggestions = [
       'Que es el estoicismo?',
@@ -1169,10 +1221,17 @@ body.big .inputfield{font-size:17px!important;}
       '</div>';
 
     // Wire agent cards
-    var cards = document.querySelectorAll('.wc-card');
+    var cards = document.querySelectorAll('.wc-card:not(.wc-card-locked)');
     for (var k = 0; k < cards.length; k++) {
       cards[k].addEventListener('click', function() {
         selectAgent(this.getAttribute('data-agent'));
+      });
+    }
+    // Wire locked cards → show upgrade
+    var lockedCards = document.querySelectorAll('.wc-card-locked');
+    for (var lc = 0; lc < lockedCards.length; lc++) {
+      lockedCards[lc].addEventListener('click', function() {
+        showUpgrade('Los agentes especializados son exclusivos de Plan Pro. ¡Desbloquéalos por $4.99/mes!');
       });
     }
     // Wire chips
@@ -1356,12 +1415,20 @@ body.big .inputfield{font-size:17px!important;}
     var inp = $('inp');
     var text = inp.value.trim();
     if (!text || busy) return;
+
+    // ── PLAN CHECK: free users can only use NEXO GENERAL ──
+    var isPro = USER && (USER.plan === 'pro' || USER.plan === 'trial');
+    if (!isPro && cur !== 'general') {
+      selectAgent('general');
+    }
+
     inp.value = '';
     inp.style.height = 'auto';
 
     if (mode === 'auto') {
       var det = detectAgent(text);
-      if (det && det !== cur) selectAgent(det);
+      // Free users: ignore auto-detect, always stay on general
+      if (isPro && det && det !== cur) selectAgent(det);
     }
 
     addMsg('user', text, null);
@@ -1384,7 +1451,7 @@ body.big .inputfield{font-size:17px!important;}
       rmTyping(tid);
       if (res.data && res.data.limitReached) {
         addMsg('ai', '\uD83D\uDEAB L\u00edmite de mensajes gratuitos alcanzado por hoy.', null, true);
-        showUpgrade('Llegaste al l\u00edmite de ' + (res.data.limit || 10) + ' mensajes gratuitos hoy. Actualiza a Pro para mensajes ilimitados.');
+        showUpgrade('Llegaste al l\u00edmite de ' + (res.data.limit || 25) + ' mensajes gratuitos hoy. Actualiza a Pro para mensajes ilimitados.');
         busy = false; $('send-btn').disabled = false; return;
       }
       if (!res.ok || res.data.error) {
@@ -1398,7 +1465,7 @@ body.big .inputfield{font-size:17px!important;}
         }
         hist.push({ role: 'assistant', content: res.data.reply });
         saveChat();
-        // Update counter from server response
+        // Update counter from server response (source of truth)
         if (res.data.todayMsgs !== undefined) {
           var fp = parseInt(res.data.todayMsgs);
           var lim = parseInt(res.data.freeLimit || 25);
@@ -1409,6 +1476,11 @@ body.big .inputfield{font-size:17px!important;}
           if (txt) txt.textContent = fp + '/' + lim;
           if (fill) { fill.style.width = pct+'%'; fill.style.background = pct>=90?'#dc2626':pct>=60?'#d97706':'var(--accent)'; }
           if (counter) counter.className = 'msg-counter'+(pct>=90?' danger':pct>=60?' warn':'');
+          // Also sync local storage
+          var today = new Date().toDateString();
+          localStorage.setItem('nx-day-msgs', JSON.stringify({ day: today, count: fp }));
+          // Warn when getting close
+          if (pct >= 80 && pct < 100) toast('\u26A0\uFE0F Te quedan ' + (lim - fp) + ' mensajes gratuitos hoy');
         }
       }
       busy = false;
