@@ -471,6 +471,20 @@ body.big .inputfield{font-size:17px!important;}
   }
   .mob-mode-pill .m-opt{padding:5px 9px;font-size:10px;}
 }
+/* ── PRO BANNER on welcome screen ── */
+.wc-pro-banner{width:100%;max-width:600px;margin-top:20px;border-radius:18px;overflow:hidden;box-shadow:var(--shadow-md);border:1px solid rgba(124,58,237,.2);}
+.wc-pro-banner-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(168,85,247,.08) 50%,rgba(236,72,153,.06) 100%);border-bottom:1px solid rgba(124,58,237,.12);}
+.wc-pro-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+.wc-pro-badge{width:40px;height:40px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 12px rgba(124,58,237,.35);}
+.wc-pro-text{flex:1;min-width:0;}
+.wc-pro-title{font-size:14px;font-weight:800;color:var(--tx);margin-bottom:5px;letter-spacing:-.2px;font-family:'Plus Jakarta Sans','Inter',sans-serif;}
+.wc-pro-features{display:flex;flex-wrap:wrap;gap:6px;}
+.wc-pro-features span{font-size:11px;font-weight:600;color:var(--accent);background:rgba(124,58,237,.08);padding:2px 8px;border-radius:20px;border:1px solid rgba(124,58,237,.15);white-space:nowrap;}
+.wc-pro-cta{flex-shrink:0;padding:11px 22px;background:var(--grad);border:none;border-radius:12px;color:white;font-family:'Inter',sans-serif;font-size:13px;font-weight:800;cursor:pointer;transition:all .2s;white-space:nowrap;box-shadow:0 4px 14px rgba(124,58,237,.4);letter-spacing:-.1px;}
+.wc-pro-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,58,237,.5);}
+.wc-pro-counter{padding:9px 20px;font-size:11px;font-weight:500;color:var(--t2);background:rgba(124,58,237,.04);text-align:center;}
+.wc-pro-counter strong{color:var(--accent);font-weight:800;}
+
 .desktop-only{display:flex;}
 .mobile-only{display:none;}
 .mob-nav{display:none;}
@@ -521,6 +535,10 @@ body.big .inputfield{font-size:17px!important;}
   .wc-card .wc-card-ico img,.wc-card .wc-icon img{width:52px!important;height:52px!important;}
   .wc-card .wc-card-nm,.wc-card .wc-name{font-size:9px!important;}
   .chip,.wc-sug{font-size:11px!important;padding:7px 11px!important;}
+  .wc-pro-banner{margin-top:12px!important;border-radius:14px!important;}
+  .wc-pro-banner-inner{padding:12px 14px!important;flex-direction:column!important;align-items:stretch!important;}
+  .wc-pro-cta{width:100%!important;text-align:center;padding:11px!important;}
+  .wc-pro-features span{font-size:10px!important;}
 
   /* Messages area */
   .msg{margin-bottom:12px;}
@@ -1109,6 +1127,34 @@ body.big .inputfield{font-size:17px!important;}
     for (var j = 0; j < suggestions.length; j++) {
       chipsHTML += '<div class="chip" data-suggest="' + escapeAttr(suggestions[j]) + '">' + escapeHtml(suggestions[j]) + '</div>';
     }
+
+    // Pro banner — only for free/trial users
+    var isPro = USER && USER.plan === 'pro';
+    var proBannerHTML = '';
+    if (!isPro) {
+      var msgsLeft = 25 - (parseInt(localStorage.getItem('nx-day-count') || '0'));
+      if (msgsLeft < 0) msgsLeft = 0;
+      proBannerHTML =
+        '<div class="wc-pro-banner" id="wc-pro-banner">' +
+          '<div class="wc-pro-banner-inner">' +
+            '<div class="wc-pro-left">' +
+              '<div class="wc-pro-badge">⭐ PRO</div>' +
+              '<div class="wc-pro-text">' +
+                '<div class="wc-pro-title">Desbloquea todo por $4.99/mes</div>' +
+                '<div class="wc-pro-features">' +
+                  '<span>✓ Mensajes ilimitados</span>' +
+                  '<span>✓ Todos los agentes</span>' +
+                  '<span>✓ PDF y voz</span>' +
+                  '<span>✓ Sin esperas</span>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            '<button class="wc-pro-cta" id="wc-pro-cta">Obtener Pro</button>' +
+          '</div>' +
+          '<div class="wc-pro-counter">Mensajes gratuitos hoy: <strong>' + msgsLeft + '</strong> de 25 restantes</div>' +
+        '</div>';
+    }
+
     $('msgs').innerHTML =
       '<div class="welcome">' +
         '<div class="wc-logo"><img src="/images/icono-nexo.png" width="80" height="80" style="object-fit:cover;display:block;" alt="IA-NEXO"></div>' +
@@ -1116,13 +1162,17 @@ body.big .inputfield{font-size:17px!important;}
         '<div class="wc-sub">' + hello + 'pregunta lo que quieras. Los 4 agentes estan listos.</div>' +
         '<div class="wc-grid">' + agentsHTML + '</div>' +
         '<div class="wc-chips">' + chipsHTML + '</div>' +
+        proBannerHTML +
       '</div>';
+
+    // Wire agent cards
     var cards = document.querySelectorAll('.wc-card');
     for (var k = 0; k < cards.length; k++) {
       cards[k].addEventListener('click', function() {
         selectAgent(this.getAttribute('data-agent'));
       });
     }
+    // Wire chips
     var chipEls = document.querySelectorAll('.chip');
     for (var l = 0; l < chipEls.length; l++) {
       chipEls[l].addEventListener('click', function() {
@@ -1130,6 +1180,9 @@ body.big .inputfield{font-size:17px!important;}
         send();
       });
     }
+    // Wire pro banner CTA
+    var cta = $('wc-pro-cta');
+    if (cta) cta.addEventListener('click', function() { showUpgrade(); });
   }
 
   function newChat() {
