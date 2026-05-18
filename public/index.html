@@ -6,7 +6,7 @@
 <title>IA-NEXO — Todo en Uno</title>
 <link rel="icon" type="image/png" href="/images/icono-nexo.png">
 <link rel="apple-touch-icon" href="/images/icono-nexo.png">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
    IA-NEXO — Clean Gray + Bubble Design
@@ -111,7 +111,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 }
 .l-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .l-brand{display:flex;align-items:center;gap:10px;}
-.l-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--tx);}
+.l-name{font-family:'Inter',sans-serif;font-size:20px;font-weight:800;color:var(--tx);letter-spacing:-.3px;}
 .l-name em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .l-theme{background:none;border:1px solid var(--border);border-radius:8px;padding:5px 10px;color:var(--t2);cursor:pointer;font-size:14px;transition:all .2s;}
 .l-theme:hover{background:var(--card2);color:var(--tx);}
@@ -156,7 +156,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 }
 .tb-l{display:flex;align-items:center;gap:10px;}
 .mob-ham{display:none;background:none;border:none;font-size:20px;color:var(--t2);cursor:pointer;padding:4px;}
-.tb-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--tx);display:flex;align-items:center;gap:6px;}
+.tb-name{
+  font-family:'Inter',sans-serif;
+  font-size:17px;font-weight:800;
+  color:var(--tx);
+  display:flex;align-items:center;gap:6px;
+  letter-spacing:-.3px;
+}
 .tb-name em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 2px rgba(5,150,105,.2);display:inline-block;}
 .tb-r{display:flex;align-items:center;gap:6px;}
@@ -244,7 +250,12 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 }
 .ag:hover{background:var(--card);border-color:var(--border);}
 .ag.on{background:var(--card);border-color:var(--border-glow);}
-.ag-box{width:32px;height:32px;border-radius:9px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.ag-box{
+  width:36px;height:36px;border-radius:10px;border:1px solid;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;overflow:hidden;padding:2px;
+}
+.ag-box img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 4px rgba(0,0,0,.1));}
 .ag-info{flex:1;min-width:0;}
 .ag-name{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .ag-role{font-size:10px;color:var(--t3);}
@@ -283,19 +294,41 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 
 /* ── WELCOME SCREEN ── */
 .welcome{padding:40px 20px;text-align:center;margin:auto!important;display:flex;flex-direction:column;align-items:center;}
-.wc-logo{width:60px;height:60px;margin-bottom:18px;}
-.wc-title{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--tx);margin-bottom:8px;}
+.wc-logo{
+  width:80px;height:80px;margin-bottom:22px;
+  border-radius:22px;
+  box-shadow:0 8px 28px rgba(0,0,0,.12);
+  overflow:hidden;
+}
+.wc-logo img{width:80px;height:80px;object-fit:cover;display:block;}
+.wc-title{
+  font-family:'Plus Jakarta Sans','Inter',sans-serif;
+  font-size:38px;font-weight:800;
+  color:var(--tx);
+  margin-bottom:10px;
+  letter-spacing:-1px;
+  line-height:1;
+}
 .wc-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.wc-sub{font-size:14px;color:var(--t2);margin-bottom:28px;}
-.wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:580px;margin-bottom:24px;}
+.wc-sub{font-size:15px;color:var(--t2);margin-bottom:30px;font-weight:400;line-height:1.5;}
+.wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:100%;max-width:600px;margin-bottom:24px;}
 .wc-card{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:16px 10px;text-align:center;cursor:pointer;
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:20px 12px 14px;text-align:center;cursor:pointer;
   transition:all .2s;box-shadow:var(--shadow-sm);
+  display:flex;flex-direction:column;align-items:center;gap:10px;
 }
 .wc-card:hover{border-color:var(--border-glow);box-shadow:var(--shadow-md);transform:translateY(-2px);}
-.wc-card .wc-card-ico,.wc-card .wc-icon{font-size:26px;margin-bottom:7px;display:block;}
-.wc-card .wc-card-nm,.wc-card .wc-name{font-size:10px;font-weight:700;letter-spacing:.5px;}
+.wc-card .wc-card-ico,.wc-card .wc-icon{
+  width:80px;height:80px;display:flex;align-items:center;justify-content:center;
+}
+.wc-card .wc-card-ico img,.wc-card .wc-icon img{
+  width:80px;height:80px;object-fit:contain;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.18));
+}
+.wc-card .wc-card-nm,.wc-card .wc-name{
+  font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+}
 
 /* Suggestion chips */
 .wc-chips,.wc-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;margin-top:4px;}
@@ -1113,8 +1146,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     }
     $('msgs').innerHTML =
       '<div class="welcome">' +
-        '<div class="wc-logo"><img src="/images/icono-nexo.png" width="90" height="90" style="border-radius:20px;object-fit:contain;box-shadow:0 8px 24px rgba(0,0,0,.12);" alt="IA-NEXO"></div>' +
-        '<div class="wc-title">IA-NEXO</div>' +
+        '<div class="wc-logo"><img src="/images/icono-nexo.png" width="80" height="80" style="object-fit:cover;display:block;" alt="IA-NEXO"></div>' +
+        '<div class="wc-title">IA&#8209;NEXO</div>' +
         '<div class="wc-sub">' + hello + 'pregunta lo que quieras. Los 4 agentes estan listos.</div>' +
         '<div class="wc-grid">' + agentsHTML + '</div>' +
         '<div class="wc-chips">' + chipsHTML + '</div>' +
