@@ -185,7 +185,9 @@ body.big .inputfield{font-size:17px!important;}
 .chip,.wc-sug{padding:9px 16px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .2s;box-shadow:var(--shadow-sm);}
 .chip:hover,.wc-sug:hover{border-color:var(--border-glow);color:var(--accent);background:var(--card2);transform:translateY(-1px);}
 
-/* ── MESSAGES ── */
+/* Message avatar */
+.mav{width:32px;height:32px;flex-shrink:0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.mav img{width:32px;height:32px;object-fit:contain;}
 .msg{display:flex;flex-direction:column;margin-bottom:18px;}
 .msg.user{align-items:flex-end;}
 .msg.ai{align-items:flex-start;}
@@ -488,6 +490,7 @@ body.big .inputfield{font-size:17px!important;}
 .desktop-only{display:flex;}
 .mobile-only{display:none;}
 .mob-nav{display:none;}
+.mob-sheet{display:none;}  /* hidden on desktop, shown via media query on mobile */
 
 /* ══════════════════════════════
    MOBILE — Complete
@@ -564,7 +567,7 @@ body.big .inputfield{font-size:17px!important;}
   .mob-nav-center span{display:none;}
 
   /* ── MOBILE SHEETS ── */
-  .mob-sheet{position:fixed;inset:0;z-index:350;display:flex;flex-direction:column;justify-content:flex-end;pointer-events:none;}
+  .mob-sheet{display:flex;position:fixed;inset:0;z-index:350;flex-direction:column;justify-content:flex-end;pointer-events:none;}
   .mob-sheet.open{pointer-events:all;}
   .mob-sheet-overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:0;transition:opacity .28s;backdrop-filter:blur(2px);}
   .mob-sheet.open .mob-sheet-overlay{opacity:1;}
