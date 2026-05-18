@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
-<title>IA-NEXO</title>
+<title>IA-NEXO — Todo en Uno</title>
+<link rel="icon" type="image/png" href="/images/icono-nexo.png">
+<link rel="apple-touch-icon" href="/images/icono-nexo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════
@@ -614,7 +616,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   <div class="lcard">
     <div class="l-hdr">
       <div class="l-brand">
-        <svg width="34" height="34"><use href="#ix-logo"/></svg>
+        <img src="/images/icono-nexo.png" width="34" height="34" style="border-radius:9px;object-fit:contain;" alt="IA-NEXO">
         <div class="l-name">IA<em>-NEXO</em></div>
       </div>
       <button class="l-theme" id="btn-theme-login" title="Cambiar tema">&#9728;</button>
@@ -648,7 +650,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   <div class="topbar">
     <div class="tb-l">
       <button class="mob-ham" id="ham">&#9776;</button>
-      <svg width="32" height="32"><use href="#ix-logo"/></svg>
+      <img src="/images/icono-nexo.png" width="32" height="32" style="border-radius:8px;object-fit:contain;" alt="IA-NEXO">
       <div class="tb-name">IA<em>-NEXO</em><span class="sync-dot" id="sync-dot" title="Sincronizado con la nube"></span></div>
     </div>
     <div class="tb-r">
@@ -692,19 +694,19 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
       <div class="hist-section" id="hist-section"></div>
       <div class="sb-sec">Agentes</div>
       <div class="ag on" data-id="sabio">
-        <div class="ag-box" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25);color:#f59e0b">&#129497;</div>
+        <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-sabio.png" style="width:100%;height:100%;object-fit:contain;" alt="Sabio"></div>
         <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO SABIO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Filosof&iacute;a y consejos</div></div>
       </div>
       <div class="ag" data-id="saber">
-        <div class="ag-box" style="background:rgba(57,217,138,.1);border-color:rgba(57,217,138,.25);color:#39d98a">&#129333;</div>
+        <div class="ag-box" style="background:rgba(57,217,138,.08);border-color:rgba(57,217,138,.2);overflow:hidden;padding:2px;"><img src="/images/agente-datos.png" style="width:100%;height:100%;object-fit:contain;" alt="Datos"></div>
         <div class="ag-info"><div class="ag-name" style="color:#39d98a">NEXO DATOS <span class="ag-lock">&#128274;</span></div><div class="ag-role">Informaci&oacute;n y cifras</div></div>
       </div>
       <div class="ag" data-id="codigo">
-        <div class="ag-box" style="background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.25);color:#00e5ff">&#129299;</div>
-        <div class="ag-info"><div class="ag-name" style="color:#00e5ff">NEXO L&Oacute;GICO <span class="ag-lock">&#128274;</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
+        <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-logico.png" style="width:100%;height:100%;object-fit:contain;" alt="Logico"></div>
+        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO L&Oacute;GICO <span class="ag-lock">&#128274;</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
       </div>
       <div class="ag" data-id="creativo">
-        <div class="ag-box" style="background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.25);color:#a855f7">&#127912;</div>
+        <div class="ag-box" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2);overflow:hidden;padding:2px;"><img src="/images/agente-creativo.png" style="width:100%;height:100%;object-fit:contain;" alt="Creativo"></div>
         <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">&#128274;</span></div><div class="ag-role">Arte y escritura</div></div>
       </div>
       <div class="sb-sec">Herramientas</div>
@@ -791,10 +793,10 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   var activeChat = null;
 
   var AGENTS = {
-    sabio:    { name: 'NEXO SABIO',    icon: '\uD83E\uDDD9', color: '#f59e0b', ep: '/api/sabio' },
-    saber:    { name: 'NEXO DATOS',    icon: '\uD83E\uDD35', color: '#39d98a', ep: '/api/saber' },
-    codigo:   { name: 'NEXO LOGICO',   icon: '\uD83E\uDD13', color: '#00e5ff', ep: '/api/codigo' },
-    creativo: { name: 'NEXO CREATIVO', icon: '\uD83C\uDFA8', color: '#a855f7', ep: '/api/creativo' }
+    sabio:    { name: 'NEXO SABIO',    icon: '<img src="/images/agente-sabio.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Sabio">',    color: '#f59e0b', ep: '/api/sabio' },
+    saber:    { name: 'NEXO DATOS',    icon: '<img src="/images/agente-datos.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Datos">',    color: '#39d98a', ep: '/api/saber' },
+    codigo:   { name: 'NEXO LOGICO',   icon: '<img src="/images/agente-logico.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Logico">',   color: '#f59e0b', ep: '/api/codigo' },
+    creativo: { name: 'NEXO CREATIVO', icon: '<img src="/images/agente-creativo.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Creativo">', color: '#a855f7', ep: '/api/creativo' }
   };
 
   var KEYWORDS = {
@@ -1111,7 +1113,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     }
     $('msgs').innerHTML =
       '<div class="welcome">' +
-        '<div class="wc-logo"><svg width="80" height="80"><use href="#ix-logo"/></svg></div>' +
+        '<div class="wc-logo"><img src="/images/icono-nexo.png" width="90" height="90" style="border-radius:20px;object-fit:contain;box-shadow:0 8px 24px rgba(0,0,0,.12);" alt="IA-NEXO"></div>' +
         '<div class="wc-title">IA-NEXO</div>' +
         '<div class="wc-sub">' + hello + 'pregunta lo que quieras. Los 4 agentes estan listos.</div>' +
         '<div class="wc-grid">' + agentsHTML + '</div>' +
