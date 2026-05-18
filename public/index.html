@@ -689,7 +689,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 
 /* Fav badge (FAB) */
 .fav-badge{
-  position:fixed;right:16px;bottom:80px;z-index:90;
+  position:fixed;right:16px;bottom:24px;z-index:90;
   width:44px;height:44px;border-radius:14px;
   background:var(--card);border:1px solid var(--border);
   box-shadow:var(--shadow-md);
@@ -705,7 +705,7 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
   display:flex;align-items:center;justify-content:center;
 }
 @media(max-width:700px){
-  .fav-badge{bottom:78px;right:12px;}
+  .fav-badge{display:none!important;}
 }
 
 /* Fav sheet (mobile) */
@@ -2589,6 +2589,22 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     });
   };
 
+  /* ── EXPOSE FUNCTIONS GLOBALLY for mobile onclick handlers ── */
+  window.showHelp       = showHelp;
+  window.cycleTheme     = cycleTheme;
+  window.toggleBig      = toggleBig;
+  window.doLogout       = doLogout;
+  window.renderFavList  = renderFavList;
+  window.openImgModal   = openImgModal;
+  window.closeImgModal  = closeImgModal;
+  window.newChat        = newChat;
+  window.selectAgent    = selectAgent;
+  window.showUpgrade    = showUpgrade;
+  window.closeUpgrade   = closeUpgrade;
+  window.send           = send;
+  window.logout         = doLogout;
+  window.toggleTheme    = cycleTheme;
+
 })();
 </script>
 
@@ -3019,15 +3035,15 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         <span class="mob-tool-ico">❓</span>
         <span>Ayuda</span>
       </button>
-      <button class="mob-tool-btn" onclick="toggleTheme();closeMobSheet('mob-tools-sheet')">
-        <span class="mob-tool-ico" id="mob-theme-ico">☀️</span>
-        <span id="mob-theme-txt">Modo claro</span>
+      <button class="mob-tool-btn" onclick="cycleTheme();closeMobSheet('mob-tools-sheet')">
+        <span class="mob-tool-ico">☀️</span>
+        <span>Tema</span>
       </button>
       <button class="mob-tool-btn" onclick="toggleBig();closeMobSheet('mob-tools-sheet')">
         <span class="mob-tool-ico">🔤</span>
         <span>Letra grande</span>
       </button>
-      <button class="mob-tool-btn exit" onclick="logout()">
+      <button class="mob-tool-btn exit" onclick="doLogout()">
         <span class="mob-tool-ico">🚪</span>
         <span>Cerrar sesión</span>
       </button>
