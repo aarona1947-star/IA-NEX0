@@ -94,7 +94,11 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 #js-error{position:fixed;top:10px;left:10px;right:10px;z-index:9999;background:#f87171;color:#fff;padding:10px 14px;border-radius:9px;font-family:monospace;font-size:12px;display:none;}
 
 /* ── LOGIN ── */
-#login{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;}
+#login{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;align-items:center;justify-content:center;padding:16px;
+  background:var(--bg);
+}
 .lcard{
   width:100%;max-width:400px;
   background:var(--card);
@@ -284,19 +288,32 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
 .wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:580px;margin-bottom:24px;}
 .wc-card{
   background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:14px 10px;text-align:center;cursor:pointer;
+  padding:16px 10px;text-align:center;cursor:pointer;
   transition:all .2s;box-shadow:var(--shadow-sm);
 }
 .wc-card:hover{border-color:var(--border-glow);box-shadow:var(--shadow-md);transform:translateY(-2px);}
-.wc-card .wc-icon{font-size:24px;margin-bottom:6px;}
-.wc-card .wc-name{font-size:10px;font-weight:700;letter-spacing:.5px;}
-.wc-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:600px;}
-.wc-sug{
-  padding:8px 14px;background:var(--card);border:1px solid var(--border);
-  border-radius:20px;font-size:12px;font-weight:500;color:var(--t2);
+.wc-card .wc-card-ico,.wc-card .wc-icon{font-size:26px;margin-bottom:7px;display:block;}
+.wc-card .wc-card-nm,.wc-card .wc-name{font-size:10px;font-weight:700;letter-spacing:.5px;}
+
+/* Suggestion chips */
+.wc-chips,.wc-suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px;margin-top:4px;}
+.chip,.wc-sug{
+  padding:9px 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  font-size:13px;font-weight:500;
+  color:var(--t2);
   cursor:pointer;transition:all .2s;
+  box-shadow:var(--shadow-sm);
 }
-.wc-sug:hover{border-color:var(--border-glow);color:var(--accent);background:var(--card2);}
+.chip:hover,.wc-sug:hover{
+  border-color:var(--border-glow);
+  color:var(--accent);
+  background:var(--card2);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-md);
+}
 
 /* ── MESSAGES ── */
 .msg{display:flex;flex-direction:column;margin-bottom:18px;}
@@ -636,8 +653,8 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     </div>
     <div class="tb-r">
       <div class="msg-counter" id="msg-counter" title="Mensajes usados hoy">
-        <span id="msg-counter-text">0/10</span>
-        <div class="msg-counter-bar"><div class="msg-counter-fill" id="msg-counter-fill" style="width:0%;background:var(--neon-cyan)"></div></div>
+        <span id="msg-counter-text">0/25</span>
+        <div class="msg-counter-bar"><div class="msg-counter-fill" id="msg-counter-fill" style="width:0%;background:var(--accent)"></div></div>
       </div>
       <div class="ub" id="ub-trigger" style="cursor:pointer;" title="Mi cuenta"><div class="ub-av" id="ub-av">U</div><div class="ub-nm" id="ub-nm">Usuario</div></div>
       <div class="mode-pill desktop-only">
@@ -1313,13 +1330,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
         // Update counter from server response
         if (res.data.todayMsgs !== undefined) {
           var fp = parseInt(res.data.todayMsgs);
-          var lim = parseInt(res.data.freeLimit || 10);
+          var lim = parseInt(res.data.freeLimit || 25);
           var pct = Math.min((fp/lim)*100, 100);
           var fill = $('msg-counter-fill');
           var txt  = $('msg-counter-text');
           var counter = $('msg-counter');
           if (txt) txt.textContent = fp + '/' + lim;
-          if (fill) { fill.style.width = pct+'%'; fill.style.background = pct>=90?'var(--neon-pink)':pct>=60?'var(--gold)':'var(--neon-cyan)'; }
+          if (fill) { fill.style.width = pct+'%'; fill.style.background = pct>=90?'#dc2626':pct>=60?'#d97706':'var(--accent)'; }
           if (counter) counter.className = 'msg-counter'+(pct>=90?' danger':pct>=60?' warn':'');
         }
       }
@@ -1341,13 +1358,13 @@ body.big .l-inp,body.big .inputfield{font-size:17px!important;}
     try { data = JSON.parse(stored) || data; } catch(e) {}
     if (data.day !== today) { data = { day: today, count: 0 }; localStorage.setItem('nx-day-msgs', JSON.stringify(data)); }
     var count = data.count;
-    var max = 10; // free plan
+    var max = 25; // free plan
     var pct = Math.min((count/max)*100, 100);
     var counter = $('msg-counter');
     var fill = $('msg-counter-fill');
     var txt = $('msg-counter-text');
     if (txt) txt.textContent = count + '/' + max;
-    if (fill) { fill.style.width = pct + '%'; fill.style.background = pct>=90?'var(--neon-pink)':pct>=60?'var(--gold)':'var(--neon-cyan)'; }
+    if (fill) { fill.style.width = pct + '%'; fill.style.background = pct>=90?'#dc2626':pct>=60?'#d97706':'var(--accent)'; }
     if (counter) { counter.className = 'msg-counter' + (pct>=90?' danger':pct>=60?' warn':''); }
     if (count >= max) {
       toast('\uD83D\uDEAB L\xedmite diario. Upgrade a Pro para mensajes ilimitados.');
