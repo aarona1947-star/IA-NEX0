@@ -3,326 +3,284 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>IA-NEXO — 4 Expertos de IA en Español</title>
-<meta name="description" content="4 expertos de IA especializados en uno: filosofía, datos, código y creatividad. 100% en español. Empieza gratis hoy.">
-<meta property="og:title" content="IA-NEXO — Tu equipo de IA en español">
-<meta property="og:description" content="NEXO SABIO, NEXO DATOS, NEXO LÓGICO y NEXO CREATIVO. Los 4 mejores en su área, en un solo lugar.">
-<meta name="theme-color" content="#06040f">
-<link rel="icon" href="/images/icono-nexo.png">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>IA-NEXO — Tu Asistente de Inteligencia Artificial</title>
+<meta name="description" content="4 expertos de IA en español. Filosofía, datos, código y creatividad. Empieza gratis hoy.">
+<meta property="og:title" content="IA-NEXO — IA para todos">
+<meta property="og:description" content="4 expertos de IA en uno. Responde todo en español. Desde $4.99/mes.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
 *{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#06040f;--bg2:#0d0a1a;--card:rgba(18,12,36,.85);--card2:rgba(28,18,52,.7);
-  --tx:#f2f0ff;--t2:#9d94c0;--t3:#5a5278;
-  --cyan:#00e5ff;--purple:#9b4dff;--pink:#ff3cf8;--gold:#ffb347;--green:#00ffb3;
-  --grad:linear-gradient(135deg,#00c6e0,#9b4dff,#ff3cf8);
-  --border:rgba(255,255,255,.07);--border-glow:rgba(155,77,255,.3);
-  --shadow:0 8px 40px rgba(0,0,0,.6);
+:root{--bg:#0a0612;--card:rgba(20,12,40,.7);--tx:#f0f0ff;--t2:#a89cbf;--cyan:#00f0ff;--purple:#b14eff;--pink:#ff3df8;--gold:#ffaa3d;--green:#3dffaa;--grad:linear-gradient(135deg,#00c9e8,#b14eff,#ff3df8);}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg::before{content:'';position:absolute;inset:-50%;
+  background:conic-gradient(from 0deg at 50% 50%,
+    rgba(0,240,255,.15) 0deg,
+    rgba(177,78,255,.12) 90deg,
+    rgba(255,61,248,.1) 180deg,
+    rgba(0,240,255,.08) 270deg,
+    rgba(0,240,255,.15) 360deg);
+  animation:spin-grad 18s linear infinite;
+  border-radius:50%;
 }
-html{scroll-behavior:smooth;overflow-x:hidden;}
-body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;}
-
-.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.ao{position:absolute;border-radius:50%;filter:blur(80px);animation:orb-float ease-in-out infinite alternate;}
-.ao1{width:500px;height:500px;background:radial-gradient(circle,rgba(0,229,255,.13),transparent 70%);top:-15%;left:-10%;animation-duration:18s;}
-.ao2{width:450px;height:450px;background:radial-gradient(circle,rgba(155,77,255,.12),transparent 70%);top:25%;right:-8%;animation-duration:22s;animation-delay:-6s;}
-.ao3{width:600px;height:600px;background:radial-gradient(circle,rgba(255,60,248,.09),transparent 70%);bottom:-20%;left:25%;animation-duration:26s;animation-delay:-10s;}
-@keyframes orb-float{0%{transform:translate(0,0) scale(1);}100%{transform:translate(40px,60px) scale(1.12);}}
-.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(155,77,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(155,77,255,.04) 1px,transparent 1px);
-  background-size:60px 60px;
-  mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,black 30%,transparent 100%);}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(6,4,15,.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
-.nav-brand{display:flex;align-items:center;gap:11px;}
-.nav-logo{width:38px;height:38px;border-radius:11px;object-fit:cover;}
-.nav-name{font-size:19px;font-weight:900;letter-spacing:1.5px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.nav-links{display:flex;align-items:center;gap:28px;}
-.nav-link{font-size:13px;font-weight:600;color:var(--t2);text-decoration:none;transition:color .2s;}
-.nav-link:hover{color:var(--tx);}
-.nav-cta{padding:10px 24px;background:var(--grad);border:none;border-radius:24px;color:#000;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 0 22px rgba(0,200,220,.25);}
-.nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 36px rgba(0,200,220,.4);}
-
+.bg::after{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 20%,rgba(0,240,255,.12),transparent 45%),
+    radial-gradient(ellipse at 80% 10%,rgba(255,61,248,.1),transparent 40%),
+    radial-gradient(ellipse at 50% 90%,rgba(177,78,255,.14),transparent 50%);
+  animation:pulse-bg 8s ease-in-out infinite alternate;
+}
+@keyframes spin-grad{to{transform:rotate(360deg)}}
+@keyframes pulse-bg{
+  0%{opacity:.6}
+  50%{opacity:1}
+  100%{opacity:.7}
+}
+.orb-l{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none;}
+.orb-l-1{width:400px;height:400px;background:radial-gradient(circle,rgba(0,240,255,.2),transparent 70%);top:-10%;left:-8%;animation:orb-move1 14s ease-in-out infinite alternate;}
+.orb-l-2{width:350px;height:350px;background:radial-gradient(circle,rgba(255,61,248,.18),transparent 70%);top:20%;right:-6%;animation:orb-move2 17s ease-in-out infinite alternate;}
+.orb-l-3{width:450px;height:450px;background:radial-gradient(circle,rgba(177,78,255,.15),transparent 70%);bottom:-15%;left:30%;animation:orb-move3 20s ease-in-out infinite alternate;}
+@keyframes orb-move1{to{transform:translate(60px,80px) scale(1.15)}}
+@keyframes orb-move2{to{transform:translate(-50px,60px) scale(.9)}}
+@keyframes orb-move3{to{transform:translate(30px,-60px) scale(1.1)}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(10,6,18,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.06);}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:36px;height:36px;}
+.nav-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:900;letter-spacing:2px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-cta{padding:10px 22px;background:var(--grad);border:none;border-radius:22px;color:#000;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 0 20px rgba(0,240,255,.3);}
+.nav-cta:hover{box-shadow:0 0 35px rgba(0,240,255,.5);transform:translateY(-1px);}
 section{position:relative;z-index:1;}
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 70px;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.22);border-radius:24px;font-size:12px;color:var(--cyan);font-weight:700;letter-spacing:.6px;margin-bottom:32px;text-transform:uppercase;}
-.badge-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.hero-title{font-size:clamp(42px,7.5vw,88px);font-weight:900;line-height:1.05;margin-bottom:24px;letter-spacing:-2px;}
-.grad-text{background:linear-gradient(135deg,#00e5ff,#9b4dff,#ff3cf8,#00e5ff);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:grad-anim 6s ease infinite;}
-@keyframes grad-anim{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-.hero-sub{font-size:clamp(15px,2vw,20px);color:var(--t2);max-width:600px;line-height:1.75;margin-bottom:44px;}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:44px;}
-.btn-primary{padding:17px 40px;background:var(--grad);border:none;border-radius:32px;color:#000;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 0 32px rgba(0,200,220,.28);}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 52px rgba(0,200,220,.5);}
-.btn-wa{padding:17px 40px;background:linear-gradient(135deg,#25d366,#128c7e);border:none;border-radius:32px;color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .25s;display:flex;align-items:center;gap:9px;}
-.btn-wa:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(37,211,102,.35);}
-.hero-trust{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;}
-.trust-stars{color:#fbbf24;font-size:14px;}
-.trust-sep{width:1px;height:14px;background:var(--t3);opacity:.4;}
-
-.stats-bar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:center;}
-.stat{text-align:center;padding:28px 52px;position:relative;flex:1;max-width:200px;}
-.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:22%;bottom:22%;width:1px;background:var(--border);}
-.stat-val{font-size:40px;font-weight:900;line-height:1.1;background:var(--grad);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:grad-anim 7s ease infinite;}
-.stat-lbl{font-size:11px;color:var(--t3);margin-top:5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;}
-
-.agents-section{padding:100px 5%;}
-.sec-label{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:14px;}
-.sec-title{font-size:clamp(28px,4vw,48px);font-weight:900;text-align:center;margin-bottom:14px;line-height:1.15;letter-spacing:-1px;}
-.sec-sub{font-size:14px;color:var(--t2);text-align:center;max-width:520px;margin:0 auto 60px;line-height:1.8;}
-.agents-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:900px;margin:0 auto;}
-.agent-card{padding:32px;border-radius:22px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);position:relative;overflow:hidden;transition:all .28s;}
-.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:2px 2px 0 0;}
-.agent-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
-.ac-icon-wrap{width:80px;height:80px;border-radius:17px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;border:1px solid;overflow:hidden;}
-.ac-icon-wrap img{width:100%;height:100%;object-fit:cover;}
-.ac-emoji{font-size:28px;}
-.ac-name{font-size:19px;font-weight:800;margin-bottom:5px;letter-spacing:-.3px;}
-.ac-role{font-size:11px;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:14px;font-weight:700;}
-.ac-desc{font-size:13.5px;color:var(--t2);line-height:1.75;margin-bottom:18px;}
-.ac-tags{display:flex;flex-wrap:wrap;gap:7px;}
-.ac-tag{font-size:10px;padding:4px 11px;border-radius:9px;font-weight:700;border:1px solid;}
-
-.ac-sabio::before{background:linear-gradient(90deg,#e6890a,#ffb347);}
-.ac-sabio .ac-icon-wrap{background:rgba(255,179,71,.07);border-color:rgba(255,179,71,.2);}
-.ac-sabio .ac-name,.ac-sabio .ac-role{color:#ffb347;}
-.ac-sabio .ac-tag{background:rgba(255,179,71,.07);color:#ffb347;border-color:rgba(255,179,71,.2);}
-.ac-sabio:hover{border-color:rgba(255,179,71,.25);box-shadow:0 20px 60px rgba(255,179,71,.12);}
-.ac-datos::before{background:linear-gradient(90deg,#00b87a,#00ffb3);}
-.ac-datos .ac-icon-wrap{background:rgba(0,255,179,.06);border-color:rgba(0,255,179,.18);}
-.ac-datos .ac-name,.ac-datos .ac-role{color:#00ffb3;}
-.ac-datos .ac-tag{background:rgba(0,255,179,.06);color:#00ffb3;border-color:rgba(0,255,179,.18);}
-.ac-datos:hover{border-color:rgba(0,255,179,.2);box-shadow:0 20px 60px rgba(0,255,179,.1);}
-.ac-logico::before{background:linear-gradient(90deg,#0284c7,#00e5ff);}
-.ac-logico .ac-icon-wrap{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.18);}
-.ac-logico .ac-name,.ac-logico .ac-role{color:#00e5ff;}
-.ac-logico .ac-tag{background:rgba(0,229,255,.06);color:#00e5ff;border-color:rgba(0,229,255,.18);}
-.ac-logico:hover{border-color:rgba(0,229,255,.2);box-shadow:0 20px 60px rgba(0,229,255,.1);}
-.ac-creativo::before{background:linear-gradient(90deg,#7c3aed,#c084fc);}
-.ac-creativo .ac-icon-wrap{background:rgba(192,132,252,.07);border-color:rgba(192,132,252,.2);}
-.ac-creativo .ac-name,.ac-creativo .ac-role{color:#c084fc;}
-.ac-creativo .ac-tag{background:rgba(192,132,252,.07);color:#c084fc;border-color:rgba(192,132,252,.2);}
-.ac-creativo:hover{border-color:rgba(192,132,252,.25);box-shadow:0 20px 60px rgba(192,132,252,.12);}
-
-.how-section{padding:100px 5%;background:rgba(13,10,26,.6);}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;max-width:900px;margin:0 auto;}
-.step{text-align:center;padding:36px 22px;}
-.step-num{width:64px;height:64px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:900;color:#000;margin:0 auto 22px;box-shadow:0 0 28px rgba(0,200,220,.3);}
-.step-title{font-size:18px;font-weight:800;margin-bottom:10px;}
-.step-desc{font-size:13.5px;color:var(--t2);line-height:1.75;}
-
-.pricing-section{padding:100px 5%;}
-.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:0 auto;}
-.plan{padding:34px 28px;border-radius:24px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);position:relative;transition:all .28s;}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 60px;}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;padding:7px 18px;background:rgba(0,240,255,.07);border:1px solid rgba(0,240,255,.25);border-radius:22px;font-size:12px;color:var(--cyan);font-weight:600;letter-spacing:.5px;margin-bottom:30px;}
+.hero-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(38px,7vw,82px);font-weight:900;line-height:1.1;margin-bottom:22px;}
+.hero-title .grad{
+  background:linear-gradient(135deg,#00f0ff,#b14eff,#ff3df8,#00f0ff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:grad-move 5s ease infinite;
+}
+@keyframes grad-move{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+.hero-sub{font-size:clamp(15px,2vw,19px);color:var(--t2);max-width:580px;line-height:1.8;margin-bottom:40px;}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+.btn-primary{padding:17px 38px;background:var(--grad);border:none;border-radius:32px;color:#000;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 0 30px rgba(0,240,255,.3);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(0,240,255,.5);}
+.btn-wa{padding:17px 38px;background:linear-gradient(135deg,#25d366,#128c7e);border:none;border-radius:32px;color:#fff;font-family:'Syne',sans-serif;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;display:flex;align-items:center;gap:8px;}
+.btn-wa:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(37,211,102,.4);}
+.hero-trust{font-size:12px;color:var(--t2);display:flex;align-items:center;gap:8px;justify-content:center;}
+.stars{color:#fbbf24;letter-spacing:2px;}
+.stats{padding:50px 5%;display:flex;justify-content:center;gap:0;border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);}
+.stat{text-align:center;padding:24px 48px;position:relative;}
+.stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:rgba(177,78,255,.2);}
+.stat-val{
+  font-family:'Syne',sans-serif;font-size:38px;font-weight:900;
+  background:linear-gradient(135deg,#00f0ff,#b14eff,#ff3df8,#00f0ff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:grad-move 6s ease infinite;
+}
+.stat-lbl{font-size:11px;color:var(--t2);margin-top:5px;letter-spacing:1px;text-transform:uppercase;}
+.features{padding:90px 5%;}
+.section-label{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:14px;}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(26px,4vw,44px);font-weight:900;text-align:center;margin-bottom:14px;line-height:1.2;}
+.section-sub{font-size:14px;color:var(--t2);text-align:center;max-width:500px;margin:0 auto 56px;line-height:1.75;}
+.agents-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:880px;margin:0 auto;}
+.agent-card{padding:28px;border-radius:20px;background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);position:relative;overflow:hidden;transition:all .25s;}
+.agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;opacity:0;transition:opacity .25s;}
+.agent-card:hover{transform:translateY(-4px);border-color:rgba(177,78,255,.3);box-shadow:0 20px 50px rgba(177,78,255,.2);}
+.agent-card:hover::before{opacity:1;}
+.ac-icon{width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:16px;border:1px solid;}
+.ac-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:6px;}
+.ac-role{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;font-weight:700;}
+.ac-desc{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;}
+.ac-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ac-tag{font-size:10px;padding:3px 10px;border-radius:8px;font-weight:600;border:1px solid;}
+.ac-sabio::before{background:linear-gradient(90deg,#d97706,#ffaa3d);}
+.ac-sabio .ac-icon{background:rgba(255,170,61,.08);border-color:rgba(255,170,61,.2);color:#ffaa3d;}
+.ac-sabio .ac-name,.ac-sabio .ac-role{color:#ffaa3d;}
+.ac-sabio .ac-tag{background:rgba(255,170,61,.07);color:#ffaa3d;border-color:rgba(255,170,61,.2);}
+.ac-datos::before{background:linear-gradient(90deg,#059669,#3dffaa);}
+.ac-datos .ac-icon{background:rgba(61,255,170,.07);border-color:rgba(61,255,170,.18);color:#3dffaa;}
+.ac-datos .ac-name,.ac-datos .ac-role{color:#3dffaa;}
+.ac-datos .ac-tag{background:rgba(61,255,170,.07);color:#3dffaa;border-color:rgba(61,255,170,.18);}
+.ac-logico::before{background:linear-gradient(90deg,#0284c7,#00f0ff);}
+.ac-logico .ac-icon{background:rgba(0,240,255,.07);border-color:rgba(0,240,255,.18);color:#00f0ff;}
+.ac-logico .ac-name,.ac-logico .ac-role{color:#00f0ff;}
+.ac-logico .ac-tag{background:rgba(0,240,255,.07);color:#00f0ff;border-color:rgba(0,240,255,.18);}
+.ac-creativo::before{background:linear-gradient(90deg,#7c3aed,#b14eff);}
+.ac-creativo .ac-icon{background:rgba(177,78,255,.08);border-color:rgba(177,78,255,.2);color:#b14eff;}
+.ac-creativo .ac-name,.ac-creativo .ac-role{color:#b14eff;}
+.ac-creativo .ac-tag{background:rgba(177,78,255,.08);color:#b14eff;border-color:rgba(177,78,255,.2);}
+.how{padding:90px 5%;background:rgba(20,12,40,.4);backdrop-filter:blur(10px);}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;max-width:880px;margin:0 auto;}
+.step{text-align:center;padding:32px 20px;}
+.step-num{width:60px;height:60px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:24px;font-weight:900;color:#000;margin:0 auto 20px;box-shadow:0 0 25px rgba(0,240,255,.3);}
+.step-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:10px;}
+.step-desc{font-size:13px;color:var(--t2);line-height:1.7;}
+.pricing{padding:90px 5%;}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;}
+.plan{padding:32px 26px;border-radius:22px;background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07);position:relative;transition:all .25s;}
 .plan:hover{transform:translateY(-4px);}
-.plan.featured{border-color:rgba(0,229,255,.35);box-shadow:0 0 60px rgba(0,229,255,.08);}
-.plan-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);padding:5px 22px;background:var(--grad);border-radius:24px;font-size:11px;font-weight:800;color:#000;white-space:nowrap;}
-.plan-name{font-size:13px;font-weight:800;margin-bottom:10px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;}
-.plan-price{font-size:50px;font-weight:900;line-height:1;margin-bottom:5px;letter-spacing:-2px;}
-.plan-period{font-size:12px;color:var(--t2);margin-bottom:26px;}
-.plan-features{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:30px;}
-.plan-features li{font-size:13.5px;display:flex;align-items:center;gap:9px;line-height:1.45;}
-.plan-features li::before{content:'✓';color:var(--cyan);font-weight:800;font-size:14px;flex-shrink:0;}
-.plan-features li.no::before{content:'✕';color:rgba(255,255,255,.18);}
-.plan-features li.no{color:rgba(255,255,255,.22);}
-.plan-btn{width:100%;padding:15px;border-radius:14px;border:none;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:all .22s;text-decoration:none;display:block;text-align:center;}
+.plan.featured{border-color:rgba(0,240,255,.35);box-shadow:0 0 50px rgba(0,240,255,.1);}
+.plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:5px 20px;background:var(--grad);border-radius:22px;font-size:11px;font-weight:700;color:#000;white-space:nowrap;}
+.plan-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;margin-bottom:8px;color:var(--t2);}
+.plan-price{font-family:'Syne',sans-serif;font-size:46px;font-weight:900;line-height:1;margin-bottom:4px;}
+.plan-period{font-size:12px;color:var(--t2);margin-bottom:22px;}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.plan-features li{font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.plan-features li::before{content:'✓';color:var(--cyan);font-weight:700;flex-shrink:0;}
+.plan-features li.no::before{content:'✕';color:rgba(255,255,255,.2);}
+.plan-features li.no{color:rgba(255,255,255,.25);}
+.plan-btn{width:100%;padding:14px;border-radius:13px;border:none;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;display:block;text-align:center;}
 .plan-btn-grad{background:var(--grad);color:#000;}
-.plan-btn-grad:hover{box-shadow:0 0 36px rgba(0,200,220,.4);transform:translateY(-1px);}
-.plan-btn-outline{background:transparent;border:1.5px solid rgba(0,229,255,.3);color:var(--cyan);}
-.plan-btn-outline:hover{border-color:var(--cyan);background:rgba(0,229,255,.07);}
+.plan-btn-grad:hover{box-shadow:0 0 30px rgba(0,240,255,.4);transform:translateY(-1px);}
+.plan-btn-outline{background:transparent;border:1.5px solid rgba(0,240,255,.35);color:var(--cyan);}
+.plan-btn-outline:hover{border-color:var(--cyan);background:rgba(0,240,255,.07);}
 .plan-btn-ghost{background:rgba(255,255,255,.05);color:var(--t2);}
-.plan-btn-ghost:hover{background:rgba(255,255,255,.09);color:var(--tx);}
-.pricing-note{text-align:center;margin-top:24px;font-size:12.5px;color:var(--t2);line-height:1.8;}
-.pricing-note a{color:var(--cyan);text-decoration:none;font-weight:600;}
-
-.testi-section{padding:100px 5%;background:rgba(13,10,26,.5);}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:52px auto 0;}
-.tc{padding:28px;border-radius:20px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);transition:all .25s;}
-.tc:hover{border-color:var(--border-glow);transform:translateY(-3px);}
-.tc-stars{color:#fbbf24;font-size:16px;margin-bottom:14px;}
-.tc-text{font-size:13.5px;color:var(--t2);line-height:1.8;margin-bottom:18px;font-style:italic;}
-.tc-name{font-size:14px;font-weight:700;}
-.tc-role{font-size:11px;color:var(--t3);margin-top:3px;}
-
-.privacy-section{padding:70px 5%;background:rgba(18,12,36,.4);}
-.privacy-inner{max-width:720px;margin:0 auto;text-align:center;}
-.privacy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
-.priv-card{padding:24px;background:var(--card2);border-radius:18px;border:1px solid var(--border);}
-.priv-ico{font-size:30px;margin-bottom:12px;}
-.priv-title{font-size:13px;font-weight:700;margin-bottom:7px;}
-.priv-desc{font-size:12px;color:var(--t2);line-height:1.65;}
-
-.faq-section{padding:90px 5%;}
-.faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
-.faq-item{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);backdrop-filter:blur(14px);}
-.faq-q{padding:19px 22px;cursor:pointer;font-size:14.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center;transition:background .2s;gap:16px;}
+.plan-btn-ghost:hover{background:rgba(255,255,255,.1);color:var(--tx);}
+.pricing-note{text-align:center;margin-top:22px;font-size:12px;color:var(--t2);}
+.pricing-note a{color:var(--cyan);text-decoration:none;}
+.testi{padding:90px 5%;background:rgba(20,12,40,.4);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:48px auto 0;}
+.tc{padding:24px;border-radius:18px;background:var(--card);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.06);}
+.tc-stars{color:#fbbf24;font-size:15px;margin-bottom:12px;}
+.tc-text{font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:16px;font-style:italic;}
+.tc-name{font-size:13px;font-weight:700;}
+.tc-role{font-size:11px;color:var(--t2);margin-top:2px;}
+.faq{padding:80px 5%;}
+.faq-list{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.faq-item{border:1px solid rgba(255,255,255,.07);border-radius:13px;overflow:hidden;background:var(--card);backdrop-filter:blur(10px);}
+.faq-q{padding:18px 20px;cursor:pointer;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;transition:all .2s;}
 .faq-q:hover{background:rgba(255,255,255,.03);}
-.faq-arr{color:var(--t2);font-size:20px;transition:transform .25s;flex-shrink:0;}
-.faq-item.open .faq-arr{transform:rotate(45deg);color:var(--cyan);}
-.faq-a{display:none;padding:0 22px 20px;font-size:13.5px;color:var(--t2);line-height:1.8;}
+.faq-arr{color:var(--t2);font-size:18px;transition:transform .2s;}
+.faq-item.open .faq-arr{transform:rotate(45deg);}
+.faq-a{display:none;padding:0 20px 18px;font-size:13px;color:var(--t2);line-height:1.75;}
 .faq-item.open .faq-a{display:block;}
-
-.cta-section{padding:100px 5%;text-align:center;}
-.cta-box{max-width:720px;margin:0 auto;padding:66px 44px;border-radius:28px;background:var(--card);backdrop-filter:blur(32px);border:1px solid rgba(155,77,255,.25);position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(155,77,255,.18);}
-.cta-glow{position:absolute;width:500px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,229,255,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
-.cta-title{font-size:clamp(26px,4vw,44px);font-weight:900;margin-bottom:16px;position:relative;line-height:1.15;letter-spacing:-1px;}
-.cta-sub{font-size:15.5px;color:var(--t2);margin-bottom:38px;position:relative;line-height:1.75;}
+.cta-final{padding:90px 5%;text-align:center;}
+.cta-box{max-width:700px;margin:0 auto;padding:60px 40px;border-radius:26px;background:var(--card);backdrop-filter:blur(30px);border:1px solid rgba(177,78,255,.3);position:relative;overflow:hidden;box-shadow:0 20px 80px rgba(177,78,255,.2);}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(0,240,255,.06),transparent);}
+.cta-title{font-family:'Syne',sans-serif;font-size:clamp(24px,4vw,40px);font-weight:900;margin-bottom:14px;position:relative;}
+.cta-sub{font-size:15px;color:var(--t2);margin-bottom:36px;position:relative;line-height:1.75;}
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
-
-footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.footer-brand{font-size:17px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.footer-note{font-size:12px;color:var(--t3);}
-.footer-links{display:flex;gap:22px;}
-.footer-link{font-size:12px;color:var(--t2);text-decoration:none;transition:color .2s;font-weight:500;}
+footer{padding:40px 5%;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+.footer-brand{font-family:'Syne',sans-serif;font-size:16px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.footer-note{font-size:12px;color:var(--t2);}
+.footer-links{display:flex;gap:20px;}
+.footer-link{font-size:12px;color:var(--t2);text-decoration:none;transition:color .2s;}
 .footer-link:hover{color:var(--tx);}
-
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
-.reveal.visible{opacity:1;transform:none;}
-
 @media(max-width:768px){
-  .agents-grid,.plans,.steps,.testi-grid,.privacy-grid{grid-template-columns:1fr;}
-  .stats-bar{flex-wrap:wrap;}
-  .stat{min-width:40%;flex:1;}
+  .agents-grid,.plans,.steps,.testi-grid{grid-template-columns:1fr;}
+  .stats{flex-wrap:wrap;}
+  .stat{flex:1;min-width:130px;}
   .stat:not(:last-child)::after{display:none;}
   .hero-btns,.cta-btns{flex-direction:column;align-items:center;}
-  .btn-primary,.btn-wa{width:100%;max-width:340px;justify-content:center;}
+  .btn-primary,.btn-wa{width:100%;max-width:320px;justify-content:center;}
   nav .nav-links{display:none;}
-  .cta-box{padding:40px 24px;}
-  .hero-title{letter-spacing:-1px;}
-  .sec-title{letter-spacing:-.5px;}
+  .cta-box{padding:36px 22px;}
 }
 </style>
 </head>
 <body>
-
-<div class="ambient">
-  <div class="ao ao1"></div>
-  <div class="ao ao2"></div>
-  <div class="ao ao3"></div>
-</div>
-<div class="grid-bg"></div>
+<div class="bg"><div class="orb-l orb-l-1"></div><div class="orb-l orb-l-2"></div><div class="orb-l orb-l-3"></div></div>
 
 <nav>
   <div class="nav-brand">
-    <img src="/images/icono-nexo.png" class="nav-logo" alt="IA-NEXO">
+    <svg class="nav-logo" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="nlg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00c9e8"/><stop offset="100%" stop-color="#9b59f5"/></linearGradient></defs>
+      <rect width="36" height="36" rx="9" fill="url(#nlg)"/>
+      <line x1="18" y1="18" x2="8"  y2="8"  stroke="#f59e0b" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18" y1="18" x2="8"  y2="28" stroke="#39d98a" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18" y1="18" x2="28" y2="8"  stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18" y1="18" x2="28" y2="28" stroke="#a855f7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="18" cy="18" r="3" fill="white"/>
+    </svg>
     <span class="nav-name">IA-NEXO</span>
-  </div>
-  <div class="nav-links">
-    <a href="#features" class="nav-link">Los Agentes</a>
-    <a href="#pricing" class="nav-link">Planes</a>
-    <a href="#faq" class="nav-link">FAQ</a>
   </div>
   <a href="/app" class="nav-cta">Probar gratis &rarr;</a>
 </nav>
 
 <section class="hero">
-  <div class="hero-badge"><span class="badge-dot"></span> IA en espa&ntilde;ol para Latinoam&eacute;rica</div>
-  <h1 class="hero-title">Tu equipo de expertos<br><span class="grad-text">de IA, siempre listo</span></h1>
-  <p class="hero-sub">4 inteligencias especializadas en un solo lugar. C&oacute;digo, datos, filosof&iacute;a y creatividad. Sin complicaciones, en tu idioma, desde tu celular.</p>
+  <div class="hero-badge">&#129302; Inteligencia Artificial en espa&ntilde;ol</div>
+  <h1 class="hero-title">Tu asistente de IA<br><span class="grad">que responde todo</span></h1>
+  <p class="hero-sub">4 expertos especializados en uno. C&oacute;digo, datos, filosof&iacute;a y creatividad. Sin l&iacute;mites. Sin complicaciones. Desde tu celular.</p>
   <div class="hero-btns">
     <a href="/app" class="btn-primary">&#10024; Empezar gratis ahora</a>
     <a href="https://wa.me/584243602967?text=Hola!+Me+interesa+IA-NEXO" target="_blank" class="btn-wa">&#128242; Hablar por WhatsApp</a>
   </div>
-  <div class="hero-trust">
-    <span class="trust-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-    <span class="trust-sep"></span>
-    <span>+200 usuarios activos</span>
-    <span class="trust-sep"></span>
-    <span>Sin tarjeta de cr&eacute;dito</span>
-  </div>
+  <div class="hero-trust"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span>M&aacute;s de 200 usuarios &bull; Sin tarjeta de cr&eacute;dito para empezar</span></div>
 </section>
 
-<div class="stats-bar">
+<div class="stats">
   <div class="stat"><div class="stat-val">4</div><div class="stat-lbl">Agentes expertos</div></div>
   <div class="stat"><div class="stat-val">&infin;</div><div class="stat-lbl">Temas posibles</div></div>
-  <div class="stat"><div class="stat-val">&lt;3s</div><div class="stat-lbl">Respuesta</div></div>
+  <div class="stat"><div class="stat-val">&lt;3s</div><div class="stat-lbl">Tiempo de respuesta</div></div>
   <div class="stat"><div class="stat-val">100%</div><div class="stat-lbl">En espa&ntilde;ol</div></div>
 </div>
 
-<section class="agents-section" id="features">
-  <div class="sec-label">Los 4 Expertos</div>
-  <h2 class="sec-title">Un equipo completo de <span class="grad-text">IA especializada</span></h2>
-  <p class="sec-sub">Cada agente domina su &aacute;rea al m&aacute;ximo. El sistema detecta autom&aacute;ticamente qui&eacute;n debe responder.</p>
+<section class="features" id="features">
+  <div class="section-label">Los 4 Expertos</div>
+  <h2 class="section-title">Un equipo completo de <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">IA especializada</span></h2>
+  <p class="section-sub">Cada agente est&aacute; especializado en su &aacute;rea. El sistema elige qui&eacute;n responde autom&aacute;ticamente.</p>
   <div class="agents-grid">
-
-    <div class="agent-card ac-sabio reveal">
-      <div class="ac-icon-wrap" style="border-radius:50%;">
-        <img src="/images/agente-sabio.png" alt="NEXO SABIO">
-      </div>
+    <div class="agent-card ac-sabio">
+      <div class="ac-icon">&#129497;</div>
       <div class="ac-name">NEXO SABIO</div>
-      <div class="ac-role">Filosof&iacute;a &bull; Consejos &bull; Bienestar</div>
-      <div class="ac-desc">Analiza dilemas &eacute;ticos, da consejos de vida con profundidad real y aplica filosof&iacute;a pr&aacute;ctica estoica y moderna. No da respuestas gen&eacute;ricas: va al fondo de cada pregunta.</div>
-      <div class="ac-tags"><span class="ac-tag">Filosof&iacute;a</span><span class="ac-tag">&Eacute;tica</span><span class="ac-tag">Decisiones</span><span class="ac-tag">Bienestar</span><span class="ac-tag">Estoicismo</span></div>
+      <div class="ac-role">Filosof&iacute;a y An&aacute;lisis</div>
+      <div class="ac-desc">Responde preguntas profundas, da consejos de vida, analiza dilemas &eacute;ticos y te ayuda a reflexionar sobre las grandes preguntas del mundo.</div>
+      <div class="ac-tags"><span class="ac-tag">Filosof&iacute;a</span><span class="ac-tag">&Eacute;tica</span><span class="ac-tag">Consejos</span><span class="ac-tag">Prop&oacute;sito</span></div>
     </div>
-
-    <div class="agent-card ac-datos reveal">
-      <div class="ac-icon-wrap" style="border-radius:14px;">
-        <img src="/images/agente-datos.png" alt="NEXO DATOS">
-      </div>
+    <div class="agent-card ac-datos">
+      <div class="ac-icon">&#129333;</div>
       <div class="ac-name">NEXO DATOS</div>
-      <div class="ac-role">Informaci&oacute;n &bull; Cifras &bull; Historia</div>
-      <div class="ac-desc">Datos verificados, estad&iacute;sticas, historia, geograf&iacute;a y econom&iacute;a. No solo da n&uacute;meros: los contextualiza para que entiendas qu&eacute; significan de verdad.</div>
-      <div class="ac-tags"><span class="ac-tag">Estad&iacute;sticas</span><span class="ac-tag">Historia</span><span class="ac-tag">Econom&iacute;a</span><span class="ac-tag">Geograf&iacute;a</span><span class="ac-tag">Ciencia</span></div>
+      <div class="ac-role">Informaci&oacute;n y Datos</div>
+      <div class="ac-desc">Cifras, estad&iacute;sticas, historia, geograf&iacute;a, econom&iacute;a. Responde con datos precisos sobre cualquier tema del mundo real.</div>
+      <div class="ac-tags"><span class="ac-tag">Estad&iacute;sticas</span><span class="ac-tag">Historia</span><span class="ac-tag">Econom&iacute;a</span><span class="ac-tag">Geograf&iacute;a</span></div>
     </div>
-
-    <div class="agent-card ac-logico reveal">
-      <div class="ac-icon-wrap" style="border-radius:14px;">
-        <img src="/images/agente-logico.png" alt="NEXO LOGICO">
-      </div>
+    <div class="agent-card ac-logico">
+      <div class="ac-icon">&#129299;</div>
       <div class="ac-name">NEXO L&Oacute;GICO</div>
-      <div class="ac-role">C&oacute;digo &bull; Matem&aacute;ticas &bull; L&oacute;gica</div>
-      <div class="ac-desc">Programaci&oacute;n en cualquier lenguaje, resoluci&oacute;n de bugs, algoritmos y c&aacute;lculos matem&aacute;ticos paso a paso. Da el c&oacute;digo primero, la explicaci&oacute;n despu&eacute;s.</div>
-      <div class="ac-tags"><span class="ac-tag">Python</span><span class="ac-tag">JavaScript</span><span class="ac-tag">SQL</span><span class="ac-tag">Matem&aacute;ticas</span><span class="ac-tag">Algoritmos</span></div>
+      <div class="ac-role">C&oacute;digo y Matem&aacute;ticas</div>
+      <div class="ac-desc">Resuelve problemas de programaci&oacute;n, crea funciones, explica algoritmos y calcula cualquier operaci&oacute;n matem&aacute;tica con precisi&oacute;n.</div>
+      <div class="ac-tags"><span class="ac-tag">Python</span><span class="ac-tag">JavaScript</span><span class="ac-tag">Matem&aacute;ticas</span><span class="ac-tag">Algoritmos</span></div>
     </div>
-
-    <div class="agent-card ac-creativo reveal">
-      <div class="ac-icon-wrap" style="border-radius:50%;">
-        <img src="/images/agente-creativo.png" alt="NEXO CREATIVO">
-      </div>
+    <div class="agent-card ac-creativo">
+      <div class="ac-icon">&#127912;</div>
       <div class="ac-name">NEXO CREATIVO</div>
-      <div class="ac-role">Escritura &bull; Arte &bull; Ideas</div>
-      <div class="ac-desc">Poemas con ritmo real, cuentos con personajes de verdad, copy publicitario que vende y nombres de marcas memorables. Creatividad de nivel profesional, nunca gen&eacute;rica.</div>
-      <div class="ac-tags"><span class="ac-tag">Poemas</span><span class="ac-tag">Cuentos</span><span class="ac-tag">Copy</span><span class="ac-tag">Nombres</span><span class="ac-tag">Canciones</span></div>
+      <div class="ac-role">Arte y Escritura</div>
+      <div class="ac-desc">Escribe poemas, cuentos, canciones e ideas creativas. Tambi&eacute;n genera prompts para crear im&aacute;genes con IA.</div>
+      <div class="ac-tags"><span class="ac-tag">Poemas</span><span class="ac-tag">Cuentos</span><span class="ac-tag">Ideas</span><span class="ac-tag">Im&aacute;genes IA</span></div>
     </div>
-
   </div>
 </section>
 
-<section class="how-section">
-  <div class="sec-label">C&oacute;mo funciona</div>
-  <h2 class="sec-title">Tres pasos y ya</h2>
-  <p class="sec-sub">Sin instalaciones. Sin configuraciones. Funciona perfecto desde tu celular Android o iPhone.</p>
+<section class="how">
+  <div class="section-label">C&oacute;mo funciona</div>
+  <h2 class="section-title">Tres pasos y ya</h2>
+  <p class="section-sub">Sin instalaciones. Sin configuraciones. Funciona desde cualquier dispositivo.</p>
   <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">1</div>
-      <div class="step-title">Crea tu cuenta</div>
-      <div class="step-desc">Reg&iacute;strate con tu correo en segundos. Sin tarjeta de cr&eacute;dito para el plan gratuito. Inmediato.</div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">2</div>
-      <div class="step-title">Escribe tu pregunta</div>
-      <div class="step-desc">En espa&ntilde;ol, como hablas t&uacute;. El sistema detecta autom&aacute;ticamente qu&eacute; experto debe responder.</div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">3</div>
-      <div class="step-title">Obt&eacute;n tu respuesta</div>
-      <div class="step-desc">En menos de 3 segundos: precisa, en espa&ntilde;ol, adaptada exactamente a lo que pediste.</div>
-    </div>
+    <div class="step"><div class="step-num">1</div><div class="step-title">Crea tu cuenta</div><div class="step-desc">Reg&iacute;strate con tu correo en segundos. Sin tarjeta de cr&eacute;dito para el plan gratuito.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-title">Escribe tu pregunta</div><div class="step-desc">Escribe en espa&ntilde;ol. El sistema detecta autom&aacute;ticamente qu&eacute; experto debe responder.</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-title">Recibe tu respuesta</div><div class="step-desc">En menos de 3 segundos tienes una respuesta precisa, en espa&ntilde;ol, adaptada a lo que pediste.</div></div>
   </div>
 </section>
 
-<section class="pricing-section" id="pricing">
-  <div class="sec-label">Planes y Precios</div>
-  <h2 class="sec-title">Elige tu <span class="grad-text">plan ideal</span></h2>
-  <p class="sec-sub">Cancela cuando quieras. Sin contratos. Pagos por Zelle, PayPal, Binance Pay o Pago M&oacute;vil.</p>
+<section class="pricing" id="pricing">
+  <div class="section-label">Planes y Precios</div>
+  <h2 class="section-title">Elige tu <span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent">plan ideal</span></h2>
+  <p class="section-sub">Cancela cuando quieras. Sin contratos. Pago por Zelle, PayPal o transferencia.</p>
   <div class="plans">
-    <div class="plan reveal">
+    <div class="plan">
       <div class="plan-name">GRATIS</div>
       <div class="plan-price" style="color:var(--t2);">$0</div>
       <div class="plan-period">para siempre</div>
       <ul class="plan-features">
-        <li>25 mensajes por d&iacute;a</li>
+        <li>10 mensajes por d&iacute;a</li>
         <li>Acceso a los 4 agentes</li>
         <li>Modo Auto y Manual</li>
         <li class="no">Sin historial en la nube</li>
@@ -330,24 +288,24 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
       </ul>
       <a href="/app" class="plan-btn plan-btn-ghost">Empezar gratis</a>
     </div>
-    <div class="plan featured reveal">
+    <div class="plan featured">
       <div class="plan-badge">&#11088; M&aacute;s popular</div>
       <div class="plan-name">PRO</div>
       <div class="plan-price" style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">$4.99</div>
-      <div class="plan-period">por mes &bull; cancela cuando quieras</div>
+      <div class="plan-period">por mes</div>
       <ul class="plan-features">
         <li><strong>Mensajes ilimitados</strong></li>
         <li>Los 4 agentes especializados</li>
-        <li>Historial en la nube</li>
+        <li>Favoritos y guardado</li>
         <li>Escuchar respuestas en voz</li>
-        <li>Descargar respuestas en PDF</li>
-        <li>Soporte prioritario por WhatsApp</li>
+        <li>Compartir por WhatsApp</li>
+        <li>Soporte prioritario</li>
       </ul>
       <a href="https://wa.me/584243602967?text=Quiero+el+Plan+Pro+de+IA-NEXO" target="_blank" class="plan-btn plan-btn-grad">Contratar Plan Pro &rarr;</a>
     </div>
-    <div class="plan reveal">
+    <div class="plan">
       <div class="plan-name">PRO ANUAL</div>
-      <div class="plan-price" style="color:#00ffb3;">$29.99</div>
+      <div class="plan-price" style="color:#3dffaa;">$29.99</div>
       <div class="plan-period">por a&ntilde;o &bull; ahorras $30</div>
       <ul class="plan-features">
         <li><strong>Todo el Plan Pro</strong></li>
@@ -359,60 +317,35 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
       <a href="https://wa.me/584243602967?text=Quiero+el+Plan+Anual+de+IA-NEXO" target="_blank" class="plan-btn plan-btn-outline">Contratar Anual &rarr;</a>
     </div>
   </div>
-  <p class="pricing-note">&#128179; Aceptamos: Zelle &bull; PayPal &bull; Transferencia &bull; Binance Pay &bull; Pago M&oacute;vil<br>&iquest;Preguntas? <a href="https://wa.me/584243602967">Esc&iacute;benos por WhatsApp</a></p>
+  <p class="pricing-note">&#128179; Aceptamos: Zelle &bull; PayPal &bull; Transferencia &bull; Binance Pay &bull; Pago M&oacute;vil<br>&#8203;&iquest;Preguntas? <a href="https://wa.me/584243602967">Escribenos por WhatsApp</a></p>
 </section>
 
-<section class="testi-section">
-  <div class="sec-label">Lo que dicen</div>
-  <h2 class="sec-title">Usuarios reales,<br>resultados reales</h2>
+<section class="testi">
+  <div class="section-label">Lo que dicen</div>
+  <h2 class="section-title">Usuarios reales,<br>resultados reales</h2>
   <div class="testi-grid">
-    <div class="tc reveal">
-      <div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <div class="tc-text">"Lo uso todos los d&iacute;as para redactar correos y crear contenido. En 2 minutos tengo lo que necesito. Vale cada centavo."</div>
-      <div class="tc-name">Mar&iacute;a G.</div><div class="tc-role">Emprendedora &bull; Venezuela</div>
-    </div>
-    <div class="tc reveal">
-      <div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <div class="tc-text">"Soy contador y uso NEXO L&Oacute;GICO para f&oacute;rmulas y c&aacute;lculos financieros. Me ahorra horas cada semana."</div>
-      <div class="tc-name">Carlos M.</div><div class="tc-role">Contador &bull; Colombia</div>
-    </div>
-    <div class="tc reveal">
-      <div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <div class="tc-text">"Mis hijos me ense&ntilde;aron a usarlo y ahora no puedo parar. El bot&oacute;n de letra grande es perfecto. Todo en espa&ntilde;ol."</div>
-      <div class="tc-name">Elena R.</div><div class="tc-role">Docente &bull; 52 a&ntilde;os &bull; M&eacute;xico</div>
-    </div>
+    <div class="tc"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-text">"Lo uso todos los d&iacute;as para redactar correos y crear contenido. En 2 minutos tengo lo que necesito. Vale cada centavo."</div><div class="tc-name">Mar&iacute;a G.</div><div class="tc-role">Emprendedora &bull; Venezuela</div></div>
+    <div class="tc"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-text">"Soy contador y uso NEXO L&Oacute;GICO para f&oacute;rmulas y c&aacute;lculos financieros. Me ahorra horas de trabajo cada semana."</div><div class="tc-name">Carlos M.</div><div class="tc-role">Contador &bull; Colombia</div></div>
+    <div class="tc"><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><div class="tc-text">"Mis hijos me ense&ntilde;aron a usarlo y ahora no puedo parar. El bot&oacute;n de letra grande es perfecto. Todo en espa&ntilde;ol."</div><div class="tc-name">Elena R.</div><div class="tc-role">Docente &bull; 52 a&ntilde;os &bull; M&eacute;xico</div></div>
   </div>
 </section>
 
-<section class="privacy-section">
-  <div class="privacy-inner">
-    <div class="sec-label">Tu privacidad</div>
-    <h2 class="sec-title">Simple y transparente</h2>
-    <div class="privacy-grid">
-      <div class="priv-card reveal"><div class="priv-ico">&#128274;</div><div class="priv-title">Solo tu correo</div><div class="priv-desc">Solo guardamos tu correo y contrase&ntilde;a encriptada. Nada m&aacute;s.</div></div>
-      <div class="priv-card reveal"><div class="priv-ico">&#128584;</div><div class="priv-title">Sin terceros</div><div class="priv-desc">No vendemos ni compartimos tus datos. Nunca. Es tu informaci&oacute;n.</div></div>
-      <div class="priv-card reveal"><div class="priv-ico">&#128465;</div><div class="priv-title">Control total</div><div class="priv-desc">Borra tu cuenta en cualquier momento. Sin preguntas, sin penalizaciones.</div></div>
-    </div>
-  </div>
-</section>
-
-<section class="faq-section" id="faq">
-  <div class="sec-label">Preguntas frecuentes</div>
-  <h2 class="sec-title" style="margin-bottom:44px;">&iquest;Tienes dudas?</h2>
+<section style="padding:60px 5%;background:rgba(20,12,40,.4);"><div style="max-width:680px;margin:0 auto;text-align:center;"><div style="font-size:11px;color:#00f0ff;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Tu privacidad</div><h2 style="font-family:'Syne',sans-serif;font-size:28px;font-weight:900;margin-bottom:16px;">Simple y transparente</h2><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;"><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128274;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Solo tu correo</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">Solo guardamos tu correo y contrase&ntilde;a encriptada. Nada m&aacute;s.</div></div><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128584;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Sin terceros</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">No vendemos ni compartimos tus datos con nadie. Nunca.</div></div><div style="padding:20px;background:rgba(20,12,40,.7);border-radius:16px;border:1px solid rgba(255,255,255,.07);"><div style="font-size:28px;margin-bottom:10px;">&#128465;</div><div style="font-size:13px;font-weight:700;margin-bottom:6px;">Cancela cuando quieras</div><div style="font-size:12px;color:#a89cbf;line-height:1.6;">Borra tu cuenta en cualquier momento. Sin preguntas.</div></div></div></div></section>
+<section class="faq" id="faq">
+  <div class="section-label">Preguntas frecuentes</div>
+  <h2 class="section-title" style="margin-bottom:40px;">&iquest;Tienes dudas?</h2>
   <div class="faq-list">
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;C&oacute;mo pago el Plan Pro?</span><span class="faq-arr">+</span></div><div class="faq-a">Aceptamos Zelle, PayPal, transferencia bancaria, Binance Pay y Pago M&oacute;vil. Esc&iacute;benos por WhatsApp y te enviamos los datos de pago en segundos.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Funciona desde el celular?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;, funciona perfecto en Android e iPhone desde el navegador. Sin instalar nada. Incluso puedes agregarlo a tu pantalla de inicio como una app nativa.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Puedo cancelar cuando quiera?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;. No hay contratos ni penalizaciones. El plan mensual simplemente no renueva si cancelas.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; diferencia hay con ChatGPT?</span><span class="faq-arr">+</span></div><div class="faq-a">IA-NEXO tiene 4 agentes especializados que se adaptan a tu pregunta, precio accesible para Latinoam&eacute;rica, modo letra grande, soporte por WhatsApp en tu horario, y est&aacute; 100% en espa&ntilde;ol.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;El plan gratis tiene l&iacute;mite de tiempo?</span><span class="faq-arr">+</span></div><div class="faq-a">No. El plan gratuito es para siempre con 25 mensajes por d&iacute;a. Cuando necesites m&aacute;s, te pasas a Pro con mensajes ilimitados.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; es el modo autom&aacute;tico?</span><span class="faq-arr">+</span></div><div class="faq-a">El sistema analiza tu pregunta y elige el agente m&aacute;s adecuado. Si preguntas sobre c&oacute;digo va a NEXO L&Oacute;GICO, si es filosof&iacute;a va a NEXO SABIO. Tambi&eacute;n puedes elegir manualmente desde el men&uacute;.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;C&oacute;mo pago el Plan Pro?</span><span class="faq-arr">+</span></div><div class="faq-a">Aceptamos Zelle, PayPal, transferencia bancaria y Binance Pay. Escr&iacute;benos por WhatsApp y te enviamos los datos de pago.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Funciona desde el celular?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;, IA-NEXO est&aacute; optimizado para m&oacute;vil. Funciona perfecto en Android e iPhone desde el navegador. No necesitas instalar nada.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Puedo cancelar cuando quiera?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;. Si cancelas el plan mensual, simplemente no renueva el siguiente mes. Sin penalizaciones ni contratos.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; diferencia hay con ChatGPT?</span><span class="faq-arr">+</span></div><div class="faq-a">IA-NEXO est&aacute; dise&ntilde;ado para hispanohablantes, con 4 agentes especializados, modo letra grande para usuarios mayores, y precios accesibles para Latinoam&eacute;rica.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;El plan gratis tiene l&iacute;mite de tiempo?</span><span class="faq-arr">+</span></div><div class="faq-a">No. El plan gratuito es para siempre con 10 mensajes por d&iacute;a. Cuando quieras m&aacute;s, puedes pasarte al Plan Pro.</div></div>
   </div>
 </section>
 
-<section class="cta-section">
+<section class="cta-final">
   <div class="cta-box">
-    <div class="cta-glow"></div>
-    <h2 class="cta-title">&iquest;Listo para tener tu<br>equipo de IA personal?</h2>
+    <h2 class="cta-title">&iquest;Listo para tener tu<br>experto de IA personal?</h2>
     <p class="cta-sub">Un&eacute;te a los usuarios que ya ahorran horas cada semana con IA-NEXO. Empieza gratis hoy mismo.</p>
     <div class="cta-btns">
       <a href="/app" class="btn-primary">&#10024; Empezar gratis ahora</a>
@@ -426,8 +359,7 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
   <div class="footer-note">&copy; 2025 IA-NEXO &bull; Hecho con &#10084; para Latinoam&eacute;rica</div>
   <div class="footer-links">
     <a href="/app" class="footer-link">Ir a la App</a>
-    <a href="https://wa.me/584243602967" class="footer-link">WhatsApp</a>
-    <a href="#faq" class="footer-link">FAQ</a>
+    <a href="https://wa.me/584243602967" class="footer-link">Contacto</a>
   </div>
 </footer>
 
@@ -438,15 +370,9 @@ function toggleFaq(el){
   document.querySelectorAll('.faq-item.open').forEach(function(i){i.classList.remove('open');});
   if(!wasOpen)item.classList.add('open');
 }
-var obs=new IntersectionObserver(function(entries){
-  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});
-},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
-document.querySelectorAll('a[href^="#"]').forEach(function(a){
-  a.addEventListener('click',function(e){
-    var t=document.querySelector(this.getAttribute('href'));
-    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
-  });
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='none';}});},{threshold:.1});
+document.querySelectorAll('.agent-card,.tc,.plan,.step').forEach(function(el){
+  el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity .5s ease, transform .5s ease';obs.observe(el);
 });
 </script>
 </body>
