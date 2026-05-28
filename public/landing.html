@@ -10,9 +10,11 @@
 <meta name="theme-color" content="#06040f">
 <link rel="icon" href="/images/icono-nexo.png">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#06040f;--bg2:#0d0a1a;--card:rgba(18,12,36,.85);--card2:rgba(28,18,52,.7);
+  --bg:#06040f;--bg2:#0d0a1a;
+  --card:rgba(18,12,36,.85);--card2:rgba(28,18,52,.7);
   --tx:#f2f0ff;--t2:#9d94c0;--t3:#5a5278;
   --cyan:#00e5ff;--purple:#9b4dff;--pink:#ff3cf8;--gold:#ffb347;--green:#00ffb3;
   --grad:linear-gradient(135deg,#00c6e0,#9b4dff,#ff3cf8);
@@ -22,6 +24,7 @@
 html{scroll-behavior:smooth;overflow-x:hidden;}
 body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;}
 
+/* AMBIENT */
 .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .ao{position:absolute;border-radius:50%;filter:blur(80px);animation:orb-float ease-in-out infinite alternate;}
 .ao1{width:500px;height:500px;background:radial-gradient(circle,rgba(0,229,255,.13),transparent 70%);top:-15%;left:-10%;animation-duration:18s;}
@@ -33,7 +36,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overfl
   background-size:60px 60px;
   mask-image:radial-gradient(ellipse 80% 70% at 50% 30%,black 30%,transparent 100%);}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(6,4,15,.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(6,4,15,.82);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
 .nav-brand{display:flex;align-items:center;gap:11px;}
 .nav-logo{width:38px;height:38px;border-radius:11px;object-fit:cover;}
 .nav-name{font-size:19px;font-weight:900;letter-spacing:1.5px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
@@ -43,6 +47,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:66px;display:flex;ali
 .nav-cta{padding:10px 24px;background:var(--grad);border:none;border-radius:24px;color:#000;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none;transition:all .25s;box-shadow:0 0 22px rgba(0,200,220,.25);}
 .nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 36px rgba(0,200,220,.4);}
 
+/* HERO */
 section{position:relative;z-index:1;}
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 5% 70px;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.22);border-radius:24px;font-size:12px;color:var(--cyan);font-weight:700;letter-spacing:.6px;margin-bottom:32px;text-transform:uppercase;}
@@ -61,12 +66,14 @@ section{position:relative;z-index:1;}
 .trust-stars{color:#fbbf24;font-size:14px;}
 .trust-sep{width:1px;height:14px;background:var(--t3);opacity:.4;}
 
+/* STATS */
 .stats-bar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:flex;justify-content:center;}
 .stat{text-align:center;padding:28px 52px;position:relative;flex:1;max-width:200px;}
 .stat:not(:last-child)::after{content:'';position:absolute;right:0;top:22%;bottom:22%;width:1px;background:var(--border);}
 .stat-val{font-size:40px;font-weight:900;line-height:1.1;background:var(--grad);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:grad-anim 7s ease infinite;}
 .stat-lbl{font-size:11px;color:var(--t3);margin-top:5px;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;}
 
+/* AGENTS SECTION */
 .agents-section{padding:100px 5%;}
 .sec-label{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:700;text-align:center;margin-bottom:14px;}
 .sec-title{font-size:clamp(28px,4vw,48px);font-weight:900;text-align:center;margin-bottom:14px;line-height:1.15;letter-spacing:-1px;}
@@ -75,9 +82,8 @@ section{position:relative;z-index:1;}
 .agent-card{padding:32px;border-radius:22px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);position:relative;overflow:hidden;transition:all .28s;}
 .agent-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:2px 2px 0 0;}
 .agent-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);}
-.ac-icon-wrap{width:80px;height:80px;border-radius:17px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;border:1px solid;overflow:hidden;}
+.ac-icon-wrap{width:80px;height:80px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;overflow:hidden;border:1px solid;}
 .ac-icon-wrap img{width:100%;height:100%;object-fit:cover;}
-.ac-emoji{font-size:28px;}
 .ac-name{font-size:19px;font-weight:800;margin-bottom:5px;letter-spacing:-.3px;}
 .ac-role{font-size:11px;text-transform:uppercase;letter-spacing:1.8px;margin-bottom:14px;font-weight:700;}
 .ac-desc{font-size:13.5px;color:var(--t2);line-height:1.75;margin-bottom:18px;}
@@ -85,26 +91,30 @@ section{position:relative;z-index:1;}
 .ac-tag{font-size:10px;padding:4px 11px;border-radius:9px;font-weight:700;border:1px solid;}
 
 .ac-sabio::before{background:linear-gradient(90deg,#e6890a,#ffb347);}
-.ac-sabio .ac-icon-wrap{background:rgba(255,179,71,.07);border-color:rgba(255,179,71,.2);}
+.ac-sabio .ac-icon-wrap{background:rgba(255,179,71,.07);border-color:rgba(255,179,71,.2);border-radius:50%;}
 .ac-sabio .ac-name,.ac-sabio .ac-role{color:#ffb347;}
 .ac-sabio .ac-tag{background:rgba(255,179,71,.07);color:#ffb347;border-color:rgba(255,179,71,.2);}
 .ac-sabio:hover{border-color:rgba(255,179,71,.25);box-shadow:0 20px 60px rgba(255,179,71,.12);}
+
 .ac-datos::before{background:linear-gradient(90deg,#00b87a,#00ffb3);}
-.ac-datos .ac-icon-wrap{background:rgba(0,255,179,.06);border-color:rgba(0,255,179,.18);}
+.ac-datos .ac-icon-wrap{background:rgba(0,255,179,.06);border-color:rgba(0,255,179,.18);border-radius:14px;}
 .ac-datos .ac-name,.ac-datos .ac-role{color:#00ffb3;}
 .ac-datos .ac-tag{background:rgba(0,255,179,.06);color:#00ffb3;border-color:rgba(0,255,179,.18);}
 .ac-datos:hover{border-color:rgba(0,255,179,.2);box-shadow:0 20px 60px rgba(0,255,179,.1);}
+
 .ac-logico::before{background:linear-gradient(90deg,#0284c7,#00e5ff);}
-.ac-logico .ac-icon-wrap{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.18);}
+.ac-logico .ac-icon-wrap{background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.18);border-radius:14px;}
 .ac-logico .ac-name,.ac-logico .ac-role{color:#00e5ff;}
 .ac-logico .ac-tag{background:rgba(0,229,255,.06);color:#00e5ff;border-color:rgba(0,229,255,.18);}
 .ac-logico:hover{border-color:rgba(0,229,255,.2);box-shadow:0 20px 60px rgba(0,229,255,.1);}
+
 .ac-creativo::before{background:linear-gradient(90deg,#7c3aed,#c084fc);}
-.ac-creativo .ac-icon-wrap{background:rgba(192,132,252,.07);border-color:rgba(192,132,252,.2);}
+.ac-creativo .ac-icon-wrap{background:rgba(192,132,252,.07);border-color:rgba(192,132,252,.2);border-radius:50%;}
 .ac-creativo .ac-name,.ac-creativo .ac-role{color:#c084fc;}
 .ac-creativo .ac-tag{background:rgba(192,132,252,.07);color:#c084fc;border-color:rgba(192,132,252,.2);}
 .ac-creativo:hover{border-color:rgba(192,132,252,.25);box-shadow:0 20px 60px rgba(192,132,252,.12);}
 
+/* HOW */
 .how-section{padding:100px 5%;background:rgba(13,10,26,.6);}
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;max-width:900px;margin:0 auto;}
 .step{text-align:center;padding:36px 22px;}
@@ -112,6 +122,7 @@ section{position:relative;z-index:1;}
 .step-title{font-size:18px;font-weight:800;margin-bottom:10px;}
 .step-desc{font-size:13.5px;color:var(--t2);line-height:1.75;}
 
+/* PRICING */
 .pricing-section{padding:100px 5%;}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:0 auto;}
 .plan{padding:34px 28px;border-radius:24px;background:var(--card);backdrop-filter:blur(24px);border:1px solid var(--border);position:relative;transition:all .28s;}
@@ -136,6 +147,7 @@ section{position:relative;z-index:1;}
 .pricing-note{text-align:center;margin-top:24px;font-size:12.5px;color:var(--t2);line-height:1.8;}
 .pricing-note a{color:var(--cyan);text-decoration:none;font-weight:600;}
 
+/* TESTIMONIALS */
 .testi-section{padding:100px 5%;background:rgba(13,10,26,.5);}
 .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;max-width:980px;margin:52px auto 0;}
 .tc{padding:28px;border-radius:20px;background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--border);transition:all .25s;}
@@ -145,6 +157,7 @@ section{position:relative;z-index:1;}
 .tc-name{font-size:14px;font-weight:700;}
 .tc-role{font-size:11px;color:var(--t3);margin-top:3px;}
 
+/* PRIVACY */
 .privacy-section{padding:70px 5%;background:rgba(18,12,36,.4);}
 .privacy-inner{max-width:720px;margin:0 auto;text-align:center;}
 .privacy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
@@ -153,6 +166,7 @@ section{position:relative;z-index:1;}
 .priv-title{font-size:13px;font-weight:700;margin-bottom:7px;}
 .priv-desc{font-size:12px;color:var(--t2);line-height:1.65;}
 
+/* FAQ */
 .faq-section{padding:90px 5%;}
 .faq-list{max-width:700px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
 .faq-item{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--card);backdrop-filter:blur(14px);}
@@ -163,6 +177,7 @@ section{position:relative;z-index:1;}
 .faq-a{display:none;padding:0 22px 20px;font-size:13.5px;color:var(--t2);line-height:1.8;}
 .faq-item.open .faq-a{display:block;}
 
+/* CTA */
 .cta-section{padding:100px 5%;text-align:center;}
 .cta-box{max-width:720px;margin:0 auto;padding:66px 44px;border-radius:28px;background:var(--card);backdrop-filter:blur(32px);border:1px solid rgba(155,77,255,.25);position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(155,77,255,.18);}
 .cta-glow{position:absolute;width:500px;height:300px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,229,255,.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);}
@@ -170,6 +185,7 @@ section{position:relative;z-index:1;}
 .cta-sub{font-size:15.5px;color:var(--t2);margin-bottom:38px;position:relative;line-height:1.75;}
 .cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;}
 
+/* FOOTER */
 footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .footer-brand{font-size:17px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .footer-note{font-size:12px;color:var(--t3);}
@@ -177,9 +193,11 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
 .footer-link{font-size:12px;color:var(--t2);text-decoration:none;transition:color .2s;font-weight:500;}
 .footer-link:hover{color:var(--tx);}
 
+/* REVEAL ANIMATION */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
 .reveal.visible{opacity:1;transform:none;}
 
+/* RESPONSIVE */
 @media(max-width:768px){
   .agents-grid,.plans,.steps,.testi-grid,.privacy-grid{grid-template-columns:1fr;}
   .stats-bar{flex-wrap:wrap;}
@@ -247,7 +265,7 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
   <div class="agents-grid">
 
     <div class="agent-card ac-sabio reveal">
-      <div class="ac-icon-wrap" style="border-radius:50%;">
+      <div class="ac-icon-wrap">
         <img src="/images/agente-sabio.png" alt="NEXO SABIO">
       </div>
       <div class="ac-name">NEXO SABIO</div>
@@ -257,7 +275,7 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
     </div>
 
     <div class="agent-card ac-datos reveal">
-      <div class="ac-icon-wrap" style="border-radius:14px;">
+      <div class="ac-icon-wrap">
         <img src="/images/agente-datos.png" alt="NEXO DATOS">
       </div>
       <div class="ac-name">NEXO DATOS</div>
@@ -267,7 +285,7 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
     </div>
 
     <div class="agent-card ac-logico reveal">
-      <div class="ac-icon-wrap" style="border-radius:14px;">
+      <div class="ac-icon-wrap">
         <img src="/images/agente-logico.png" alt="NEXO LOGICO">
       </div>
       <div class="ac-name">NEXO L&Oacute;GICO</div>
@@ -277,7 +295,7 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
     </div>
 
     <div class="agent-card ac-creativo reveal">
-      <div class="ac-icon-wrap" style="border-radius:50%;">
+      <div class="ac-icon-wrap">
         <img src="/images/agente-creativo.png" alt="NEXO CREATIVO">
       </div>
       <div class="ac-name">NEXO CREATIVO</div>
@@ -390,8 +408,8 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
     <h2 class="sec-title">Simple y transparente</h2>
     <div class="privacy-grid">
       <div class="priv-card reveal"><div class="priv-ico">&#128274;</div><div class="priv-title">Solo tu correo</div><div class="priv-desc">Solo guardamos tu correo y contrase&ntilde;a encriptada. Nada m&aacute;s.</div></div>
-      <div class="priv-card reveal"><div class="priv-ico">&#128584;</div><div class="priv-title">Sin terceros</div><div class="priv-desc">No vendemos ni compartimos tus datos. Nunca. Es tu informaci&oacute;n.</div></div>
-      <div class="priv-card reveal"><div class="priv-ico">&#128465;</div><div class="priv-title">Control total</div><div class="priv-desc">Borra tu cuenta en cualquier momento. Sin preguntas, sin penalizaciones.</div></div>
+      <div class="priv-card reveal"><div class="priv-ico">&#128584;</div><div class="priv-title">Sin terceros</div><div class="priv-desc">No vendemos ni compartimos tus datos. Nunca.</div></div>
+      <div class="priv-card reveal"><div class="priv-ico">&#128465;</div><div class="priv-title">Control total</div><div class="priv-desc">Borra tu cuenta en cualquier momento. Sin preguntas.</div></div>
     </div>
   </div>
 </section>
@@ -400,12 +418,12 @@ footer{padding:44px 5%;border-top:1px solid var(--border);display:flex;align-ite
   <div class="sec-label">Preguntas frecuentes</div>
   <h2 class="sec-title" style="margin-bottom:44px;">&iquest;Tienes dudas?</h2>
   <div class="faq-list">
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;C&oacute;mo pago el Plan Pro?</span><span class="faq-arr">+</span></div><div class="faq-a">Aceptamos Zelle, PayPal, transferencia bancaria, Binance Pay y Pago M&oacute;vil. Esc&iacute;benos por WhatsApp y te enviamos los datos de pago en segundos.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Funciona desde el celular?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;, funciona perfecto en Android e iPhone desde el navegador. Sin instalar nada. Incluso puedes agregarlo a tu pantalla de inicio como una app nativa.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;C&oacute;mo pago el Plan Pro?</span><span class="faq-arr">+</span></div><div class="faq-a">Aceptamos Zelle, PayPal, transferencia bancaria, Binance Pay y Pago M&oacute;vil. Esc&iacute;benos por WhatsApp y te enviamos los datos en segundos.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Funciona desde el celular?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;, funciona perfecto en Android e iPhone desde el navegador. Sin instalar nada. Incluso puedes agregarlo a tu pantalla de inicio como una app.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Puedo cancelar cuando quiera?</span><span class="faq-arr">+</span></div><div class="faq-a">S&iacute;. No hay contratos ni penalizaciones. El plan mensual simplemente no renueva si cancelas.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; diferencia hay con ChatGPT?</span><span class="faq-arr">+</span></div><div class="faq-a">IA-NEXO tiene 4 agentes especializados que se adaptan a tu pregunta, precio accesible para Latinoam&eacute;rica, modo letra grande, soporte por WhatsApp en tu horario, y est&aacute; 100% en espa&ntilde;ol.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; diferencia hay con ChatGPT?</span><span class="faq-arr">+</span></div><div class="faq-a">IA-NEXO tiene 4 agentes especializados que se adaptan a tu pregunta, precio accesible para Latinoam&eacute;rica, modo letra grande, soporte por WhatsApp y est&aacute; 100% en espa&ntilde;ol.</div></div>
     <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;El plan gratis tiene l&iacute;mite de tiempo?</span><span class="faq-arr">+</span></div><div class="faq-a">No. El plan gratuito es para siempre con 25 mensajes por d&iacute;a. Cuando necesites m&aacute;s, te pasas a Pro con mensajes ilimitados.</div></div>
-    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; es el modo autom&aacute;tico?</span><span class="faq-arr">+</span></div><div class="faq-a">El sistema analiza tu pregunta y elige el agente m&aacute;s adecuado. Si preguntas sobre c&oacute;digo va a NEXO L&Oacute;GICO, si es filosof&iacute;a va a NEXO SABIO. Tambi&eacute;n puedes elegir manualmente desde el men&uacute;.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)"><span>&iquest;Qu&eacute; es el modo autom&aacute;tico?</span><span class="faq-arr">+</span></div><div class="faq-a">El sistema analiza tu pregunta y elige el agente m&aacute;s adecuado. Si preguntas sobre c&oacute;digo va a NEXO L&Oacute;GICO, si es filosof&iacute;a va a NEXO SABIO. Tambi&eacute;n puedes elegir manualmente.</div></div>
   </div>
 </section>
 
