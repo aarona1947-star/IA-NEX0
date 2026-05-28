@@ -6,6 +6,12 @@
 <title>IA-NEXO — Todo en Uno</title>
 <link rel="icon" type="image/png" href="/images/icono-nexo.png">
 <link rel="apple-touch-icon" href="/images/icono-nexo.png">
+<!-- PWA: instalar como app desde el navegador -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IA-NEXO">
+<meta name="theme-color" content="#1c1b1a">
+<link rel="manifest" href="/manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ════════════════════════════════════════
@@ -226,9 +232,13 @@ body.big .inputfield{font-size:17px!important;}
 .typing span:nth-child(2){animation-delay:.15s;}
 .typing span:nth-child(3){animation-delay:.3s;}
 @keyframes typing{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-6px);opacity:1}}
-.thinking{font-size:11px;color:var(--t3);font-style:italic;padding:8px 12px;}
-.tdot::after{content:'...';animation:dots 1.5s infinite;}
-@keyframes dots{0%{content:''}33%{content:'.'}66%{content:'..'}100%{content:'...'}}
+.thinking{display:flex;align-items:center;gap:5px;padding:6px 2px;}
+.tdot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:tdot-bounce 1.2s ease-in-out infinite;opacity:.5;}
+.tdot:nth-child(1){animation-delay:0s;}
+.tdot:nth-child(2){animation-delay:.18s;background:var(--accent2);}
+.tdot:nth-child(3){animation-delay:.36s;}
+.thinking-label{font-size:10px;color:var(--t3);margin-left:4px;font-weight:500;}
+@keyframes tdot-bounce{0%,100%{transform:translateY(0);opacity:.35;}50%{transform:translateY(-5px);opacity:1;}}
 .msg-img{max-width:100%;border-radius:10px;margin-top:8px;box-shadow:var(--shadow-sm);}
 .chat-img-wrap{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
 .chat-img-dl{
@@ -531,7 +541,14 @@ body.big .inputfield{font-size:17px!important;}
   /* Input - above bottom nav */
   .inputbar{flex-shrink:0;padding:6px 10px 0!important;background:var(--card)!important;border-top:1px solid var(--border)!important;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;}
   .inputwrap{border-radius:14px!important;padding:10px 10px 7px!important;max-width:100%!important;box-shadow:none!important;border:1.5px solid var(--border)!important;}
-  .inputfield{font-size:15px!important;padding-bottom:10px!important;}
+  /* font-size 16px prevents iOS Safari auto-zoom on focus */
+  .inputfield{font-size:16px!important;padding-bottom:10px!important;}
+  /* Message action buttons - horizontal scroll on mobile */
+  .msg-actions{display:flex!important;overflow-x:auto!important;gap:5px!important;padding-bottom:4px!important;flex-wrap:nowrap!important;scrollbar-width:none!important;}
+  .msg-actions::-webkit-scrollbar{display:none!important;}
+  .msg-act{flex-shrink:0!important;padding:5px 10px!important;font-size:10px!important;white-space:nowrap!important;}
+  /* Prevent user-select on tappable items */
+  .ag,.chip,.wc-card,.mob-agent-card,.mob-tool-btn,.mob-nav-btn{-webkit-user-select:none;user-select:none;}
   .tone-selector{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-shrink:0;}
   .input-left-tools{overflow-x:hidden;gap:0!important;}
 
@@ -632,7 +649,7 @@ body.big .inputfield{font-size:17px!important;}
   <div class="lcard">
     <div class="l-hdr">
       <div class="l-brand">
-        <img src="/images/icono-nexo.png" width="34" height="34" style="border-radius:9px;object-fit:contain;" alt="IA-NEXO">
+        <img src="/images/icono-nexo.png" width="34" height="34" style="border-radius:9px;object-fit:cover;" alt="IA-NEXO">
         <div class="l-name">IA<em>-NEXO</em></div>
       </div>
       <button class="l-theme" id="btn-theme-login" title="Cambiar tema">&#9728;</button>
@@ -666,7 +683,7 @@ body.big .inputfield{font-size:17px!important;}
   <div class="topbar">
     <div class="tb-l">
       <button class="mob-ham" id="ham">&#9776;</button>
-      <img src="/images/icono-nexo.png" width="32" height="32" style="border-radius:8px;object-fit:contain;" alt="IA-NEXO">
+      <img src="/images/icono-nexo.png" width="32" height="32" style="border-radius:8px;object-fit:cover;" alt="IA-NEXO">
       <div class="tb-name">IA<em>-NEXO</em><span class="sync-dot" id="sync-dot" title="Sincronizado con la nube"></span></div>
       <div class="mob-mode-pill">
         <button class="m-opt auto on" id="m-auto-mob" data-mode="auto">🤖 Auto</button>
@@ -720,27 +737,27 @@ body.big .inputfield{font-size:17px!important;}
       <div class="sb-sec">Agentes</div>
       <!-- NEXO GENERAL — free agent -->
       <div class="ag on" data-id="general">
-        <div class="ag-box" style="background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.25);overflow:hidden;padding:2px;"><img src="/images/icono-nexo.png" style="width:100%;height:100%;object-fit:contain;border-radius:6px;" alt="General"></div>
+        <div class="ag-box" style="background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3);overflow:hidden;padding:1px;border-radius:10px;"><img src="/images/icono-nexo.png" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" alt="General"></div>
         <div class="ag-info">
-          <div class="ag-name" style="color:#7c3aed">NEXO GENERAL <span style="font-size:9px;background:rgba(124,58,237,.15);color:#7c3aed;padding:1px 6px;border-radius:8px;margin-left:4px;font-weight:700;">GRATIS</span></div>
+          <div class="ag-name" style="color:#9b4dff">NEXO GENERAL <span style="font-size:9px;background:rgba(155,77,255,.15);color:#9b4dff;padding:1px 6px;border-radius:8px;margin-left:4px;font-weight:700;">GRATIS</span></div>
           <div class="ag-role">Asistente completo</div>
         </div>
       </div>
       <!-- PRO agents — locked for free users -->
       <div class="ag ag-pro" data-id="sabio">
-        <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-sabio.png" style="width:100%;height:100%;object-fit:contain;" alt="Sabio"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO SABIO <span class="ag-lock">🔒</span></div><div class="ag-role">Filosof&iacute;a y consejos</div></div>
+        <div class="ag-box" style="background:rgba(255,179,71,.08);border-color:rgba(255,179,71,.25);overflow:hidden;padding:1px;border-radius:10px;"><img src="/images/agente-sabio.png" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" alt="Sabio"></div>
+        <div class="ag-info"><div class="ag-name" style="color:#ffb347">NEXO SABIO <span class="ag-lock">🔒</span></div><div class="ag-role">Filosof&iacute;a y consejos</div></div>
       </div>
       <div class="ag ag-pro" data-id="saber">
-        <div class="ag-box" style="background:rgba(57,217,138,.08);border-color:rgba(57,217,138,.2);overflow:hidden;padding:2px;"><img src="/images/agente-datos.png" style="width:100%;height:100%;object-fit:contain;" alt="Datos"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#39d98a">NEXO DATOS <span class="ag-lock">🔒</span></div><div class="ag-role">Informaci&oacute;n y cifras</div></div>
+        <div class="ag-box" style="background:rgba(0,255,179,.07);border-color:rgba(0,255,179,.22);overflow:hidden;padding:1px;border-radius:10px;"><img src="/images/agente-datos.png" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" alt="Datos"></div>
+        <div class="ag-info"><div class="ag-name" style="color:#00ffb3">NEXO DATOS <span class="ag-lock">🔒</span></div><div class="ag-role">Informaci&oacute;n y cifras</div></div>
       </div>
       <div class="ag ag-pro" data-id="codigo">
-        <div class="ag-box" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);overflow:hidden;padding:2px;"><img src="/images/agente-logico.png" style="width:100%;height:100%;object-fit:contain;" alt="Logico"></div>
-        <div class="ag-info"><div class="ag-name" style="color:#f59e0b">NEXO L&Oacute;GICO <span class="ag-lock">🔒</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
+        <div class="ag-box" style="background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.22);overflow:hidden;padding:1px;border-radius:10px;"><img src="/images/agente-logico.png" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" alt="Logico"></div>
+        <div class="ag-info"><div class="ag-name" style="color:#00e5ff">NEXO L&Oacute;GICO <span class="ag-lock">🔒</span></div><div class="ag-role">C&oacute;digo y matem&aacute;ticas</div></div>
       </div>
       <div class="ag ag-pro" data-id="creativo">
-        <div class="ag-box" style="background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.2);overflow:hidden;padding:2px;"><img src="/images/agente-creativo.png" style="width:100%;height:100%;object-fit:contain;" alt="Creativo"></div>
+        <div class="ag-box" style="background:rgba(192,132,252,.07);border-color:rgba(192,132,252,.22);overflow:hidden;padding:1px;border-radius:10px;"><img src="/images/agente-creativo.png" style="width:100%;height:100%;object-fit:cover;border-radius:9px;" alt="Creativo"></div>
         <div class="ag-info"><div class="ag-name" style="color:#a855f7">NEXO CREATIVO <span class="ag-lock">🔒</span></div><div class="ag-role">Arte y escritura</div></div>
       </div>
       <div class="sb-sec">Herramientas</div>
@@ -827,11 +844,11 @@ body.big .inputfield{font-size:17px!important;}
   var activeChat = null;
 
   var AGENTS = {
-    general:  { name: 'NEXO GENERAL', icon: '<img src="/images/icono-nexo.png" style="width:48px;height:48px;object-fit:contain;border-radius:10px;" alt="General">', color: '#7c3aed', ep: '/api/general' },
-    sabio:    { name: 'NEXO SABIO',    icon: '<img src="/images/agente-sabio.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Sabio">',    color: '#f59e0b', ep: '/api/sabio' },
-    saber:    { name: 'NEXO DATOS',    icon: '<img src="/images/agente-datos.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Datos">',    color: '#39d98a', ep: '/api/saber' },
-    codigo:   { name: 'NEXO LÓGICO',   icon: '<img src="/images/agente-logico.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Logico">',   color: '#f59e0b', ep: '/api/codigo' },
-    creativo: { name: 'NEXO CREATIVO', icon: '<img src="/images/agente-creativo.png" style="width:48px;height:48px;object-fit:contain;" alt="Nexo Creativo">', color: '#a855f7', ep: '/api/creativo' }
+    general:  { name: 'NEXO GENERAL', icon: '<img src="/images/icono-nexo.png" style="width:48px;height:48px;object-fit:cover;border-radius:10px;" alt="General">', color: '#9b4dff', ep: '/api/general' },
+    sabio:    { name: 'NEXO SABIO',    icon: '<img src="/images/agente-sabio.png" style="width:48px;height:48px;object-fit:cover;border-radius:50%;" alt="Nexo Sabio">',    color: '#ffb347', ep: '/api/sabio' },
+    saber:    { name: 'NEXO DATOS',    icon: '<img src="/images/agente-datos.png" style="width:48px;height:48px;object-fit:cover;border-radius:10px;" alt="Nexo Datos">',    color: '#00ffb3', ep: '/api/saber' },
+    codigo:   { name: 'NEXO LÓGICO',   icon: '<img src="/images/agente-logico.png" style="width:48px;height:48px;object-fit:cover;border-radius:10px;" alt="Nexo Logico">',   color: '#00e5ff', ep: '/api/codigo' },
+    creativo: { name: 'NEXO CREATIVO', icon: '<img src="/images/agente-creativo.png" style="width:48px;height:48px;object-fit:cover;border-radius:50%;" alt="Nexo Creativo">', color: '#c084fc', ep: '/api/creativo' }
   };
 
   var KEYWORDS = {
@@ -841,7 +858,8 @@ body.big .inputfield{font-size:17px!important;}
       'vida','feliz','triste','ansied','depres','motivaci','actitud',
       'decision','cambi','mejor','crecer','relacion','amor','familia',
       'estres','ansiedad','mente','psicolog','emocion','sentimient',
-      'por que','significa','importa','debo','vale la pena','crisis'
+      'por que','significa','importa','debo','vale la pena','crisis',
+      'marco aurelio','seneca','epicteto','aristotel','frankl'
     ],
     saber: [
       'dato','estadistic','cifra','poblac','porcentaj','cuantos',
@@ -850,7 +868,8 @@ body.big .inputfield{font-size:17px!important;}
       'donde esta','cuanta','cuanto mide','cuanto pesa','temperatura',
       'velocidad','record','mundial','pais','ciudad','continente',
       'presidente','rey','inventor','descubri','fundado','creado en',
-      'poblacion','moneda','idioma','bandera','religion','economia'
+      'poblacion','moneda','idioma','bandera','religion','economia',
+      'cuanto vale','cuantas','cuantos paises','capital de'
     ],
     codigo: [
       'codigo','programar','funcion','algoritm','matematica',
@@ -860,7 +879,8 @@ body.big .inputfield{font-size:17px!important;}
       'porcentaje de','cuanto es','raiz','potencia','logaritm',
       'trigonometr','integral','derivada','estadistica','probabilidad',
       'base de datos','servidor','api','web','app','programa',
-      'if','while','for','variable','clase','objeto','funcion'
+      'if','while','for','variable','clase','objeto','typescript',
+      'react','node','flask','django','bash','terminal','comando'
     ],
     creativo: [
       'poema','cuento','histori','escrib','creativ','arte','cancion',
@@ -872,7 +892,52 @@ body.big .inputfield{font-size:17px!important;}
       'manualidad','bordado','tejido','escultur','ceramica',
       'receta','cocina','plato','gastronomia','cocinar',
       'regalo','sorpresa','celebracion','fiesta','decorar',
-      'logo','marca','identidad','publicidad','slogan','nombre para'
+      'logo','marca','identidad','publicidad','slogan','nombre para',
+      'copy','redactar','contenido para','post para','caption'
+    ]
+  };
+
+  // ── CHIPS POR AGENTE ── Sugerencias contextuales según el agente activo
+  var AGENT_CHIPS = {
+    general: [
+      { text: '¿Qué pueden hacer los agentes?', suggest: '¿Qué puede hacer cada uno de los 4 agentes de IA-NEXO?' },
+      { text: 'Idea de negocio en Venezuela', suggest: '¿Qué ideas de negocio son rentables en Venezuela hoy?' },
+      { text: 'Ayúdame a redactar un correo', suggest: 'Ayúdame a redactar un correo profesional para un cliente' },
+      { text: 'Enséñame algo interesante', suggest: 'Enséñame algo fascinante que la mayoría de la gente no sabe' },
+      { text: 'Consejos para ahorrar dinero', suggest: 'Dame consejos prácticos para ahorrar dinero en Latinoamérica' },
+      { text: 'Resume el estoicismo', suggest: 'Explícame el estoicismo en términos simples con ejemplos prácticos' }
+    ],
+    sabio: [
+      { text: '¿Cómo supero el miedo al fracaso?', suggest: '¿Cómo puedo superar el miedo al fracaso según la filosofía estoica?' },
+      { text: '¿Qué es el estoicismo?', suggest: '¿Qué es el estoicismo y cómo aplicarlo en la vida diaria?' },
+      { text: 'Decisión difícil que debo tomar', suggest: 'Tengo que tomar una decisión muy importante y no sé qué hacer. ¿Cómo me ayuda la filosofía a pensar esto mejor?' },
+      { text: '¿Qué es la felicidad real?', suggest: '¿Qué dice la filosofía sobre qué es realmente la felicidad?' },
+      { text: 'Me siento sin propósito', suggest: 'Me siento sin propósito en la vida. ¿Qué perspectiva filosófica me puedes dar?' },
+      { text: 'Cómo manejar la ansiedad', suggest: '¿Qué herramientas filosóficas y mentales existen para manejar la ansiedad?' }
+    ],
+    saber: [
+      { text: 'Población de Venezuela 2024', suggest: '¿Cuál es la población actual de Venezuela y cómo ha cambiado?' },
+      { text: 'Historia del petróleo venezolano', suggest: '¿Cuál es la historia del petróleo en Venezuela y su impacto económico?' },
+      { text: '¿Cuántos países hay en el mundo?', suggest: '¿Cuántos países hay en el mundo y cuál es el más grande y más pequeño?' },
+      { text: 'PIB de Latinoamérica', suggest: 'Dame datos del PIB de los principales países de Latinoamérica' },
+      { text: '¿Cuándo llegó el hombre a la Luna?', suggest: '¿Cuándo llegó el hombre a la Luna y cuáles fueron los detalles de la misión?' },
+      { text: 'Datos sobre Bitcoin', suggest: 'Dame datos históricos y actuales sobre el precio y adopción de Bitcoin' }
+    ],
+    codigo: [
+      { text: 'Función Python para calcular', suggest: 'Crea una función en Python que calcule el promedio de una lista de números' },
+      { text: '¿Qué es una API REST?', suggest: '¿Qué es una API REST? Explícame con un ejemplo simple en código' },
+      { text: 'Tengo un bug en mi código', suggest: 'Tengo un bug en mi código, ¿puedes ayudarme a identificarlo y corregirlo?' },
+      { text: 'Fórmula BUSCARV en Excel', suggest: '¿Cómo uso la fórmula BUSCARV en Excel? Dame un ejemplo paso a paso' },
+      { text: 'Script Python para renombrar archivos', suggest: 'Escribe un script en Python que renombre todos los archivos de una carpeta automáticamente' },
+      { text: '¿Cómo funciona una base de datos SQL?', suggest: '¿Cómo funciona SQL? Enséñame los comandos más importantes con ejemplos' }
+    ],
+    creativo: [
+      { text: 'Poema sobre Venezuela', suggest: 'Escribe un poema emotivo sobre la belleza y alma de Venezuela' },
+      { text: 'Nombre para mi negocio', suggest: 'Necesito nombres creativos y memorables para mi negocio de comida venezolana. Dame 5 opciones con justificación' },
+      { text: 'Cuento corto de suspenso', suggest: 'Escribe un cuento corto de suspenso de 300 palabras con un giro sorprendente al final' },
+      { text: 'Slogan para mi marca', suggest: 'Crea 5 slogans impactantes y memorables para una marca de ropa deportiva venezolana' },
+      { text: 'Canción sobre el amor', suggest: 'Escribe una canción de amor en estilo romántico con verso y coro, con rima' },
+      { text: 'Ideas para redes sociales', suggest: 'Dame 10 ideas creativas para contenido de Instagram para un negocio de comida' }
     ]
   };
 
@@ -1081,8 +1146,8 @@ body.big .inputfield{font-size:17px!important;}
       var kws = KEYWORDS[id];
       for (var j = 0; j < kws.length; j++) {
         if (t.indexOf(kws[j]) >= 0) {
-          // Longer keyword = more specific = higher weight
-          var weight = kws[j].length > 7 ? 5 : kws[j].length > 4 ? 3 : 1;
+          // Palabras más largas/específicas tienen más peso
+          var weight = kws[j].length > 8 ? 6 : kws[j].length > 5 ? 3 : 1;
           scores[id] += weight;
         }
       }
@@ -1091,8 +1156,7 @@ body.big .inputfield{font-size:17px!important;}
     for (var k = 0; k < ids.length; k++) {
       if (scores[ids[k]] > top) { top = scores[ids[k]]; best = ids[k]; }
     }
-    // Return best match even if score is low (min 1)
-    return best;
+    return top > 0 ? best : null;
   }
 
   function selectAgent(id) {
@@ -1155,10 +1219,10 @@ body.big .inputfield{font-size:17px!important;}
         '<div class="wc-card-free-tag">GRATIS</div>' +
         '</div>';
       var proAgents = [
-        { id:'sabio',    name:'NEXO SABIO',    color:'#f59e0b', img:'/images/agente-sabio.png' },
-        { id:'saber',    name:'NEXO DATOS',    color:'#39d98a', img:'/images/agente-datos.png' },
-        { id:'codigo',   name:'NEXO LÓGICO',   color:'#f59e0b', img:'/images/agente-logico.png' },
-        { id:'creativo', name:'NEXO CREATIVO', color:'#a855f7', img:'/images/agente-creativo.png' }
+        { id:'sabio',    name:'NEXO SABIO',    color:'#ffb347', img:'/images/agente-sabio.png' },
+        { id:'saber',    name:'NEXO DATOS',    color:'#00ffb3', img:'/images/agente-datos.png' },
+        { id:'codigo',   name:'NEXO LÓGICO',   color:'#00e5ff', img:'/images/agente-logico.png' },
+        { id:'creativo', name:'NEXO CREATIVO', color:'#c084fc', img:'/images/agente-creativo.png' }
       ];
       for (var j = 0; j < proAgents.length; j++) {
         var pa = proAgents[j];
@@ -1178,9 +1242,11 @@ body.big .inputfield{font-size:17px!important;}
       'Dame una idea de negocio digital',
       'Explicame la teoria de la relatividad'
     ];
+    // ── CHIPS CONTEXTUALES POR AGENTE ──
+    var agentChips = AGENT_CHIPS[cur] || AGENT_CHIPS['general'];
     var chipsHTML = '';
-    for (var j = 0; j < suggestions.length; j++) {
-      chipsHTML += '<div class="chip" data-suggest="' + escapeAttr(suggestions[j]) + '">' + escapeHtml(suggestions[j]) + '</div>';
+    for (var ci = 0; ci < agentChips.length; ci++) {
+      chipsHTML += '<div class="chip" data-suggest="' + escapeAttr(agentChips[ci].suggest) + '">' + escapeHtml(agentChips[ci].text) + '</div>';
     }
 
     // Pro banner — only for free/trial users
@@ -1314,6 +1380,7 @@ body.big .inputfield{font-size:17px!important;}
         '<button class="msg-act copy">\uD83D\uDCCB Copiar</button>' +
         '<button class="msg-act pdf">\uD83D\uDCC4 PDF</button>' +
         '<button class="msg-act resumir">\u2014 Resumir</button>' +
+        '<button class="msg-act facil">\uD83D\uDCA1 M\u00e1s f\u00e1cil</button>' +
         '<button class="msg-act fav">\u2665 Guardar</button>';
       var textForActs = text;
       var agentForActs = agentId;
@@ -1332,6 +1399,13 @@ body.big .inputfield{font-size:17px!important;}
       if (resumirBtn) {
         resumirBtn.addEventListener('click', function() {
           $('inp').value = 'Resume en exactamente 3 puntos breves lo anterior';
+          send();
+        });
+      }
+      var facilBtn = acts.querySelector('.facil');
+      if (facilBtn) {
+        facilBtn.addEventListener('click', function() {
+          $('inp').value = 'Explícame eso mismo pero de forma más simple, como si tuviera 12 años y no supiera nada del tema';
           send();
         });
       }
@@ -1363,7 +1437,7 @@ body.big .inputfield{font-size:17px!important;}
       '<div class="mav">' + a.icon + '</div>' +
       '<div><div class="mbu"><div class="thinking">' +
       '<span class="tdot"></span><span class="tdot"></span><span class="tdot"></span>' +
-      '<span style="font-size:11px;color:var(--t2);margin-left:5px">' + a.name + ' pensando...</span>' +
+      '<span class="thinking-label">' + a.name + ' pensando...</span>' +
       '</div></div></div>';
     c.appendChild(d);
     d.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2918,23 +2992,23 @@ body.big .inputfield{font-size:17px!important;}
     <div class="mob-sheet-title">Elige tu agente</div>
     <div class="mob-agent-grid" id="mob-agent-grid">
       <div class="mob-agent-card" onclick="selectAgent('sabio');closeMobSheet('mob-agent-sheet')">
-        <img src="/images/agente-sabio.png" alt="Sabio">
-        <div class="mob-agent-name" style="color:#f59e0b">NEXO SABIO</div>
+        <img src="/images/agente-sabio.png" alt="Sabio" style="border-radius:50%;">
+        <div class="mob-agent-name" style="color:#ffb347">NEXO SABIO</div>
         <div class="mob-agent-role">Filosofía y consejos</div>
       </div>
       <div class="mob-agent-card" onclick="selectAgent('saber');closeMobSheet('mob-agent-sheet')">
-        <img src="/images/agente-datos.png" alt="Datos">
-        <div class="mob-agent-name" style="color:#39d98a">NEXO DATOS</div>
+        <img src="/images/agente-datos.png" alt="Datos" style="border-radius:10px;">
+        <div class="mob-agent-name" style="color:#00ffb3">NEXO DATOS</div>
         <div class="mob-agent-role">Información y cifras</div>
       </div>
       <div class="mob-agent-card" onclick="selectAgent('codigo');closeMobSheet('mob-agent-sheet')">
-        <img src="/images/agente-logico.png" alt="Logico">
-        <div class="mob-agent-name" style="color:#f59e0b">NEXO LÓGICO</div>
+        <img src="/images/agente-logico.png" alt="Logico" style="border-radius:10px;">
+        <div class="mob-agent-name" style="color:#00e5ff">NEXO LÓGICO</div>
         <div class="mob-agent-role">Código y matemáticas</div>
       </div>
       <div class="mob-agent-card" onclick="selectAgent('creativo');closeMobSheet('mob-agent-sheet')">
-        <img src="/images/agente-creativo.png" alt="Creativo">
-        <div class="mob-agent-name" style="color:#a855f7">NEXO CREATIVO</div>
+        <img src="/images/agente-creativo.png" alt="Creativo" style="border-radius:50%;">
+        <div class="mob-agent-name" style="color:#c084fc">NEXO CREATIVO</div>
         <div class="mob-agent-role">Arte y escritura</div>
       </div>
     </div>
