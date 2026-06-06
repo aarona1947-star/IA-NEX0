@@ -304,6 +304,38 @@ app.delete('/auth/memoria', auth, function(req, res) {
   });
 });
 
+// ─── RESPUESTAS GUARDADAS ───
+app.post('/auth/saved', auth, function(req, res) {
+  var text  = (req.body.text  || '').slice(0, 4000);
+  var agent = (req.body.agent || 'general').slice(0, 20);
+  if (!text) return res.json({ ok: false });
+  getUser(req.user.email, function(err, user) {
+    var saved = (user && user.saved) || [];
+    var item = { id: 's' + Date.now(), text: text, agent: agent, savedAt: new Date().toISOString() };
+    saved.unshift(item);
+    if (saved.length > 50) saved = saved.slice(0, 50);
+    saveUser(req.user.email, { saved: saved }, function(e) {
+      res.json({ ok: !e, item: item });
+    });
+  });
+});
+
+app.get('/auth/saved', auth, function(req, res) {
+  getUser(req.user.email, function(err, user) {
+    res.json({ saved: (user && user.saved) || [] });
+  });
+});
+
+app.delete('/auth/saved/:id', auth, function(req, res) {
+  var id = req.params.id;
+  getUser(req.user.email, function(err, user) {
+    var saved = ((user && user.saved) || []).filter(function(s) { return s.id !== id; });
+    saveUser(req.user.email, { saved: saved }, function(e) {
+      res.json({ ok: !e });
+    });
+  });
+});
+
 app.post('/auth/applyCode', auth, function(req, res) {
   var code = (req.body.code || '').toUpperCase().trim();
   if (!code) return res.status(400).json({ error: 'Ingresa un codigo.' });

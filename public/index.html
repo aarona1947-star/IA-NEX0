@@ -303,6 +303,15 @@ textarea.field{resize:vertical;min-height:84px;line-height:1.5;}
   .bubble{max-width:88%;}
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+.modal-wide{max-width:560px;}
+.saved-list{max-height:420px;overflow-y:auto;margin-top:14px;display:flex;flex-direction:column;gap:10px;}
+.saved-empty{text-align:center;color:var(--t3);padding:36px 16px;font-size:14px;line-height:1.6;}
+.saved-item{border:0.5px solid var(--border);border-radius:12px;padding:14px;}
+.saved-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.saved-agent{font-size:12px;font-weight:600;}
+.saved-date{font-size:11px;color:var(--t3);}
+.saved-text{font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:10px;white-space:pre-wrap;word-break:break-word;}
+.saved-acts{display:flex;gap:6px;}
 </style>
 </head>
 <body>
@@ -461,6 +470,18 @@ textarea.field{resize:vertical;min-height:84px;line-height:1.5;}
     <div class="modal-sub">Describe la imagen que quieres crear.</div>
     <textarea class="field" id="img-prompt" placeholder="Ej: un logo minimalista de una cafetería, colores cálidos"></textarea>
     <button class="btn-primary" onclick="genImage()">Generar</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL RESPUESTAS GUARDADAS ═══ -->
+<div class="modal" id="modal-saved">
+  <div class="modal-card modal-wide">
+    <button class="modal-x" onclick="closeModal('modal-saved')">&#10005;</button>
+    <div class="modal-title">&#11088; Respuestas guardadas</div>
+    <div class="modal-sub">Tus respuestas favoritas, siempre a mano.</div>
+    <div class="saved-list" id="saved-list">
+      <div class="saved-empty">Cargando...</div>
+    </div>
   </div>
 </div>
 
@@ -792,6 +813,7 @@ function addMessage(role, text, agent, imageUrl){
       '<button class="msg-act" onclick="copyMsg(this)">&#128203; Copiar</button>'+
       '<button class="msg-act" onclick="regenMsg()">&#128260; Regenerar</button>'+
       '<button class="msg-act" onclick="speakMsg(this)">&#128266; Escuchar</button>'+
+      '<button class="msg-act" onclick="saveMsg(this)">&#11088; Guardar</button>'+
     '</div>';
   }
   div.innerHTML = inner;
@@ -834,6 +856,19 @@ function speakMsg(btn){
     u.lang='es-ES'; speechSynthesis.speak(u);
     toast('&#128266; Reproduciendo');
   }
+}
+function saveMsg(btn){
+  if(!TOKEN){ toast('Inicia sesión para guardar'); return; }
+  var raw = btn.closest('.msg')._rawText || '';
+  if(!raw){ toast('No hay texto para guardar'); return; }
+  var agentEl = btn.closest('.msg').querySelector('.msg-name');
+  var agentName = agentEl ? agentEl.textContent : '';
+  var agentId = Object.keys(AGENTS).find(function(k){ return AGENTS[k].name===agentName; }) || 'general';
+  btn.disabled = true;
+  fetch('/auth/saved',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},body:JSON.stringify({text:raw,agent:agentId})})
+    .then(function(r){return r.json();})
+    .then(function(d){ btn.disabled=false; toast(d.ok?'&#11088; Guardado':'Error al guardar'); })
+    .catch(function(){ btn.disabled=false; toast('Error al guardar'); });
 }
 
 // ═══ FORMATO MARKDOWN simple ═══
@@ -883,6 +918,7 @@ function toggleVoice(){
     var t=''; for(var i=0;i<e.results.length;i++) t+=e.results[i][0].transcript;
     $('input').value=base+t; updateSendBtn();
   };
+  recog.onerror=function(e){ recording=false; $('voice-btn').classList.remove('rec'); if(e.error!=='no-speech') toast('Micrófono: '+e.error); };
   recog.onend=function(){ recording=false; $('voice-btn').classList.remove('rec'); };
   recog.start();
 }
@@ -926,7 +962,43 @@ function genImage(){
     .then(function(d){ hideTyping(); if(d.imageUrl) addMessage('ai','Aquí está tu imagen:',  'creativo', d.imageUrl); else addMessage('ai','⚠️ '+(d.error||'Error'),'creativo'); })
     .catch(function(){ hideTyping(); addMessage('ai','⚠️ Error de conexión','creativo'); });
 }
-function openSaved(){ toast('Próximamente'); closeSidebar(); }
+function openSaved(){ openModal('modal-saved'); loadSaved(); closeSidebar(); }
+function loadSaved(){
+  if(!TOKEN){ $('saved-list').innerHTML='<div class="saved-empty">Inicia sesión para ver tus respuestas guardadas.</div>'; return; }
+  fetch('/auth/saved',{headers:{'Authorization':'Bearer '+TOKEN}})
+    .then(function(r){return r.json();})
+    .then(function(d){ renderSaved(d.saved||[]); })
+    .catch(function(){ $('saved-list').innerHTML='<div class="saved-empty">Error al cargar.</div>'; });
+}
+function renderSaved(items){
+  var list=$('saved-list');
+  if(!items.length){ list.innerHTML='<div class="saved-empty">Aún no has guardado respuestas.<br>Usa el botón ⭐ en cualquier mensaje.</div>'; return; }
+  list.innerHTML='';
+  items.forEach(function(s){
+    var ag=AGENTS[s.agent]||AGENTS.general;
+    var date=s.savedAt?new Date(s.savedAt).toLocaleDateString('es-ES'):'';
+    var div=document.createElement('div');
+    div.className='saved-item';
+    div.innerHTML=
+      '<div class="saved-meta"><span class="saved-agent" style="color:'+ag.color+'">'+ag.name+'</span><span class="saved-date">'+date+'</span></div>'+
+      '<div class="saved-text">'+escapeHtml(s.text.slice(0,240))+(s.text.length>240?'…':'')+'</div>'+
+      '<div class="saved-acts">'+
+        '<button class="msg-act copy-s">&#128203; Copiar</button>'+
+        '<button class="msg-act del-s">&#128465; Eliminar</button>'+
+      '</div>';
+    div.querySelector('.copy-s').addEventListener('click',function(){
+      navigator.clipboard.writeText(s.text).then(function(){ toast('&#128203; Copiado'); });
+    });
+    div.querySelector('.del-s').addEventListener('click',function(){
+      fetch('/auth/saved/'+s.id,{method:'DELETE',headers:{'Authorization':'Bearer '+TOKEN}})
+        .then(function(r){return r.json();})
+        .then(function(d){
+          if(d.ok){ div.remove(); if(!list.querySelector('.saved-item')) list.innerHTML='<div class="saved-empty">Aún no has guardado respuestas.<br>Usa el botón ⭐ en cualquier mensaje.</div>'; toast('Eliminado'); }
+        }).catch(function(){});
+    });
+    list.appendChild(div);
+  });
+}
 function openHelp(){ openUpgrade('IA-NEXO: 4 expertos de IA en español. ¿Dudas? Escríbenos por WhatsApp.'); }
 
 // ═══ SIDEBAR MÓVIL ═══
